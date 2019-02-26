@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".controlpanel.Setting1Fragment">
+
+    <LinearLayout
+        android:id="@+id/search_mainBar"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:weightSum="12"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/serviceLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_weight="1"
+            android:background="@drawable/post_top_bar_background"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:background="@drawable/post_bottom_bar_background"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingTop="15dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="First Setting"
+                        android:textColor="#6d5dff"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mainColor_Layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:layout_weight="0"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/mainColor_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Main Color"
+                        android:textColor="@color/text"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/colorNameResult_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:paddingEnd="24dp"
+                        android:text="ColorName"
+                        android:textColor="@color/text"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/notiShape_Layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingTop="16dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/notiShape_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Noti Shape"
+                        android:textColor="@color/text"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/notiShapeResult_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:paddingEnd="24dp"
+                        android:text="NotiShape"
+                        android:textColor="@color/text"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/notiColor_Layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingTop="16dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/notiColor_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Noti Color"
+                        android:textColor="@color/text"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/notiColorResult_TextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:paddingEnd="24dp"
+                        android:text="NotiColor"
+                        android:textColor="@color/text"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/doneLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="@drawable/post_bottom_bar_background"
+            android:orientation="vertical"
+            android:paddingTop="7dp"
+            app:layout_constraintHorizontal_bias="0.5">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/done_TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Done"
+                    android:textColor="@color/text"
+                    android:textSize="16dp" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/cancelLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:background="@drawable/post_bottom_bar_background"
+            android:orientation="vertical"
+            android:paddingTop="16dp"
+            app:layout_constraintHorizontal_bias="0.5">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/cancel_TextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="Cancel"
+                    android:textColor="@color/text"
+                    android:textSize="16dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+
+</android.support.constraint.ConstraintLayout>
