@@ -22,9 +22,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.PreviewParamModel;
 public class ControlPanelActivity extends AppCompatActivity {
     public AuraPreview auraPreview;
 
-     /* *
-     * TODO 밑과 같은 auraView의 visual parameter들을 모두 contain하는 container가 필요할듯
-     * */
+
     public int enavShape; // 0: circle, 1: square
     public int enavColor;
 
@@ -82,41 +80,18 @@ public class ControlPanelActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable Integer shape) {
                 enavShape = shape;
-                changeENAVShapeAndColor(enavShape, enavColor);
+                auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
             }
         });
         paramModel.getEnavColorLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer color) {
                 enavColor = color;
-                changeENAVShapeAndColor(enavShape, enavColor);
+                auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
             }
         });
 
     }
 
-    private void changeENAVShapeAndColor(int shape, int color) {
-        String drawableName;
-        switch (shape) {
-            case 0:
-                drawableName = "enav_circle_shape";
-                break;
-            case 1:
-                drawableName = "enav_square_shape";
-                break;
-            default:
-                drawableName = "enav_circle_shape";
-                break;
-        }
-        Drawable enavDrawable = Utilities.getDrawableFromString(
-                ControlPanelActivity.this, drawableName
-        );
-        enavDrawable.setColorFilter(new PorterDuffColorFilter(
-                color, PorterDuff.Mode.MULTIPLY
-        ));
 
-        for (ImageView enav: auraPreview.getEnavList()) {
-            enav.setImageDrawable(enavDrawable);
-        }
-    }
 }

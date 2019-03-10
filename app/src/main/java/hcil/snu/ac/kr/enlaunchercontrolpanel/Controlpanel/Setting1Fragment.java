@@ -13,7 +13,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -49,7 +48,7 @@ public class Setting1Fragment extends Fragment {
                              Bundle savedInstanceState) {
         final ViewGroup parentLayout = (ViewGroup) inflater.inflate(R.layout.fragment_setting1, container, false);
 
-        final TextView notiShape, notiColor;
+        final TextView notiShape, notiColor, settingDone, settingCancel;
         notiShape = parentLayout.findViewById(R.id.notiShapeResult_TextView);
         notiShape.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,12 +99,11 @@ public class Setting1Fragment extends Fragment {
                         }
                     });
 
-                    View turnOffModalDone = dialogLayout.findViewById(R.id.dialog_done);
-                    View turnOffModalCancel = dialogLayout.findViewById(R.id.dialog_cancel);
+                    View dialogDone = dialogLayout.findViewById(R.id.dialog_done);
+                    View dialogCancel = dialogLayout.findViewById(R.id.dialog_cancel);
 
 
-
-                    turnOffModalDone.setOnClickListener(new View.OnClickListener() {
+                    dialogDone.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             paramModel.setEnavShapeLiveData(shapeArr.indexOf(selectedShape[0]));
@@ -114,7 +112,7 @@ public class Setting1Fragment extends Fragment {
                         }
                     });
 
-                    turnOffModalCancel.setOnClickListener(new View.OnClickListener() {
+                    dialogCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             mDialog.dismiss();
@@ -145,6 +143,18 @@ public class Setting1Fragment extends Fragment {
                         paramModel.setEnavColorLiveData(color);
                     }
                 });
+            }
+        });
+
+        settingDone = parentLayout.findViewById(R.id.done_textview);
+        settingDone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment, new Setting2Fragment(), "FRAGMENT_SETTING2")
+                        .commit();
             }
         });
 

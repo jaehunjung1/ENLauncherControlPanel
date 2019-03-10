@@ -47,7 +47,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:text="ENAV Static Setting"
+                        android:text="ENAV Animation Setting"
                         android:textColor="#6d5dff"
                         android:textSize="14dp" />
 

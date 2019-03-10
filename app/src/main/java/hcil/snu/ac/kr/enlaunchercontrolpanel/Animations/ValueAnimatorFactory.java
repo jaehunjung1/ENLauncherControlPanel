@@ -5,7 +5,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
-import android.util.Log;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
@@ -13,6 +12,10 @@ import android.widget.ImageView;
 public class ValueAnimatorFactory {
     private Context context;
 
+
+    /* *
+    *  app Icon의 cx, cy를 pivot으로 현재 angle -> 마지막 angle까지 원호를 그리며 이동하는 Animation
+    * */
     public static ValueAnimator rotatePivotAnimator(
             final ImageView enav, long duration, float startAngle, float endAngle) {
         final ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) enav.getLayoutParams();

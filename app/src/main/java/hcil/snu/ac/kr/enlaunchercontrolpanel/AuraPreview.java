@@ -2,6 +2,9 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.util.AttributeSet;
@@ -11,7 +14,6 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Animations.RotatingAnimation;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Animations.ValueAnimatorFactory;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 
@@ -19,6 +21,11 @@ public class AuraPreview extends ConstraintLayout {
     private Context context;
     private ImageView appIconView;
     private ArrayList<ImageView> enavList;
+
+    /* *
+     * TODO enavShape, enavColor 같은 auraView의 visual parameter들을 포괄하는 container가 필요할듯?
+     * */
+
 
     /*
     * Overriding Necessary Functions and Constructor from ViewGroup
@@ -108,6 +115,31 @@ public class AuraPreview extends ConstraintLayout {
                 lastENAV, 1500, lp.circleAngle, 333f
         );
         enavAnim.start();
+    }
+
+    public void changeENAVShapeAndColor(int shape, int color) {
+        String drawableName;
+        switch (shape) {
+            case 0:
+                drawableName = "enav_circle_shape";
+                break;
+            case 1:
+                drawableName = "enav_square_shape";
+                break;
+            default:
+                drawableName = "enav_circle_shape";
+                break;
+        }
+        Drawable enavDrawable = Utilities.getDrawableFromString(
+                context, drawableName
+        );
+        enavDrawable.setColorFilter(new PorterDuffColorFilter(
+                color, PorterDuff.Mode.MULTIPLY
+        ));
+
+        for (ImageView enav: enavList) {
+            enav.setImageDrawable(enavDrawable);
+        }
     }
 
 
