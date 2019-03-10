@@ -4,7 +4,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
-public class SelfRotationAnimation extends Animation {
+public class RotatingAnimation extends Animation {
     private View view;
     private float cx, cy;           // center x,y position of circular path
     private float prevX, prevY;     // previous x,y position of image during animation
@@ -16,7 +16,7 @@ public class SelfRotationAnimation extends Animation {
      * @param view - View that will be animated
      * @param r - radius of circular path
      */
-    public SelfRotationAnimation(View view, float r){
+    public RotatingAnimation(View view, float r){
         this.view = view;
         this.r = r;
     }
