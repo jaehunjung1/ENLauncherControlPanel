@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
         <activity android:name=".SampleActivity"></activity>
         <activity
-            android:name=".controlpanel.ControlPanelActivity"
+            android:name=".Controlpanel.ControlPanelActivity"
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

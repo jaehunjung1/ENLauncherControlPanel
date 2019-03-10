@@ -17,7 +17,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 
 public class AuraPreview extends ConstraintLayout {
     private Context context;
-    private View appIconView;
+    private ImageView appIconView;
     private ArrayList<ImageView> enavList;
 
     /*
@@ -39,48 +39,15 @@ public class AuraPreview extends ConstraintLayout {
         this.setEAAV(appIconView);
     }
 
-//    @Override
-//    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        int widthPixels = View.MeasureSpec.getSize(widthMeasureSpec);
-//        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
-//        int heightPixels = View.MeasureSpec.getSize(widthMeasureSpec);
-//        int heightMode = View.MeasureSpec.getMode(widthMeasureSpec);
-//
-//        super.onMeasure(
-//                View.MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.EXACTLY),
-//                View.MeasureSpec.makeMeasureSpec(heightPixels, MeasureSpec.EXACTLY)
-//        );
-//
-//        for (int i = 0; i < this.getChildCount(); i++) {
-//            final View child = this.getChildAt(i);
-//            child.measure(
-//                    View.MeasureSpec.makeMeasureSpec(child.getMeasuredWidth(), MeasureSpec.EXACTLY),
-//                    View.MeasureSpec.makeMeasureSpec(child.getMeasuredHeight(), MeasureSpec.EXACTLY)
-//            );
-//        }
-//    }
-//
-//
-//    @Override
-//    protected void onLayout(boolean changed, int l, int t, int r, int b) {
-//        int leftPadding = 0;
-//        int rightPadding = 0;
-//        int topPadding = 0;
-//        int bottomPadding = 0;
-//
-//        for (int i = 0; i < this.getChildCount(); i++) {
-//            final View child = this.getChildAt(i);
-//            child.layout(
-//                    leftPadding, topPadding, (r - l) - rightPadding, (b - t) - bottomPadding
-//            );
-//        }
-//    }
-
     /*
     * Preview Drawing Logic
     * setEAAV => sets App Icon View (currently just imageView)
     * setENAVList => sets Notification Views (currently just imageView)
     */
+
+    public ImageView getEAAV() {
+        return this.appIconView;
+    }
 
     /**
     * @param appIconView - app icon by ImageView
@@ -111,7 +78,13 @@ public class AuraPreview extends ConstraintLayout {
 //        appIconView.startAnimation(appIconAnim);
     }
 
+    public ArrayList<ImageView> getEnavList() {
+        return this.enavList;
+    }
+
     public void setENAVList(ArrayList<ImageView> enavList) {
+        this.enavList = enavList;
+
         for (int i = 0; i < enavList.size(); i++) {
             final ImageView enav = enavList.get(i);
 
