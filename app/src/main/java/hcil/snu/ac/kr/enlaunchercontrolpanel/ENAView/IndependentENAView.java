@@ -12,7 +12,7 @@ public class IndependentENAView extends ENAView {
         super(context);
     }
 
-    public void changeShapeAndColor(int shape, int color) {
+    public void setShapeAndColor(int shape, int color) {
         String drawableName;
         switch (shape) {
             case 0:

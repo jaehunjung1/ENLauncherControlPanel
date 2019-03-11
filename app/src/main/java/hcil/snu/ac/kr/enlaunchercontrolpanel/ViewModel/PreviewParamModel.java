@@ -15,12 +15,16 @@ public class PreviewParamModel extends ViewModel {
     private MutableLiveData<Integer> enavColorLiveData;
     private MutableLiveData<Integer> kNumLiveData;
 
-    public void init(int shape, int color, int k) {
+    public void init(int k, int shape, int color) {
         enavShapeLiveData = new MutableLiveData<>();
         enavShapeLiveData.setValue(shape);
         enavColorLiveData = new MutableLiveData<>();
         enavColorLiveData.setValue(color);
         kNumLiveData = new MutableLiveData<>();
+        kNumLiveData.setValue(k);
+    }
+
+    public void setKNumLiveData(int k) {
         kNumLiveData.setValue(k);
     }
 
@@ -32,8 +36,8 @@ public class PreviewParamModel extends ViewModel {
         enavColorLiveData.setValue(color);
     }
 
-    public void setKNumLiveData(int k) {
-        kNumLiveData.setValue(k);
+    public LiveData<Integer> getKNumLiveData() {
+        return kNumLiveData;
     }
 
     public LiveData<Integer> getEnavShapeLiveData() {
@@ -44,7 +48,4 @@ public class PreviewParamModel extends ViewModel {
         return enavColorLiveData;
     }
 
-    public LiveData<Integer> getKNumLiveData() {
-        return kNumLiveData;
-    }
 }

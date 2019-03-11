@@ -2,6 +2,7 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
@@ -20,7 +21,7 @@ public class AggregatedENAView extends ENAView {
         super(context);
     }
 
-    public AggregatedENAView(Context context, int index, int initColor) {
+    public AggregatedENAView(Context context, int index, int spanSize) {
         super(context);
 
         strokeWidth = Utilities.dpToPx(context, 7);
@@ -29,11 +30,11 @@ public class AggregatedENAView extends ENAView {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeCap(Paint.Cap.ROUND);
         paint.setStrokeWidth(strokeWidth);
-        paint.setColor(initColor);
+        paint.setColor(Color.TRANSPARENT);
 
         //Initialize Aggregate Angle
-        aggregateStartAngle = (270 + index * 27) % 360;
-        aggregateSweepAngle = 27; // for now, just draw for 27 degree
+        aggregateStartAngle = (270 + index * 24) % 360;
+        aggregateSweepAngle = 24 * spanSize - 15;
     }
 
     @Override
@@ -43,7 +44,7 @@ public class AggregatedENAView extends ENAView {
     }
 
     // for now, just change color of aggregated ENAV
-    public void changeColor(int color) {
+    public void setColor(int color) {
         paint.setColor(color);
         this.invalidate();
     }

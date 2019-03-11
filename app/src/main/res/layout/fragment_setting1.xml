@@ -80,7 +80,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0"
                         android:paddingEnd="24dp"
-                        android:text="K=N"
+                        android:text="K = N"
                         android:textColor="@color/text"
                         android:textSize="14dp" />
 

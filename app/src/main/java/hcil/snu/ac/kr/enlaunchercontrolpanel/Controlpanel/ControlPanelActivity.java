@@ -2,9 +2,6 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.Controlpanel;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -15,20 +12,17 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.AuraPreview;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.AggregatedENAView;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.ENAView;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.IndependentENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.VisualParamContainer;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.PreviewParamModel;
 
 public class ControlPanelActivity extends AppCompatActivity {
     public AuraPreview auraPreview;
 
-    private static final int enavNum = 6; // number of ENAVs in preview
+    static final int enavNum = 6; // number of ENAVs in preview
 
 
-    public int enavShape; // 0: circle, 1: square
+    public int enavShape;
     public int enavColor;
 
     private PreviewParamModel paramModel;
@@ -47,6 +41,7 @@ public class ControlPanelActivity extends AppCompatActivity {
 
         /* *
         * Initial EAAV Attaching
+        * // TODO EAAV도 AuraPreview에서 define 할 수 있도록 변경
         * */
         ImageView testImageView = new ImageView(ControlPanelActivity.this);
         testImageView.setId(View.generateViewId());
@@ -54,40 +49,41 @@ public class ControlPanelActivity extends AppCompatActivity {
 
         auraPreview.setEAAV(testImageView);
 
+
         /* *
-        * Initial ENAV List Attaching
+        * Initial Data List Attaching (Notification Data Attaching)
+        * currently, data list is simple integer list
         * */
-        ArrayList<ENAView> testENAVList = new ArrayList<>();
-
-        // Add Aggregated ENAV
-        AggregatedENAView aggregatedENAView = new AggregatedENAView(
-                ControlPanelActivity.this, 0,
-                ContextCompat.getColor(this, R.color.theme)
-        );
-        aggregatedENAView.setId(View.generateViewId());
-        testENAVList.add(aggregatedENAView);
-
-        // Add Independent ENAV
+        ArrayList<Integer> enavDataList = new ArrayList<>();
         for (int i = 1; i < enavNum; i++) {
-            IndependentENAView testENAV = new IndependentENAView(ControlPanelActivity.this);
-            testENAV.setId(View.generateViewId());
-            testENAV.changeShapeAndColor(0, ContextCompat.getColor(this, R.color.theme));
-
-            testENAVList.add(testENAV);
+            enavDataList.add(i);
         }
 
-        auraPreview.setENAVList(testENAVList, 1);
+        /* *
+         * Initial Visual Param List Attaching (Notification Data Attaching)
+         * currently, visual param list is simple integer list
+         * 각 원소는 ENAV 각각의 visual parameters
+         * */
+        ArrayList<Integer> enavVisualParamList = new ArrayList<>();
+        for (int i = 1; i < enavNum; i++) {
+            enavVisualParamList.add(i);
+        }
+
+        VisualParamContainer visualParamContainer = new VisualParamContainer(
+                -1, 0, ContextCompat.getColor(this, R.color.theme), enavVisualParamList
+        );
+        auraPreview.setENAVList(enavDataList, visualParamContainer);
+
 
         /* *
         * PreviewParamModel Initializing
         * */
         paramModel = ViewModelProviders.of(this).get(PreviewParamModel.class);
-        paramModel.init(0, ContextCompat.getColor(this, R.color.theme), -1);
+        paramModel.init(-1, 0, ContextCompat.getColor(this, R.color.theme));
         paramModel.getKNumLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer k) {
-                // TODO
-
+                auraPreview.changeKNum(k);
             }
         });
         paramModel.getEnavShapeLiveData().observe(this, new Observer<Integer>() {

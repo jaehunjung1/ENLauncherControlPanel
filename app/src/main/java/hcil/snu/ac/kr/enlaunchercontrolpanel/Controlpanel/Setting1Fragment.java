@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
 import com.pes.androidmaterialcolorpickerdialog.ColorPickerCallback;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -48,7 +49,86 @@ public class Setting1Fragment extends Fragment {
                              Bundle savedInstanceState) {
         final ViewGroup parentLayout = (ViewGroup) inflater.inflate(R.layout.fragment_setting1, container, false);
 
-        final TextView notiShape, notiColor, settingDone, settingCancel;
+        final TextView aggregation, notiShape, notiColor, settingDone, settingCancel;
+        aggregation = parentLayout.findViewById(R.id.aggregationResult_textview);
+        aggregation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder mBuilder = new AlertDialog.Builder(
+                        getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar
+                );
+                LinearLayout dialogLayout = (LinearLayout)getLayoutInflater()
+                        .inflate(R.layout.dialog_noti_shape, parentLayout, false);
+                mBuilder.setView(dialogLayout);
+                final AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+
+                final LinearLayout kNumList = dialogLayout.findViewById(R.id.dialog_list);
+                final int[] selectedKNum = new int[1];
+                final ArrayList<Integer> kNumArr = new ArrayList<>();
+                kNumArr.add(-1);
+                for (int i = 0; i < ControlPanelActivity.enavNum; i++) {
+                    kNumArr.add(i);
+                }
+                for (int i = 0; i < kNumArr.size(); i++) {
+                    final TextView tv = new TextView(getContext());
+                    tv.setText(String.valueOf(kNumArr.get(i)));
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, Utilities.dpToPx(getContext(), 45)
+                    );
+                    lp.weight = 1;
+                    tv.setLayoutParams(lp);
+                    tv.setPadding(Utilities.dpToPx(getContext(), 16), 0,
+                            Utilities.dpToPx(getContext(), 16), 0);
+                    tv.setTextSize(13);
+                    tv.setTextColor(ContextCompat.getColor(getContext(), R.color.text));
+                    tv.setGravity(Gravity.CENTER_VERTICAL);
+                    tv.setTag("unclicked");
+                    kNumList.addView(tv);
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            for (int i = 0; i < kNumList.getChildCount(); i++) {
+                                TextView tempTv = (TextView)kNumList.getChildAt(i);
+                                if (tempTv.getTag().toString().equals("clicked")) {
+                                    tempTv.setTextColor(ContextCompat.getColor(getContext(), R.color.text));
+                                    tempTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                    tempTv.setTag("unclicked");
+                                }
+                            }
+                            tv.setTextColor(ContextCompat.getColor(getContext(), R.color.theme));
+                            Drawable img = ContextCompat.getDrawable(getContext(), R.drawable.purple_check);
+                            img.setBounds(0, 0, 50, 50);
+                            tv.setCompoundDrawables(null, null, img, null);
+                            tv.setTag("clicked");
+                            selectedKNum[0] = kNumArr.get(kNumList.indexOfChild(tv));
+                        }
+                    });
+                }
+                View dialogDone = dialogLayout.findViewById(R.id.dialog_done);
+                View dialogCancel = dialogLayout.findViewById(R.id.dialog_cancel);
+
+
+                dialogDone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        paramModel.setKNumLiveData(selectedKNum[0]);
+                        aggregation.setText(String.format("K = %s",
+                                selectedKNum[0] > 0? selectedKNum[0] : "N" ));
+                        mDialog.dismiss();
+                    }
+                });
+
+                dialogCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDialog.dismiss();
+                    }
+                });
+
+
+            }
+        });
         notiShape = parentLayout.findViewById(R.id.notiShapeResult_TextView);
         notiShape.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +147,7 @@ public class Setting1Fragment extends Fragment {
                 for (int i = 0; i < shapeArr.size(); i++) {
                     final TextView tv = new TextView(getContext());
                     tv.setText(shapeArr.get(i));
-                    LinearLayout.LayoutParams lp =new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT, Utilities.dpToPx(getContext(), 45)
                             );
                     lp.weight = 1;
