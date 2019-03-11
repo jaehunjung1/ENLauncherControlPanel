@@ -2,25 +2,25 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.animation.Animation;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Animations.ValueAnimatorFactory;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.AggregatedENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.ENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.IndependentENAView;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 
 public class AuraPreview extends ConstraintLayout {
     private Context context;
     private ImageView appIconView;
-    private ArrayList<ImageView> enavList;
+    private ArrayList<ENAView> enavList;
+    private int kNum = -1;
 
     /* *
      * TODO enavShape, enavColor 같은 auraView의 visual parameter들을 포괄하는 container가 필요할듯?
@@ -35,10 +35,19 @@ public class AuraPreview extends ConstraintLayout {
         this.context = context;
     }
 
+    public AuraPreview(Context context, ImageView appIconView, ArrayList<ENAView> enavList, int kNum) {
+        super(context);
+        this.context = context;
+        this.kNum = kNum;
+        this.setEAAV(appIconView);
+        this.setENAVList(enavList, kNum);
+    }
+
     public AuraPreview(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         this.context = context;
     }
+
 
     public AuraPreview(Context context, ImageView appIconView) {
         super(context);
@@ -51,6 +60,14 @@ public class AuraPreview extends ConstraintLayout {
     * setEAAV => sets App Icon View (currently just imageView)
     * setENAVList => sets Notification Views (currently just imageView)
     */
+    public int getKNum() {
+        return this.kNum;
+    }
+
+    public void setKNum(int k) {
+        this.kNum = k;
+        setENAVList(this.enavList, k);
+    }
 
     public ImageView getEAAV() {
         return this.appIconView;
@@ -85,15 +102,45 @@ public class AuraPreview extends ConstraintLayout {
 //        appIconView.startAnimation(appIconAnim);
     }
 
-    public ArrayList<ImageView> getEnavList() {
+    public ArrayList<ENAView> getEnavList() {
         return this.enavList;
     }
 
-    public void setENAVList(ArrayList<ImageView> enavList) {
+    public void setENAVList(ArrayList<ENAView> enavList) {
+        this.setENAVList(enavList, -1);
+    }
+
+    public void setENAVList(ArrayList<ENAView> enavList, int kNum) {
+        this.clearENAVList();
         this.enavList = enavList;
 
-        for (int i = 0; i < enavList.size(); i++) {
-            final ImageView enav = enavList.get(i);
+        // startIndex: index of start of independent ENAVs in enavList
+        int startIndex = kNum < 0? 0 : enavList.size() - kNum;
+
+        // Drawing Aggregated Views
+        if (startIndex != 0) {
+            final ENAView enav = enavList.get(0);
+
+            enav.setLayoutParams(new ConstraintLayout.LayoutParams(
+                    Utilities.dpToPx(context, 80),
+                    Utilities.dpToPx(context, 80)
+            ));
+
+            this.addView(enav);
+
+            ConstraintSet set = new ConstraintSet();
+            set.clone(this);
+            set.connect(enav.getId(), ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT);
+            set.connect(enav.getId(), ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+            set.connect(enav.getId(), ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT);
+            set.connect(enav.getId(), ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
+
+            set.applyTo(this);
+        }
+
+        // Drawing independent ENAVs
+        for (int i = startIndex; i < enavList.size(); i++) {
+            final ENAView enav = enavList.get(i);
 
             ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                     Utilities.dpToPx(context, 10),
@@ -105,11 +152,10 @@ public class AuraPreview extends ConstraintLayout {
             enav.setLayoutParams(lp);
 
             this.addView(enav);
-
         }
 
         // last ENAV Animating
-        final ImageView lastENAV = enavList.get(enavList.size() - 1);
+        final ENAView lastENAV = enavList.get(enavList.size() - 1);
         ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) lastENAV.getLayoutParams();
         ValueAnimator enavAnim = ValueAnimatorFactory.rotatePivotAnimator(
                 lastENAV, 1500, lp.circleAngle, 333f
@@ -118,29 +164,18 @@ public class AuraPreview extends ConstraintLayout {
     }
 
     public void changeENAVShapeAndColor(int shape, int color) {
-        String drawableName;
-        switch (shape) {
-            case 0:
-                drawableName = "enav_circle_shape";
-                break;
-            case 1:
-                drawableName = "enav_square_shape";
-                break;
-            default:
-                drawableName = "enav_circle_shape";
-                break;
-        }
-        Drawable enavDrawable = Utilities.getDrawableFromString(
-                context, drawableName
-        );
-        enavDrawable.setColorFilter(new PorterDuffColorFilter(
-                color, PorterDuff.Mode.MULTIPLY
-        ));
-
-        for (ImageView enav: enavList) {
-            enav.setImageDrawable(enavDrawable);
+        for (ENAView enav: enavList) {
+            if (enav instanceof IndependentENAView) {
+                ((IndependentENAView) enav).changeShapeAndColor(shape, color);
+            } else if (enav instanceof AggregatedENAView) {
+                ((AggregatedENAView) enav).changeColor(color);
+            }
         }
     }
 
+    private void clearENAVList() {
+        this.removeAllViews();
+        this.setEAAV(this.appIconView);
+    }
 
 }

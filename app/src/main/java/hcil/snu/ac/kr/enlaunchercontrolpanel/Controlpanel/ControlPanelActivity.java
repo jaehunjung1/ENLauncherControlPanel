@@ -15,12 +15,17 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.AuraPreview;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.AggregatedENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.ENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.IndependentENAView;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.PreviewParamModel;
 
 public class ControlPanelActivity extends AppCompatActivity {
     public AuraPreview auraPreview;
+
+    private static final int enavNum = 6; // number of ENAVs in preview
 
 
     public int enavShape; // 0: circle, 1: square
@@ -52,28 +57,39 @@ public class ControlPanelActivity extends AppCompatActivity {
         /* *
         * Initial ENAV List Attaching
         * */
-        ArrayList<ImageView> testENAVList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            ImageView testENAV = new ImageView(ControlPanelActivity.this);
+        ArrayList<ENAView> testENAVList = new ArrayList<>();
+
+        // Add Aggregated ENAV
+        AggregatedENAView aggregatedENAView = new AggregatedENAView(
+                ControlPanelActivity.this, 0,
+                ContextCompat.getColor(this, R.color.theme)
+        );
+        aggregatedENAView.setId(View.generateViewId());
+        testENAVList.add(aggregatedENAView);
+
+        // Add Independent ENAV
+        for (int i = 1; i < enavNum; i++) {
+            IndependentENAView testENAV = new IndependentENAView(ControlPanelActivity.this);
             testENAV.setId(View.generateViewId());
-            Drawable enavDrawable = ContextCompat.getDrawable(
-                    ControlPanelActivity.this, R.drawable.enav_circle_shape
-            );
-            enavDrawable.setColorFilter(new PorterDuffColorFilter(
-                    ContextCompat.getColor(this, R.color.theme), PorterDuff.Mode.MULTIPLY
-            ));
-            testENAV.setImageDrawable(enavDrawable);
+            testENAV.changeShapeAndColor(0, ContextCompat.getColor(this, R.color.theme));
 
             testENAVList.add(testENAV);
         }
 
-        auraPreview.setENAVList(testENAVList);
+        auraPreview.setENAVList(testENAVList, 1);
 
         /* *
         * PreviewParamModel Initializing
         * */
         paramModel = ViewModelProviders.of(this).get(PreviewParamModel.class);
-        paramModel.init(0, ContextCompat.getColor(this, R.color.theme));
+        paramModel.init(0, ContextCompat.getColor(this, R.color.theme), -1);
+        paramModel.getKNumLiveData().observe(this, new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable Integer k) {
+                // TODO
+
+            }
+        });
         paramModel.getEnavShapeLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer shape) {

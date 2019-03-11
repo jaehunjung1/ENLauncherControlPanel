@@ -5,15 +5,23 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+/* *
+* enavShape - 0: circle, 1: rectangle
+* enavColor - ENAVs' color hex code
+* kNum - if k >= 0, k: # of independent ENAVs / if k == -1, k = N
+* */
 public class PreviewParamModel extends ViewModel {
     private MutableLiveData<Integer> enavShapeLiveData;
     private MutableLiveData<Integer> enavColorLiveData;
+    private MutableLiveData<Integer> kNumLiveData;
 
-    public void init(int shape, int color) {
+    public void init(int shape, int color, int k) {
         enavShapeLiveData = new MutableLiveData<>();
         enavShapeLiveData.setValue(shape);
         enavColorLiveData = new MutableLiveData<>();
         enavColorLiveData.setValue(color);
+        kNumLiveData = new MutableLiveData<>();
+        kNumLiveData.setValue(k);
     }
 
     public void setEnavShapeLiveData(int shape) {
@@ -24,11 +32,19 @@ public class PreviewParamModel extends ViewModel {
         enavColorLiveData.setValue(color);
     }
 
+    public void setKNumLiveData(int k) {
+        kNumLiveData.setValue(k);
+    }
+
     public LiveData<Integer> getEnavShapeLiveData() {
         return enavShapeLiveData;
     }
 
     public LiveData<Integer> getEnavColorLiveData() {
         return enavColorLiveData;
+    }
+
+    public LiveData<Integer> getKNumLiveData() {
+        return kNumLiveData;
     }
 }
