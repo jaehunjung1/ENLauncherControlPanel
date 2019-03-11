@@ -28,7 +28,6 @@ public class ControlPanelActivity extends AppCompatActivity {
 
     private PreviewParamModel paramModel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +37,6 @@ public class ControlPanelActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.fragment, new Setting1Fragment(), "FRAGMENT_SETTING1")
                 .commit();
-
 
         auraPreview = findViewById(R.id.aura_preview);
 
@@ -90,8 +88,5 @@ public class ControlPanelActivity extends AppCompatActivity {
                 auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
             }
         });
-
     }
-
-
 }
