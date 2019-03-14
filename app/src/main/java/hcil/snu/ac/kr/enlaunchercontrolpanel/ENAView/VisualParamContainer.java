@@ -2,6 +2,8 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView;
 
 import java.util.ArrayList;
 
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
+
 /* *
  *  각 AuraPreview의 모든 visual paramter들을 가지고 있는 container
  *  ControlPanel -> Preview로 drawing logic을 전달할 때 사용
@@ -9,18 +11,20 @@ import java.util.ArrayList;
 public class VisualParamContainer {
 
     // AuraPreview 전체의 parameters
+    public StaticMode staticMode;
     public int kNum;
-    public int enavShape;
-    public int enavColor;
+    public int enavShape; // 0: circle | 1: square
+    public int enavColor; // hex color code
 
     // ENAV 각각의 parameters
     public ArrayList<Integer> enavVisualParamList;
 
-    public VisualParamContainer(int kNum, int shape, int color, ArrayList<Integer> enavVisualParamList) {
+    public VisualParamContainer(StaticMode staticMode, int kNum, int shape, int color,
+                                ArrayList<Integer> enavVisualParamList) {
+        this.staticMode = staticMode;
         this.kNum = kNum;
         this.enavShape = shape;
         this.enavColor = color;
         this.enavVisualParamList = enavVisualParamList;
     }
-
 }

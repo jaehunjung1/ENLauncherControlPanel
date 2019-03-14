@@ -33,8 +33,8 @@ public class AggregatedENAView extends ENAView {
         paint.setColor(Color.TRANSPARENT);
 
         //Initialize Aggregate Angle
-        aggregateStartAngle = (270 + index * 24) % 360;
-        aggregateSweepAngle = 24 * spanSize - 15;
+        aggregateStartAngle = (270 + index * 21) % 360;
+        aggregateSweepAngle = 21 * spanSize - 15;
     }
 
     @Override

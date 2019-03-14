@@ -15,6 +15,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.AuraPreview;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.VisualParamContainer;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.PreviewParamModel;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
 
 public class ControlPanelActivity extends AppCompatActivity {
     public AuraPreview auraPreview;
@@ -70,7 +71,8 @@ public class ControlPanelActivity extends AppCompatActivity {
         }
 
         VisualParamContainer visualParamContainer = new VisualParamContainer(
-                -1, 0, ContextCompat.getColor(this, R.color.theme), enavVisualParamList
+                StaticMode.SNAKE,-1, 0,
+                ContextCompat.getColor(this, R.color.theme), enavVisualParamList
         );
         auraPreview.setENAVList(enavDataList, visualParamContainer);
 
