@@ -13,6 +13,7 @@ import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Animations.ValueAnimatorFactory;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.AggregatedENAView;
@@ -104,7 +105,7 @@ public class AuraPreview extends ConstraintLayout {
                drawSnakeMode(dataList, container, enavListSize);
                break;
            case PIZZA:
-               drawPizzaMode(dataList, container, enavListSize);
+               drawPizzaMode(dataList, container, 5);
                break;
            default:
                Log.e("setENAVList ERROR", "StaticMode not specified");
@@ -235,7 +236,7 @@ public class AuraPreview extends ConstraintLayout {
      * PIZZA Mode Helper Function - called by setENAV
      */
     private void drawPizzaMode(ArrayList<Integer> dataList, VisualParamContainer container,
-                               int enavListSize) {
+                               int pizzaNum) {
 
         /*
         * TODO data에서 받아오도록 변경
@@ -243,20 +244,25 @@ public class AuraPreview extends ConstraintLayout {
         * enavSizeList : 각 enav의 size
         * enavColorList : 각 enav의 color code
         */
-        final int pizzaNum = 4;
-        final ArrayList<Integer> enavSizeList = new ArrayList<>(Arrays.asList(62, 65, 70, 65));
+
+        // 현재는 각 pizza slice의 size를 random하게 넣고 있음.
+        final ArrayList<Integer> enavSizeList = new ArrayList<>();
+        for (int i = 0; i < pizzaNum; i++) {
+            enavSizeList.add(EAAVSIZE + Utilities.dpToPx(context, new Random().nextInt(9)));
+        }
+
         ArrayList<Integer> colorList = getENAVColorList(container.enavColor, pizzaNum);
 
 
         for (int i = 0; i < pizzaNum; i++) {
             final AggregatedENAView enav = new AggregatedENAView(
-                    getContext(), i, -1, StaticMode.PIZZA, dataList.get(i)
+                    getContext(), i, pizzaNum, StaticMode.PIZZA, dataList.get(i)
             );
             enav.setId(View.generateViewId());
             enav.setColor(colorList.get(i));
             enav.setLayoutParams(new ConstraintLayout.LayoutParams(
-                    Utilities.dpToPx(getContext(), enavSizeList.get(i)),
-                    Utilities.dpToPx(getContext(), enavSizeList.get(i))
+                    enavSizeList.get(i),
+                    enavSizeList.get(i)
             ));
             enavList.add(enav);
 

@@ -49,8 +49,10 @@ public class AggregatedENAView extends ENAView {
                 paint.setStrokeCap(Paint.Cap.SQUARE);
                 paint.setColor(Color.TRANSPARENT);
 
-                aggregateStartAngle = (270 + index * 90) % 360; // currently, each one starts at 90
-                aggregateSweepAngle = 90;
+                // for pizza, spanSize : pizza slice의 총 개수
+                int sliceAngle = Math.round(360f / spanSize);
+                aggregateStartAngle = (270 + index * sliceAngle) % 360;
+                aggregateSweepAngle = sliceAngle;
                 break;
             default:
                 break;
