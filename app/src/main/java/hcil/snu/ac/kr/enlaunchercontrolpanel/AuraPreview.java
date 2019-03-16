@@ -277,6 +277,14 @@ public class AuraPreview extends ConstraintLayout {
 
             set.applyTo(this);
         }
+
+        // only for preview: last ENAV Animating
+        final ENAView lastENAV = enavList.get(enavList.size() - 1);
+        ValueAnimator enavAnim = ValueAnimatorFactory.pizzaSizeAnimator(
+                lastENAV, 2500, 1.0f, 1.15f
+        );
+        enavAnim.start();
+
     }
 
 

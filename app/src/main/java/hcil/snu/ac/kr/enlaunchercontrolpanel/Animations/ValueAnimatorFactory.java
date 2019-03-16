@@ -8,6 +8,9 @@ import android.support.constraint.ConstraintLayout;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.ENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
+
 //TODO updatelistener와 addlistener를 서로 다른 valueanimator들이 서로 공유할 수 있도록 따로 빼기
 public class ValueAnimatorFactory {
     private Context context;
@@ -17,7 +20,7 @@ public class ValueAnimatorFactory {
     *  app Icon의 cx, cy를 pivot으로 현재 angle -> 마지막 angle까지 원호를 그리며 이동하는 Animation
     * */
     public static ValueAnimator rotatePivotAnimator(
-            final ImageView enav, long duration, float startAngle, float endAngle) {
+            final ENAView enav, long duration, float startAngle, float endAngle) {
         final ConstraintLayout.LayoutParams lp = (ConstraintLayout.LayoutParams) enav.getLayoutParams();
         final ValueAnimator anim = ValueAnimator.ofFloat(startAngle, endAngle);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -59,6 +62,27 @@ public class ValueAnimatorFactory {
         anim.setInterpolator(new LinearInterpolator());
 //        anim.setRepeatMode(ValueAnimator.RESTART);
 
+        return anim;
+    }
+
+    /* *
+     *  pizza slice 하나의 size를 toggle하는 Animation
+     * */
+    public static ValueAnimator pizzaSizeAnimator(
+            final ENAView enav, long duration, final float startScale, float endScale) {
+        final ValueAnimator anim = ValueAnimator.ofFloat(startScale, endScale, startScale);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                final float updateScale = (float) valueAnimator.getAnimatedValue();
+                enav.setScaleX(updateScale);
+                enav.setScaleY(updateScale);
+            }
+        });
+        anim.setDuration(duration);
+        anim.setInterpolator(new LinearInterpolator());
+        anim.setRepeatMode(ValueAnimator.RESTART);
+        anim.setRepeatCount(ValueAnimator.INFINITE);
         return anim;
     }
 }
