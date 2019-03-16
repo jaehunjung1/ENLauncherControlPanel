@@ -31,6 +31,9 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
 public class Setting1Fragment extends Fragment {
     private PreviewParamModel paramModel;
 
+    final private ArrayList<String> staticModeArr = new ArrayList<>(Arrays.asList(
+            "Snake", "Pizza"
+    ));
     final private ArrayList<String> shapeArr = new ArrayList<>();
     final private ArrayList<String> paletteArr = new ArrayList<>();
 
@@ -53,7 +56,83 @@ public class Setting1Fragment extends Fragment {
                              Bundle savedInstanceState) {
         final ViewGroup parentLayout = (ViewGroup) inflater.inflate(R.layout.fragment_setting1, container, false);
 
-        final TextView aggregation, notiShape, notiColor, settingDone, settingCancel;
+        final TextView mode, aggregation, notiShape, notiColor, settingDone, settingCancel;
+        mode = parentLayout.findViewById(R.id.staticModeResult_textview);
+        mode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder mBuilder = new AlertDialog.Builder(
+                        getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar
+                );
+                LinearLayout dialogLayout = (LinearLayout)getLayoutInflater()
+                        .inflate(R.layout.dialog_setting_1, parentLayout, false);
+                mBuilder.setView(dialogLayout);
+                final AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+
+                final TextView titleTextView = dialogLayout.findViewById(R.id.dialog_title_textview);
+                titleTextView.setText("Choose Mode");
+                final LinearLayout staticModeList = dialogLayout.findViewById(R.id.dialog_list);
+                final StaticMode[] selectedMode = new StaticMode[1];
+                for (int i = 0; i < staticModeArr.size(); i++) {
+                    final TextView tv = new TextView(getContext());
+                    tv.setText(String.valueOf(staticModeArr.get(i)));
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT, Utilities.dpToPx(getContext(), 45)
+                    );
+                    lp.weight = 1;
+                    tv.setLayoutParams(lp);
+                    tv.setPadding(Utilities.dpToPx(getContext(), 16), 0,
+                            Utilities.dpToPx(getContext(), 16), 0);
+                    tv.setTextSize(13);
+                    tv.setTextColor(ContextCompat.getColor(getContext(), R.color.text));
+                    tv.setGravity(Gravity.CENTER_VERTICAL);
+                    tv.setTag("unclicked");
+                    staticModeList.addView(tv);
+                    tv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            for (int i = 0; i < staticModeList.getChildCount(); i++) {
+                                TextView tempTv = (TextView)staticModeList.getChildAt(i);
+                                if (tempTv.getTag().toString().equals("clicked")) {
+                                    tempTv.setTextColor(ContextCompat.getColor(getContext(), R.color.text));
+                                    tempTv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                                    tempTv.setTag("unclicked");
+                                }
+                            }
+                            tv.setTextColor(ContextCompat.getColor(getContext(), R.color.theme));
+                            Drawable img = ContextCompat.getDrawable(getContext(), R.drawable.purple_check);
+                            img.setBounds(0, 0, 50, 50);
+                            tv.setCompoundDrawables(null, null, img, null);
+                            tv.setTag("clicked");
+                            selectedMode[0] = StaticMode.valueOf(tv.getText().toString().toUpperCase());
+                        }
+                    });
+                }
+                View dialogDone = dialogLayout.findViewById(R.id.dialog_done);
+                View dialogCancel = dialogLayout.findViewById(R.id.dialog_cancel);
+
+
+                dialogDone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        paramModel.setStaticModeLiveData(selectedMode[0]);
+                        mode.setText(selectedMode[0].toString());
+                        mDialog.dismiss();
+                    }
+                });
+
+                dialogCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDialog.dismiss();
+                    }
+                });
+            }
+        });
+
+
+
         aggregation = parentLayout.findViewById(R.id.aggregationResult_textview);
         aggregation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,8 +210,6 @@ public class Setting1Fragment extends Fragment {
                         mDialog.dismiss();
                     }
                 });
-
-
             }
         });
         notiShape = parentLayout.findViewById(R.id.notiShapeResult_TextView);

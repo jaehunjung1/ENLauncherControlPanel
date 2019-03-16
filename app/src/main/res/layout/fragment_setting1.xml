@@ -55,7 +55,40 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/mainColor_Layout"
+                    android:id="@+id/staticMode_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="11dp"
+                    android:layout_weight="0"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:id="@+id/staticMode_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Mode"
+                        android:textColor="@color/text"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/staticModeResult_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0"
+                        android:paddingEnd="24dp"
+                        android:text="Snake"
+                        android:textColor="@color/text"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/aggregation_Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"

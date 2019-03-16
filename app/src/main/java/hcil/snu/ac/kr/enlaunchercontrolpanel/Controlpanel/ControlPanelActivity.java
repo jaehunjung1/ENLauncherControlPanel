@@ -3,10 +3,8 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.Controlpanel;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -72,7 +70,7 @@ public class ControlPanelActivity extends AppCompatActivity {
         }
 
         VisualParamContainer visualParamContainer = new VisualParamContainer(
-                StaticMode.PIZZA,-1, 0,
+                StaticMode.SNAKE,-1, 0,
                 "phaedra", enavVisualParamList
         );
         auraPreview.setENAVList(enavDataList, visualParamContainer);
@@ -84,10 +82,15 @@ public class ControlPanelActivity extends AppCompatActivity {
         enavShape = 0;
         enavColor = "phaedra";
         paramModel = ViewModelProviders.of(this).get(PreviewParamModel.class);
-        paramModel.init(StaticMode.PIZZA, -1, 0,
+        paramModel.init(StaticMode.SNAKE, -1, 0,
                 "phaedra");
 
-        // TODO staticMode observer 달아주기
+        paramModel.getStaticModeLiveData().observe(this, new Observer<StaticMode>() {
+            @Override
+            public void onChanged(@Nullable StaticMode staticMode) {
+                auraPreview.changeStaticMode(staticMode);
+            }
+        });
         paramModel.getKNumLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer k) {

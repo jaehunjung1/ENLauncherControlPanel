@@ -135,6 +135,11 @@ public class AuraPreview extends ConstraintLayout {
 
     }
 
+    public void changeStaticMode(StaticMode staticMode) {
+        this.visualParamContainer.staticMode = staticMode;
+        this.invalidateENAV();
+    }
+
     public void changeKNum(int k) {
         this.visualParamContainer.kNum = k;
         this.invalidateENAV();
@@ -281,7 +286,7 @@ public class AuraPreview extends ConstraintLayout {
         // only for preview: last ENAV Animating
         final ENAView lastENAV = enavList.get(enavList.size() - 1);
         ValueAnimator enavAnim = ValueAnimatorFactory.pizzaSizeAnimator(
-                lastENAV, 2500, 1.0f, 1.15f
+                lastENAV, 3000, 1.0f, 1.15f
         );
         enavAnim.start();
 

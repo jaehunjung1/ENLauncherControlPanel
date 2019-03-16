@@ -55,7 +55,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/mainColor_Layout"
+                    android:id="@+id/aggregation_Layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="11dp"
