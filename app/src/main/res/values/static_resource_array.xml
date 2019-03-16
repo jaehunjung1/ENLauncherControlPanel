@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <array name="shape_name">
+        <item>Circle</item>
+        <item>Square</item>
+    </array>
+
+    <array name="palette_name">
+        <item>@array/phaedra</item>
+        <item>@array/grungie</item>
+        <item>@array/vitamin_c</item>
+
+    </array>
+
+    <array name="phaedra">
+        <item>#00a388</item>
+        <item>#79bd8f</item>
+        <item>#beeb9f</item>
+        <item>#ffff9d</item>
+        <item>#ff6138</item>
+    </array>
+    <array name="grungie">
+        <item>#9f1313</item>
+        <item>#dcddf5</item>
+        <item>#f7eaa8</item>
+        <item>#d11111</item>
+        <item>#ffad87</item>
+    </array>
+    <array name="vitamin_c">
+        <item>#004358</item>
+        <item>#1f8a70</item>
+        <item>#bedb39</item>
+        <item>#ffe11a</item>
+        <item>#fd7400</item>
+    </array>
+    <array name="ambient_beige">
+        <item>#ffe4e1</item>
+        <item>#7f7270</item>
+        <item>#e5cdca</item>
+        <item>#ff9f94</item>
+        <item>#bfaba9</item>
+    </array>
+
+</resources>

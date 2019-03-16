@@ -12,16 +12,24 @@ import android.arch.lifecycle.ViewModel;
 * */
 public class PreviewParamModel extends ViewModel {
     private MutableLiveData<Integer> enavShapeLiveData;
-    private MutableLiveData<Integer> enavColorLiveData;
+    private MutableLiveData<String> enavColorLiveData;
     private MutableLiveData<Integer> kNumLiveData;
+    private MutableLiveData<StaticMode> staticModeLiveData;
 
-    public void init(int k, int shape, int color) {
+    public void init(StaticMode staticMode, int k, int shape, String color) {
+        staticModeLiveData = new MutableLiveData<>();
+        staticModeLiveData.setValue(staticMode);
         enavShapeLiveData = new MutableLiveData<>();
         enavShapeLiveData.setValue(shape);
         enavColorLiveData = new MutableLiveData<>();
         enavColorLiveData.setValue(color);
         kNumLiveData = new MutableLiveData<>();
         kNumLiveData.setValue(k);
+
+    }
+
+    public void setStaticModeLiveData(StaticMode staticMode) {
+        staticModeLiveData.setValue(staticMode);
     }
 
     public void setKNumLiveData(int k) {
@@ -32,8 +40,12 @@ public class PreviewParamModel extends ViewModel {
         enavShapeLiveData.setValue(shape);
     }
 
-    public void setEnavColorLiveData(int color) {
+    public void setEnavColorLiveData(String color) {
         enavColorLiveData.setValue(color);
+    }
+
+    public LiveData<StaticMode> getStaticModeLiveData() {
+        return staticModeLiveData;
     }
 
     public LiveData<Integer> getKNumLiveData() {
@@ -44,8 +56,10 @@ public class PreviewParamModel extends ViewModel {
         return enavShapeLiveData;
     }
 
-    public LiveData<Integer> getEnavColorLiveData() {
+    public LiveData<String> getEnavColorLiveData() {
         return enavColorLiveData;
     }
+
+
 
 }

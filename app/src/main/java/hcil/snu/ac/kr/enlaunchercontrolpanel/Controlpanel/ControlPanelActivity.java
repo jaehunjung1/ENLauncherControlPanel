@@ -25,7 +25,7 @@ public class ControlPanelActivity extends AppCompatActivity {
 
 
     public int enavShape;
-    public int enavColor;
+    public String enavColor;
 
     private PreviewParamModel paramModel;
 
@@ -73,7 +73,7 @@ public class ControlPanelActivity extends AppCompatActivity {
 
         VisualParamContainer visualParamContainer = new VisualParamContainer(
                 StaticMode.PIZZA,-1, 0,
-                ContextCompat.getColor(this, R.color.theme), enavVisualParamList
+                "phaedra", enavVisualParamList
         );
         auraPreview.setENAVList(enavDataList, visualParamContainer);
 
@@ -81,8 +81,13 @@ public class ControlPanelActivity extends AppCompatActivity {
         /* *
         * PreviewParamModel Initializing
         * */
+        enavShape = 0;
+        enavColor = "phaedra";
         paramModel = ViewModelProviders.of(this).get(PreviewParamModel.class);
-        paramModel.init(-1, 0, ContextCompat.getColor(this, R.color.theme));
+        paramModel.init(StaticMode.PIZZA, -1, 0,
+                "phaedra");
+
+        // TODO staticMode observer 달아주기
         paramModel.getKNumLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer k) {
@@ -92,16 +97,15 @@ public class ControlPanelActivity extends AppCompatActivity {
         paramModel.getEnavShapeLiveData().observe(this, new Observer<Integer>() {
             @Override
             public void onChanged(@Nullable Integer shape) {
-//                enavShape = shape;
-//                auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
+                enavShape = shape;
+                auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
             }
         });
-        paramModel.getEnavColorLiveData().observe(this, new Observer<Integer>() {
+        paramModel.getEnavColorLiveData().observe(this, new Observer<String>() {
             @Override
-            public void onChanged(@Nullable Integer color) {
-                //TODO 각 enav의 색을 변경하는 것으로 바꾸기!!! (interface, logic 둘다)
-//                enavColor = color;
-//                auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
+            public void onChanged(@Nullable String color) {
+                enavColor = color;
+                auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
             }
         });
     }

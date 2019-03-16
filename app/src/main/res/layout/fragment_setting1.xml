@@ -147,8 +147,8 @@
                         android:layout_weight="0"
                         android:paddingEnd="24dp"
                         android:tag="7167487"
-                        android:text="#6d5dff"
-                        android:textColor="@color/theme"
+                        android:text="phaedra"
+                        android:textColor="@color/text"
                         android:textSize="14dp" />
 
                 </LinearLayout>

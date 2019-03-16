@@ -14,12 +14,12 @@ public class VisualParamContainer {
     public StaticMode staticMode;
     public int kNum;
     public int enavShape; // 0: circle | 1: square
-    public int enavColor; // hex color code
+    public String enavColor; // color palette name, or hex color code (Progress Mode)
 
     // ENAV 각각의 parameters
     public ArrayList<Integer> enavVisualParamList;
 
-    public VisualParamContainer(StaticMode staticMode, int kNum, int shape, int color,
+    public VisualParamContainer(StaticMode staticMode, int kNum, int shape, String color,
                                 ArrayList<Integer> enavVisualParamList) {
         this.staticMode = staticMode;
         this.kNum = kNum;
@@ -27,4 +27,5 @@ public class VisualParamContainer {
         this.enavColor = color;
         this.enavVisualParamList = enavVisualParamList;
     }
+
 }

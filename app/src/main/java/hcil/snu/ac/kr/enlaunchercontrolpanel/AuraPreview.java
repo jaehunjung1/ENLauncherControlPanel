@@ -2,6 +2,7 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.v4.content.ContextCompat;
@@ -111,16 +112,26 @@ public class AuraPreview extends ConstraintLayout {
        }
     }
 
-    public void changeENAVShapeAndColor(int shape, int color) {
+    public void changeENAVShapeAndColor(int shape, String color) {
         visualParamContainer.enavShape = shape;
         visualParamContainer.enavColor = color;
-        for (ENAView enav: enavList) {
-            if (enav instanceof IndependentENAView) {
-                ((IndependentENAView) enav).setShapeAndColor(shape, color);
-            } else if (enav instanceof AggregatedENAView) {
-                ((AggregatedENAView) enav).setColor(color);
-            }
+
+        ArrayList<Integer> colorList = getENAVColorList(color, enavList.size());
+
+        switch (visualParamContainer.staticMode) {
+            case SNAKE:
+            case PIZZA:
+                for (int i = 0; i < enavList.size(); i++) {
+                    ENAView enav = enavList.get(i);
+                    if (enav instanceof IndependentENAView) {
+                        ((IndependentENAView)enav).setShapeAndColor(shape, colorList.get(i));
+                    } else if (enav instanceof AggregatedENAView) {
+                        ((AggregatedENAView)enav).setColor(colorList.get(i));
+                    }
+                }
+                break;
         }
+
     }
 
     public void changeKNum(int k) {
@@ -138,6 +149,26 @@ public class AuraPreview extends ConstraintLayout {
         this.setENAVList(this.enavDataList, this.visualParamContainer);
     }
 
+    private ArrayList<Integer> getENAVColorList(String enavColor, int enavNum) {
+        ArrayList<Integer> enavColorList = new ArrayList<>();
+        try {
+            // enavColor가 hex code 일 경우
+            int color = Integer.parseInt(enavColor);
+            for (int i = 0; i < enavNum; i++) {
+                enavColorList.add(color);
+            }
+        } catch (NumberFormatException e) {
+            // e.g. enavColor == "phaedra"
+            int arrayId = context.getResources()
+                    .getIdentifier(enavColor, "array", context.getPackageName());
+            TypedArray ta = context.getResources().obtainTypedArray(arrayId);
+            for (int i = 0; i < enavNum; i++) {
+                enavColorList.add(ta.getColor(i % ta.length(), 0));
+            }
+        }
+        return enavColorList;
+    }
+
     /*
     * SNAKE Mode Helper Function - called by setENAV
     */
@@ -147,13 +178,15 @@ public class AuraPreview extends ConstraintLayout {
         // startIndex: index of start of independent ENAVs in enavList
         int startIndex = container.kNum < 0? 0 : enavListSize - container.kNum;
 
+        ArrayList<Integer> colorList = getENAVColorList(container.enavColor, enavListSize);
+
         // Drawing Aggregated ENAV
         if (startIndex != 0) {
             final AggregatedENAView enav = new AggregatedENAView(
                     getContext(), 0, startIndex, StaticMode.SNAKE, dataList.get(0)
                     );
             enav.setId(View.generateViewId());
-            enav.setColor(container.enavColor);
+            enav.setColor(colorList.get(0));
             enav.setLayoutParams(new ConstraintLayout.LayoutParams(
                     AENAVSIZE,
                     AENAVSIZE
@@ -175,7 +208,7 @@ public class AuraPreview extends ConstraintLayout {
         for (int i = startIndex; i < enavListSize; i++) {
             final IndependentENAView enav = new IndependentENAView(getContext());
             enav.setId(View.generateViewId());
-            enav.setShapeAndColor(container.enavShape, container.enavColor);
+            enav.setShapeAndColor(container.enavShape, colorList.get(i));
             ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                     IENAVSIZE,
                     IENAVSIZE
@@ -212,19 +245,15 @@ public class AuraPreview extends ConstraintLayout {
         */
         final int pizzaNum = 4;
         final ArrayList<Integer> enavSizeList = new ArrayList<>(Arrays.asList(62, 65, 70, 65));
-        final ArrayList<Integer> enavColorList = new ArrayList<>(Arrays.asList(
-                ContextCompat.getColor(getContext(), R.color.test1),
-                ContextCompat.getColor(getContext(), R.color.test2),
-                ContextCompat.getColor(getContext(), R.color.test3),
-                ContextCompat.getColor(getContext(), R.color.test4)
-        ));
+        ArrayList<Integer> colorList = getENAVColorList(container.enavColor, pizzaNum);
+
 
         for (int i = 0; i < pizzaNum; i++) {
             final AggregatedENAView enav = new AggregatedENAView(
                     getContext(), i, -1, StaticMode.PIZZA, dataList.get(i)
             );
             enav.setId(View.generateViewId());
-            enav.setColor(enavColorList.get(i));
+            enav.setColor(colorList.get(i));
             enav.setLayoutParams(new ConstraintLayout.LayoutParams(
                     Utilities.dpToPx(getContext(), enavSizeList.get(i)),
                     Utilities.dpToPx(getContext(), enavSizeList.get(i))
