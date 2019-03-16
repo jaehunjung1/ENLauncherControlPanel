@@ -8,7 +8,7 @@ import android.arch.lifecycle.ViewModel;
 /* *
 * enavShape - 0: circle, 1: rectangle
 * enavColor - ENAVs' color hex code
-* kNum - if k >= 0, k: # of independent ENAVs / if k == -1, k = N
+* kNum - if k > 0, k: # of independent ENAVs
 * */
 public class PreviewParamModel extends ViewModel {
     private MutableLiveData<Integer> enavShapeLiveData;

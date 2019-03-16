@@ -55,7 +55,7 @@ public class ControlPanelActivity extends AppCompatActivity {
         * currently, data list is simple integer list
         * */
         ArrayList<Integer> enavDataList = new ArrayList<>();
-        for (int i = 1; i < enavNum; i++) {
+        for (int i = 0; i < enavNum; i++) {
             enavDataList.add(i);
         }
 
@@ -65,12 +65,12 @@ public class ControlPanelActivity extends AppCompatActivity {
          * 각 원소는 ENAV 각각의 visual parameters
          * */
         ArrayList<Integer> enavVisualParamList = new ArrayList<>();
-        for (int i = 1; i < enavNum; i++) {
+        for (int i = 0; i < enavNum; i++) {
             enavVisualParamList.add(i);
         }
 
         VisualParamContainer visualParamContainer = new VisualParamContainer(
-                StaticMode.SNAKE,-1, 0,
+                StaticMode.SNAKE, enavNum, 0,
                 "phaedra", enavVisualParamList
         );
         auraPreview.setENAVList(enavDataList, visualParamContainer);
@@ -82,7 +82,7 @@ public class ControlPanelActivity extends AppCompatActivity {
         enavShape = 0;
         enavColor = "phaedra";
         paramModel = ViewModelProviders.of(this).get(PreviewParamModel.class);
-        paramModel.init(StaticMode.SNAKE, -1, 0,
+        paramModel.init(StaticMode.SNAKE, enavNum, 0,
                 "phaedra");
 
         paramModel.getStaticModeLiveData().observe(this, new Observer<StaticMode>() {

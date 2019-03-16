@@ -158,6 +158,9 @@ public class AuraPreview extends ConstraintLayout {
         this.setENAVList(this.enavDataList, this.visualParamContainer);
     }
 
+    /*
+    * @params enavNum : 실제로 그릴 ENAV의 개수
+    */
     private ArrayList<Integer> getENAVColorList(String enavColor, int enavNum) {
         ArrayList<Integer> enavColorList = new ArrayList<>();
         try {
@@ -185,9 +188,9 @@ public class AuraPreview extends ConstraintLayout {
                                int enavListSize) {
 
         // startIndex: index of start of independent ENAVs in enavList
-        int startIndex = container.kNum < 0? 0 : enavListSize - container.kNum;
+        int startIndex = enavListSize - container.kNum;
 
-        ArrayList<Integer> colorList = getENAVColorList(container.enavColor, enavListSize);
+        ArrayList<Integer> colorList = getENAVColorList(container.enavColor, container.kNum + 1);
 
         // Drawing Aggregated ENAV
         if (startIndex != 0) {
@@ -217,7 +220,7 @@ public class AuraPreview extends ConstraintLayout {
         for (int i = startIndex; i < enavListSize; i++) {
             final IndependentENAView enav = new IndependentENAView(getContext());
             enav.setId(View.generateViewId());
-            enav.setShapeAndColor(container.enavShape, colorList.get(i));
+            enav.setShapeAndColor(container.enavShape, colorList.get(i - startIndex));
             ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                     IENAVSIZE,
                     IENAVSIZE
