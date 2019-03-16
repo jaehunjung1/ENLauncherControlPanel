@@ -7,8 +7,12 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
 
 public class AggregatedENAView extends ENAView {
+    private int data; // TODO change this to real notification data
+    private StaticMode staticMode;
+
     private Paint paint;
     private RectF arcRect = new RectF();
     private int strokeWidth;
@@ -21,26 +25,51 @@ public class AggregatedENAView extends ENAView {
         super(context);
     }
 
-    public AggregatedENAView(Context context, int index, int spanSize) {
+    public AggregatedENAView(Context context, int index, int spanSize, StaticMode staticMode,
+                             int data) {
         super(context);
 
-        strokeWidth = Utilities.dpToPx(context, 7);
+        this.data = data;
+        this.staticMode = staticMode;
+        this.strokeWidth = Utilities.dpToPx(context, 7);
+        this.paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeWidth(strokeWidth);
-        paint.setColor(Color.TRANSPARENT);
+        switch (staticMode) {
+            case SNAKE:
+                paint.setStyle(Paint.Style.STROKE);
+                paint.setStrokeCap(Paint.Cap.ROUND);
+                paint.setStrokeWidth(strokeWidth);
+                paint.setColor(Color.TRANSPARENT);
 
-        //Initialize Aggregate Angle
-        aggregateStartAngle = (270 + index * 21) % 360;
-        aggregateSweepAngle = 21 * spanSize - 15;
+                aggregateStartAngle = (270 + index * 21) % 360;
+                aggregateSweepAngle = 21 * spanSize - 15;
+                break;
+            case PIZZA:
+                paint.setStyle(Paint.Style.FILL);
+                paint.setStrokeCap(Paint.Cap.SQUARE);
+                paint.setColor(Color.TRANSPARENT);
+
+                aggregateStartAngle = (270 + index * 90) % 360; // currently, each one starts at 90
+                aggregateSweepAngle = 90;
+                break;
+            default:
+                break;
+        }
+
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawArc(arcRect, aggregateStartAngle, aggregateSweepAngle, false, paint);
+
+        switch (staticMode) {
+            case SNAKE:
+                canvas.drawArc(arcRect, aggregateStartAngle, aggregateSweepAngle, false, paint);
+                break;
+            case PIZZA:
+                canvas.drawArc(arcRect, aggregateStartAngle, aggregateSweepAngle, true, paint);
+                break;
+        }
     }
 
     // for now, just change color of aggregated ENAV
@@ -62,8 +91,16 @@ public class AggregatedENAView extends ENAView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = getMeasuredWidth();
         int height = getMeasuredHeight();
-        int radius = Utilities.dpToPx(getContext(), 35);
-        arcRect.set(width / 2f - radius, height / 2f - radius,
-                width / 2f + radius, height / 2f + radius);
+        switch (staticMode) {
+            case SNAKE:
+                int radius = Utilities.dpToPx(getContext(), 35);
+                arcRect.set(width / 2f - radius, height / 2f - radius,
+                        width / 2f + radius, height / 2f + radius);
+                break;
+            case PIZZA:
+                arcRect.set(0, 0, width, height);
+                break;
+        }
+
     }
 }

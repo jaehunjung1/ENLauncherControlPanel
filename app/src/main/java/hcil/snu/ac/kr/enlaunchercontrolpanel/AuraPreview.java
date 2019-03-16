@@ -4,12 +4,14 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Animations.ValueAnimatorFactory;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.AggregatedENAView;
@@ -17,6 +19,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.ENAView;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.IndependentENAView;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.VisualParamContainer;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
 
 public class AuraPreview extends ConstraintLayout {
     private Context context;
@@ -27,7 +30,8 @@ public class AuraPreview extends ConstraintLayout {
     private ArrayList<Integer> enavDataList;
 
     private int EAAVSIZE = 60; // EAAV Size
-    private int ENAVSIZE = 10; // Independent ENAV Size
+    private int IENAVSIZE = 10; // Independent ENAV Size
+    private int AENAVSIZE = 80; // Aggregated ENAV Size   // TODO change this according to size!!!
     private int DISTANCE = 1; // Closest Distance between EAAV and Independent ENAV
 
     /*
@@ -37,7 +41,8 @@ public class AuraPreview extends ConstraintLayout {
         super(context);
         this.context = context;
         EAAVSIZE = Utilities.dpToPx(context, EAAVSIZE);
-        ENAVSIZE = Utilities.dpToPx(context, ENAVSIZE);
+        IENAVSIZE = Utilities.dpToPx(context, IENAVSIZE);
+        AENAVSIZE = Utilities.dpToPx(context, AENAVSIZE);
         DISTANCE = Utilities.dpToPx(context, DISTANCE);
     }
 
@@ -45,7 +50,8 @@ public class AuraPreview extends ConstraintLayout {
         super(context, attributeSet);
         this.context = context;
         EAAVSIZE = Utilities.dpToPx(context, EAAVSIZE);
-        ENAVSIZE = Utilities.dpToPx(context, ENAVSIZE);
+        IENAVSIZE = Utilities.dpToPx(context, IENAVSIZE);
+        AENAVSIZE = Utilities.dpToPx(context, AENAVSIZE);
         DISTANCE = Utilities.dpToPx(context, DISTANCE);
     }
 
@@ -96,6 +102,9 @@ public class AuraPreview extends ConstraintLayout {
            case SNAKE:
                drawSnakeMode(dataList, container, enavListSize);
                break;
+           case PIZZA:
+               drawPizzaMode(dataList, container, enavListSize);
+               break;
            default:
                Log.e("setENAVList ERROR", "StaticMode not specified");
                break;
@@ -140,13 +149,14 @@ public class AuraPreview extends ConstraintLayout {
 
         // Drawing Aggregated ENAV
         if (startIndex != 0) {
-            final AggregatedENAView enav = new AggregatedENAView(getContext(), 0, startIndex);
+            final AggregatedENAView enav = new AggregatedENAView(
+                    getContext(), 0, startIndex, StaticMode.SNAKE, dataList.get(0)
+                    );
             enav.setId(View.generateViewId());
             enav.setColor(container.enavColor);
             enav.setLayoutParams(new ConstraintLayout.LayoutParams(
-                    // TODO change this according to size!!!
-                    Utilities.dpToPx(context, 80),
-                    Utilities.dpToPx(context, 80)
+                    AENAVSIZE,
+                    AENAVSIZE
             ));
             enavList.add(enav);
 
@@ -167,12 +177,12 @@ public class AuraPreview extends ConstraintLayout {
             enav.setId(View.generateViewId());
             enav.setShapeAndColor(container.enavShape, container.enavColor);
             ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
-                    ENAVSIZE,
-                    ENAVSIZE
+                    IENAVSIZE,
+                    IENAVSIZE
             );
             lp.circleConstraint = appIconView.getId();
             lp.circleAngle = 27 * i;
-            lp.circleRadius = EAAVSIZE / 2 + ENAVSIZE / 2 + DISTANCE;
+            lp.circleRadius = EAAVSIZE / 2 + IENAVSIZE / 2 + DISTANCE;
             enav.setLayoutParams(lp);
             enavList.add(enav);
 
@@ -187,5 +197,52 @@ public class AuraPreview extends ConstraintLayout {
         );
         enavAnim.start();
     }
+
+    /*
+     * PIZZA Mode Helper Function - called by setENAV
+     */
+    private void drawPizzaMode(ArrayList<Integer> dataList, VisualParamContainer container,
+                               int enavListSize) {
+
+        /*
+        * TODO data에서 받아오도록 변경
+        * pizzaNum : 독립적인 pizza slice의 개수
+        * enavSizeList : 각 enav의 size
+        * enavColorList : 각 enav의 color code
+        */
+        final int pizzaNum = 4;
+        final ArrayList<Integer> enavSizeList = new ArrayList<>(Arrays.asList(62, 65, 70, 65));
+        final ArrayList<Integer> enavColorList = new ArrayList<>(Arrays.asList(
+                ContextCompat.getColor(getContext(), R.color.test1),
+                ContextCompat.getColor(getContext(), R.color.test2),
+                ContextCompat.getColor(getContext(), R.color.test3),
+                ContextCompat.getColor(getContext(), R.color.test4)
+        ));
+
+        for (int i = 0; i < pizzaNum; i++) {
+            final AggregatedENAView enav = new AggregatedENAView(
+                    getContext(), i, -1, StaticMode.PIZZA, dataList.get(i)
+            );
+            enav.setId(View.generateViewId());
+            enav.setColor(enavColorList.get(i));
+            enav.setLayoutParams(new ConstraintLayout.LayoutParams(
+                    Utilities.dpToPx(getContext(), enavSizeList.get(i)),
+                    Utilities.dpToPx(getContext(), enavSizeList.get(i))
+            ));
+            enavList.add(enav);
+
+            this.addView(enav, 0);
+            ConstraintSet set = new ConstraintSet();
+
+            set.clone(this);
+            set.connect(enav.getId(), ConstraintSet.LEFT, this.getId(), ConstraintSet.LEFT);
+            set.connect(enav.getId(), ConstraintSet.TOP, this.getId(), ConstraintSet.TOP);
+            set.connect(enav.getId(), ConstraintSet.RIGHT, this.getId(), ConstraintSet.RIGHT);
+            set.connect(enav.getId(), ConstraintSet.BOTTOM, this.getId(), ConstraintSet.BOTTOM);
+
+            set.applyTo(this);
+        }
+    }
+
 
 }
