@@ -107,6 +107,8 @@ public class AuraPreview extends ConstraintLayout {
            case PIZZA:
                drawPizzaMode(dataList, container, 5);
                break;
+           case PROGRESS:
+               drawPizzaMode(dataList, container, 1);
            default:
                Log.e("setENAVList ERROR", "StaticMode not specified");
                break;
@@ -122,6 +124,7 @@ public class AuraPreview extends ConstraintLayout {
         switch (visualParamContainer.staticMode) {
             case SNAKE:
             case PIZZA:
+            case PROGRESS:
                 for (int i = 0; i < enavList.size(); i++) {
                     ENAView enav = enavList.get(i);
                     if (enav instanceof IndependentENAView) {
@@ -289,7 +292,6 @@ public class AuraPreview extends ConstraintLayout {
                 lastENAV, 3000, 1.0f, 1.15f
         );
         enavAnim.start();
-
     }
 
 

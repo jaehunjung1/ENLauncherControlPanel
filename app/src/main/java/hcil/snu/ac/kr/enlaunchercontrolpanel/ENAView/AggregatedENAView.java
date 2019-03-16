@@ -45,6 +45,7 @@ public class AggregatedENAView extends ENAView {
                 aggregateSweepAngle = 21 * spanSize - 15;
                 break;
             case PIZZA:
+            case PROGRESS:
                 paint.setStyle(Paint.Style.FILL);
                 paint.setStrokeCap(Paint.Cap.SQUARE);
                 paint.setColor(Color.TRANSPARENT);
@@ -69,6 +70,7 @@ public class AggregatedENAView extends ENAView {
                 canvas.drawArc(arcRect, aggregateStartAngle, aggregateSweepAngle, false, paint);
                 break;
             case PIZZA:
+            case PROGRESS:
                 canvas.drawArc(arcRect, aggregateStartAngle, aggregateSweepAngle, true, paint);
                 break;
         }
@@ -100,6 +102,7 @@ public class AggregatedENAView extends ENAView {
                         width / 2f + radius, height / 2f + radius);
                 break;
             case PIZZA:
+            case PROGRESS:
                 arcRect.set(0, 0, width, height);
                 break;
         }

@@ -32,7 +32,7 @@ public class Setting1Fragment extends Fragment {
     private PreviewParamModel paramModel;
 
     final private ArrayList<String> staticModeArr = new ArrayList<>(Arrays.asList(
-            "Snake", "Pizza"
+            "Snake", "Pizza", "Progress"
     ));
     final private ArrayList<String> shapeArr = new ArrayList<>();
     final private ArrayList<String> paletteArr = new ArrayList<>();
@@ -150,8 +150,7 @@ public class Setting1Fragment extends Fragment {
                 titleTextView.setText("Choose K");
                 final LinearLayout kNumList = dialogLayout.findViewById(R.id.dialog_list);
                 final int[] selectedKNum = new int[1];
-                final ArrayList<Integer> kNumArr = new ArrayList<>();
-                kNumArr.add(-1);
+                final ArrayList<Integer> kNumArr = new ArrayList<>();;
                 for (int i = 0; i < ControlPanelActivity.enavNum; i++) {
                     kNumArr.add(i);
                 }
