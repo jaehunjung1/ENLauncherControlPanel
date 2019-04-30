@@ -5,6 +5,12 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+/* TODO convert this to AppHaloConfig
+* knumLiveData = maxNumOfIndependentNotifications
+*
+*/
+
+
 /* *
 * enavShape - 0: circle, 1: rectangle
 * enavColor - ENAVs' color hex code

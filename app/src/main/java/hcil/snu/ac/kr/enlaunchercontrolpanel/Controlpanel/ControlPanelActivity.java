@@ -2,13 +2,15 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.Controlpanel;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.support.annotation.Nullable;
+import android.content.Intent;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.AuraPreview;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.VisualParamContainer;
@@ -27,10 +29,21 @@ public class ControlPanelActivity extends AppCompatActivity {
 
     private PreviewParamModel paramModel;
 
+
+    private boolean isNotiPermissionAllowed() {
+        Set<String> notiListenerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
+        return notiListenerSet.contains(getPackageName());
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controlpanel);
+
+        // Notification Listener Service Permission
+        if (!isNotiPermissionAllowed()) {
+            startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+        }
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -87,26 +100,26 @@ public class ControlPanelActivity extends AppCompatActivity {
 
         paramModel.getStaticModeLiveData().observe(this, new Observer<StaticMode>() {
             @Override
-            public void onChanged(@Nullable StaticMode staticMode) {
+            public void onChanged(StaticMode staticMode) {
                 auraPreview.changeStaticMode(staticMode);
             }
         });
         paramModel.getKNumLiveData().observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(@Nullable Integer k) {
+            public void onChanged(Integer k) {
                 auraPreview.changeKNum(k);
             }
         });
         paramModel.getEnavShapeLiveData().observe(this, new Observer<Integer>() {
             @Override
-            public void onChanged(@Nullable Integer shape) {
+            public void onChanged(Integer shape) {
                 enavShape = shape;
                 auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
             }
         });
         paramModel.getEnavColorLiveData().observe(this, new Observer<String>() {
             @Override
-            public void onChanged(@Nullable String color) {
+            public void onChanged(String color) {
                 enavColor = color;
                 auraPreview.changeENAVShapeAndColor(enavShape, enavColor);
             }

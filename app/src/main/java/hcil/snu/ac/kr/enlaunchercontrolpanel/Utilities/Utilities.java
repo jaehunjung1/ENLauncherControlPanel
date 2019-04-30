@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Set;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
 
@@ -49,7 +51,5 @@ public class Utilities {
                 }
             }
         }
-
     }
-
 }
