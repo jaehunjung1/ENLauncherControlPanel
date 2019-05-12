@@ -385,7 +385,7 @@ public class Setting1Fragment extends Fragment {
             }
         });
 
-        settingDone = parentLayout.findViewById(R.id.done_textview);
+        settingDone = parentLayout.findViewById(R.id.next_textView);
         settingDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

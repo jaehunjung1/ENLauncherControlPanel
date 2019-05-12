@@ -6,6 +6,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="multiSliderStyle">@style/Widget.MultiSlider</item>
     </style>
 
     <style name = "NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
@@ -13,4 +15,11 @@
         <item name = "android:windowNoTitle">true</item>
     </style>
 
+    <style name="Widget.MultiSlider" parent="android:Widget">
+
+    </style>
+
+    <style name="KeywordTextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/theme</item>
+    </style>
 </resources>

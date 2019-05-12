@@ -2,15 +2,12 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.Controlpanel;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.AuraPreview;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.VisualParamContainer;
@@ -23,27 +20,17 @@ public class ControlPanelActivity extends AppCompatActivity {
 
     static final int enavNum = 6; // number of ENAVs in preview
 
-
     public int enavShape;
     public String enavColor;
 
     private PreviewParamModel paramModel;
 
 
-    private boolean isNotiPermissionAllowed() {
-        Set<String> notiListenerSet = NotificationManagerCompat.getEnabledListenerPackages(this);
-        return notiListenerSet.contains(getPackageName());
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controlpanel);
 
-        // Notification Listener Service Permission
-        if (!isNotiPermissionAllowed()) {
-            startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-        }
 
         getSupportFragmentManager()
                 .beginTransaction()

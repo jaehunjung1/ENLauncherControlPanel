@@ -4,6 +4,13 @@ import java.util.ArrayList;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
 
+
+/* TODO convert this to AppHaloConfig
+ * knumLiveData = maxNumOfIndependentNotifications
+ *
+ */
+
+
 /* *
  *  각 AuraPreview의 모든 visual paramter들을 가지고 있는 container
  *  ControlPanel -> Preview로 drawing logic을 전달할 때 사용

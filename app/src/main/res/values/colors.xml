@@ -2,7 +2,7 @@
 <resources>
 
     <!--primary colors-->
-    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimary">#6d5dff</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
 
@@ -14,5 +14,10 @@
     <!--View Colors-->
     <color name="theme">#6d5dff</color>
     <color name="filterBackground">#ededed</color>
+    <color name="seek_bar_background">#d8d8d8</color>
+    <color name="seek_bar_progress">@color/theme</color>
+    <color name="chip_delete_background">#fedbd0</color>
+
+
 
 </resources>
