@@ -16,8 +16,8 @@
     <color name="filterBackground">#ededed</color>
     <color name="seek_bar_background">#d8d8d8</color>
     <color name="seek_bar_progress">@color/theme</color>
-    <color name="chip_delete_background">#fedbd0</color>
+    <color name="chip_background">#fedbd0</color>
 
 
-
+    <color name="holo_blue_light">#ff33b5e5</color>
 </resources>

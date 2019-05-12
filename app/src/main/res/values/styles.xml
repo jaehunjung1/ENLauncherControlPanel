@@ -19,7 +19,12 @@
 
     </style>
 
-    <style name="KeywordTextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/theme</item>
+    <style name="TextInputEditText" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:colorControlActivated">@color/theme</item>
+        <item name="android:colorControlHighlight">@color/theme</item>
+    </style>
+
+    <style name="HintTextAppearance" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/theme</item>
     </style>
 </resources>

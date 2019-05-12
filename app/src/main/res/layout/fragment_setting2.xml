@@ -181,21 +181,22 @@
                     android:visibility="visible">
 
                     <com.nex3z.flowlayout.FlowLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/flowLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:flChildSpacing="auto"
                         app:flChildSpacingForLastRow="align"
                         app:flRowSpacing="8dp">
 
-                        <com.pchmn.materialchips.ChipView
-                            android:id="@+id/chipView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="27dp"
-                            app:backgroundColor="@android:color/holo_blue_light"
-                            app:deletable="true"
-                            app:deleteIconColor="@color/white"
-                            app:label="Chip 6"
-                            app:labelColor="@color/white" />
+                        <!--<com.pchmn.materialchips.ChipView-->
+                            <!--android:id="@+id/chipView"-->
+                            <!--android:layout_width="wrap_content"-->
+                            <!--android:layout_height="27dp"-->
+                            <!--app:backgroundColor="@android:color/holo_blue_light"-->
+                            <!--app:deletable="true"-->
+                            <!--app:deleteIconColor="@color/white"-->
+                            <!--app:label="Chip 6"-->
+                            <!--app:labelColor="@color/white" />-->
 
                     </com.nex3z.flowlayout.FlowLayout>
 
@@ -204,12 +205,15 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
+                        android:backgroundTint="@color/theme"
                         android:focusableInTouchMode="false"
-                        android:hint="Enter Keyword">
+                        android:hint="Enter Keyword"
+                        android:theme="@style/TextInputEditText"
+                        app:hintTextAppearance="@style/HintTextAppearance">
 
                         <android.support.design.widget.TextInputEditText
                             android:id="@+id/keyword_editText"
-                            style="@style/KeywordTextInputStyle"
+                            style="@style/TextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
