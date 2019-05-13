@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
-    tools:context=".Controlpanel.Setting1Fragment">
+    tools:context=".Controlpanel.Setting2Fragment">
 
     <LinearLayout
         android:id="@+id/search_mainBar"
@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/serviceLinearLayout"
+            android:id="@+id/serviceLinearLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
