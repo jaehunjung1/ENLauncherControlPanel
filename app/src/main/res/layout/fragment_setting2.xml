@@ -184,19 +184,9 @@
                         android:id="@+id/flowLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:flChildSpacing="auto"
-                        app:flChildSpacingForLastRow="align"
+                        app:flChildSpacing="5dp"
+                        app:flChildSpacingForLastRow="5dp"
                         app:flRowSpacing="8dp">
-
-                        <!--<com.pchmn.materialchips.ChipView-->
-                            <!--android:id="@+id/chipView"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="27dp"-->
-                            <!--app:backgroundColor="@android:color/holo_blue_light"-->
-                            <!--app:deletable="true"-->
-                            <!--app:deleteIconColor="@color/white"-->
-                            <!--app:label="Chip 6"-->
-                            <!--app:labelColor="@color/white" />-->
 
                     </com.nex3z.flowlayout.FlowLayout>
 

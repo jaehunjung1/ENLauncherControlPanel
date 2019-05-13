@@ -393,6 +393,7 @@ public class Setting1Fragment extends Fragment {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment, new Setting2Fragment(), "FRAGMENT_SETTING2")
+                        .addToBackStack(null)
                         .commit();
             }
         });
