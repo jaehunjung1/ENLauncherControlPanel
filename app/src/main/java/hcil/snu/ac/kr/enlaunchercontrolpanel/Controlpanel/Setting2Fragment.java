@@ -131,22 +131,12 @@ public class Setting2Fragment extends Fragment {
 
 
     void addKeyword(FlowLayout flowLayout, String keyword) {
+        if (keyword.isEmpty()) return;
+
         filterKeywordArrayList.add(keyword);
 
-        final Chip chipView = new Chip(getContext());
-        FlowLayout.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                Utilities.dpToPx(getContext(), 27));
-        chipView.setLayoutParams(lp);
-        chipView.changeBackgroundColor(ContextCompat.getColor(getContext(), R.color.chip_background));
-        chipView.setClosable(true);
-        try {
-            chipView.setChipIcon(ContextCompat.getDrawable(getContext(), R.drawable.cancel_icon));
-            chipView.setCloseColor(ContextCompat.getColor(getContext(), R.color.white));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        final Chip chipView = (Chip)getLayoutInflater().inflate(R.layout.chip_view_layout, null);
         chipView.setChipText(keyword);
-//        chipView.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
         flowLayout.addView(chipView);
         chipView.setOnCloseClickListener(new OnCloseClickListener() {
             @Override

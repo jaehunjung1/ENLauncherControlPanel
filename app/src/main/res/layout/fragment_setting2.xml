@@ -187,7 +187,6 @@
                         app:flChildSpacing="5dp"
                         app:flChildSpacingForLastRow="5dp"
                         app:flRowSpacing="8dp">
-
                     </com.nex3z.flowlayout.FlowLayout>
 
                     <android.support.design.widget.TextInputLayout
