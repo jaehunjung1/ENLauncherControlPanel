@@ -105,7 +105,7 @@ public class Setting2Fragment extends Fragment {
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .replace(R.id.fragment, new Setting2Fragment(), "FRAGMENT_SETTING2")
+                        .replace(R.id.fragment, new Setting3Fragment(), "FRAGMENT_SETTING3")
                         .addToBackStack(null)
                         .commit();
             }
