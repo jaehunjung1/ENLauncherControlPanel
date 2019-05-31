@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nex3z.flowlayout.FlowLayout;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
@@ -27,7 +28,10 @@ import com.robertlevonyan.views.chip.OnCloseClickListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.MappingContainer;
@@ -95,7 +99,8 @@ public class MappingLayout extends LinearLayout {
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                showMappingDialog();
+                if (!notiProp.isEmpty())
+                    showMappingDialog();
             }
         });
 
@@ -251,17 +256,42 @@ public class MappingLayout extends LinearLayout {
                         mDialog.show();
                     }
                 });
-
-
                 frame.addView(keywordFrame);
-
             }
         } else {
             ArrayList<String> intervals = new ArrayList<>();
             if (notiProp.equals("Interaction Stage")) {
-
+                for (int i = 1; i <= 5; i++) {
+                    intervals.add("Stage " + i);
+                }
             } else {
+                for (int i = 1; i <= 5; i++) {
+                    intervals.add(String.format(Locale.getDefault(),
+                            "%.1f ~ %.1f", (1f / 5) * (i - 1), (1f / 5) * i
+                            ));
+                }
+            }
+            final ArrayAdapter<String> spinnerAdapter = getArrayAdapter(intervals);
+            spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+            for (int i = 0; i < notiPropDialogList.getChildCount(); i++) {
+                final FrameLayout frame = (FrameLayout) notiPropDialogList.getChildAt(i);
 
+                final Spinner spinner = new Spinner(getContext());
+
+                spinner.setAdapter(spinnerAdapter);
+
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                        String text = (String) adapterView.getItemAtPosition(i);
+                        // TODO do something
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> adapterView) {
+                    }
+                });
+                frame.addView(spinner);
             }
         }
     }
