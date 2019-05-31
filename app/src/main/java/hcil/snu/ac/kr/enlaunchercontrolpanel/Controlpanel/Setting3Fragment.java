@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alespero.expandablecardview.ExpandableCardView;
+
 import java.util.ArrayList;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
@@ -39,13 +41,17 @@ public class Setting3Fragment extends Fragment {
         ViewGroup parentLayout = (ViewGroup)inflater.inflate(R.layout.fragment_setting3,
                 container, false);
 
-        RecyclerView haloLayoutRecyclerView = parentLayout.findViewById(R.id.halo_layout_recyclerview);
+        ExpandableCardView haloLayoutCardView = parentLayout.findViewById(R.id.halo_layout_cardview);
+        RecyclerView haloLayoutRecyclerView = haloLayoutCardView.findViewById(R.id.halo_layout_recyclerview);
         HaloLayoutAdapter haloLayoutAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
         haloLayoutRecyclerView.setAdapter(haloLayoutAdapter);
         haloLayoutRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        RecyclerView indepVisRecyclerView = parentLayout.findViewById(R.id.independent_vis_recyclerview);
+
+
+        ExpandableCardView indepVisCardView = parentLayout.findViewById(R.id.independent_vis_cardview);
+        RecyclerView indepVisRecyclerView = indepVisCardView.findViewById(R.id.halo_layout_recyclerview);
         // TODO change this to independent vis adapter / indep vis ArrayList
         HaloLayoutAdapter indepVisAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
         indepVisRecyclerView.setAdapter(indepVisAdapter);
@@ -53,7 +59,8 @@ public class Setting3Fragment extends Fragment {
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         );
 
-        RecyclerView aggregatedVisRecyclerview = parentLayout.findViewById(R.id.aggregated_vis_recyclerview);
+        ExpandableCardView aggregatedVisCardView = parentLayout.findViewById(R.id.aggregated_vis_cardview);
+        RecyclerView aggregatedVisRecyclerview = aggregatedVisCardView.findViewById(R.id.halo_layout_recyclerview);
         // TODO change this to aggregated vis adatper / aggregated vis arraylist
         HaloLayoutAdapter aggregatedVisAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
         aggregatedVisRecyclerview.setAdapter(aggregatedVisAdapter);
