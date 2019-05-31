@@ -52,7 +52,7 @@
             android:layout_weight="1" />
 
         <ImageButton
-            android:id="@+id/mapping_add_button"
+            android:id="@+id/mapping_keyword_add_button"
             android:layout_width="10dp"
             android:layout_height="10dp"
             android:layout_gravity="center_vertical"

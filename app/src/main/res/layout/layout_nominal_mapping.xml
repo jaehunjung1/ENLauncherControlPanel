@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="300dp"
-    android:layout_height="400dp">
+    android:layout_width="360dp"
+    android:layout_height="500dp">
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline4"
@@ -12,7 +12,7 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/vis_var_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -30,49 +30,49 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/guideline4"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView3">
+        app:layout_constraintTop_toBottomOf="@id/vis_var_text_view">
 
         <FrameLayout
             android:id="@+id/vis_var_frame_1"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/vis_var_frame_2"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/vis_var_frame_3"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/vis_var_frame_4"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/vis_var_frame_5"
-            android:layout_width="60dp"
-            android:layout_height="60dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp" />
 
 
     </LinearLayout>
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/noti_property_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="Noti Property"
         android:textSize="13dp"
-        app:layout_constraintStart_toStartOf="@id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline4"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
@@ -81,38 +81,38 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView4">
+        app:layout_constraintStart_toStartOf="@id/guideline4"
+        app:layout_constraintTop_toBottomOf="@id/noti_property_text_view">
 
         <FrameLayout
             android:id="@+id/noti_prop_frame_1"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/noti_prop_frame_2"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/noti_prop_frame_3"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/noti_prop_frame_4"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="12dp" />
 
         <FrameLayout
             android:id="@+id/noti_prop_frame_5"
-            android:layout_width="60dp"
-            android:layout_height="60dp"/>
+            android:layout_width="114dp"
+            android:layout_height="80dp" />
     </LinearLayout>
 
 
