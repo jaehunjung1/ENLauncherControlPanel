@@ -7,11 +7,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.alespero.expandablecardview.ExpandableCardView;
 
 import java.util.ArrayList;
 
+import hcil.snu.ac.kr.enlaunchercontrolpanel.MappingLayout;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutAdapter;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutModel;
@@ -42,13 +44,14 @@ public class Setting3Fragment extends Fragment {
                 container, false);
 
         ExpandableCardView haloLayoutCardView = parentLayout.findViewById(R.id.halo_layout_cardview);
+        LinearLayout haloLayoutInnerView = haloLayoutCardView.findViewById(R.id.innerView);
         RecyclerView haloLayoutRecyclerView = haloLayoutCardView.findViewById(R.id.halo_layout_recyclerview);
         HaloLayoutAdapter haloLayoutAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
         haloLayoutRecyclerView.setAdapter(haloLayoutAdapter);
         haloLayoutRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-
+        haloLayoutInnerView.addView(new MappingLayout(getContext()));
 
         ExpandableCardView indepVisCardView = parentLayout.findViewById(R.id.independent_vis_cardview);
         RecyclerView indepVisRecyclerView = indepVisCardView.findViewById(R.id.halo_layout_recyclerview);
