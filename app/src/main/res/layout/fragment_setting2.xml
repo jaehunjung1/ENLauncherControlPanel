@@ -180,29 +180,59 @@
                     android:paddingEnd="20dp"
                     android:visibility="visible">
 
-                    <com.nex3z.flowlayout.FlowLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/flowLayout"
+                    <com.nex3z.flowlayout.FlowLayout
+                        android:id="@+id/whiteFlowLayout"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
                         app:flChildSpacing="5dp"
                         app:flChildSpacingForLastRow="5dp"
-                        app:flRowSpacing="8dp">
-                    </com.nex3z.flowlayout.FlowLayout>
+                        app:flRowSpacing="8dp"/>
 
                     <android.support.design.widget.TextInputLayout
-                        android:id="@+id/keyword_text_input"
+                        android:id="@+id/white_keyword_text_input"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/holo_blue_light"
+                        android:focusableInTouchMode="false"
+                        android:hint="White List"
+                        android:theme="@style/WhiteTextInputEditText"
+                        app:hintTextAppearance="@style/WhiteHintTextAppearance">
+
+                        <android.support.design.widget.TextInputEditText
+                            android:id="@+id/white_keyword_editText"
+                            style="@style/WhiteTextInputEditText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:textSize="15sp" />
+
+                    </android.support.design.widget.TextInputLayout>
+
+                    <com.nex3z.flowlayout.FlowLayout
+                        android:id="@+id/blackFlowLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        app:flChildSpacing="5dp"
+                        app:flChildSpacingForLastRow="5dp"
+                        app:flRowSpacing="8dp" />
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/black_keyword_text_input"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="9dp"
-                        android:backgroundTint="@color/theme"
+                        android:backgroundTint="@color/holo_red_light"
                         android:focusableInTouchMode="false"
-                        android:hint="Enter Keyword"
-                        android:theme="@style/TextInputEditText"
-                        app:hintTextAppearance="@style/HintTextAppearance">
+                        android:hint="Black List"
+                        android:theme="@style/BlackTextInputEditText"
+                        app:hintTextAppearance="@style/BlackHintTextAppearance">
 
                         <android.support.design.widget.TextInputEditText
-                            android:id="@+id/keyword_editText"
-                            style="@style/TextInputEditText"
+                            android:id="@+id/black_keyword_editText"
+                            style="@style/BlackTextInputEditText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"

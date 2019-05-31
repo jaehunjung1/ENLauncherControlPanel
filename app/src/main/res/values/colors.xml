@@ -20,4 +20,5 @@
 
 
     <color name="holo_blue_light">#ff33b5e5</color>
+    <color name="holo_red_light">#fff44336</color>
 </resources>

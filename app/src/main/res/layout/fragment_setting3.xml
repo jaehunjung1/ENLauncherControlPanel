@@ -6,181 +6,208 @@
     android:layout_height="match_parent"
     tools:context=".Controlpanel.Setting3Fragment">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <ScrollView
+        android:id="@+id/fragment3_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
+        android:fillViewport="true"
         android:orientation="vertical"
-        android:weightSum="12"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:id="@+id/serviceLinearLayout1"
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/post_top_bar_background"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/post_bottom_bar_background"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingTop="15dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Halo Layout"
-                    android:textColor="#6d5dff"
-                    android:textSize="14dp" />
-
-
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/halo_layout_recyclerview"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/serviceLinearLayout2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/post_top_bar_background"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/post_bottom_bar_background"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingTop="15dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Independent Visaul Effect"
-                    android:textColor="#6d5dff"
-                    android:textSize="14dp" />
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/serviceLinearLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/post_top_bar_background"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/post_bottom_bar_background"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingTop="15dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Aggregated Visual Effect"
-                    android:textColor="#6d5dff"
-                    android:textSize="14dp" />
-
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/doneLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@drawable/post_bottom_bar_background"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
-            android:paddingTop="7dp"
-            app:layout_constraintHorizontal_bias="0.5">
+            android:weightSum="12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
+                android:id="@+id/serviceLinearLayout1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/post_top_bar_background"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/next_textView"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Next"
-                    android:textColor="@color/text"
-                    android:textSize="16dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:background="@drawable/post_bottom_bar_background"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingTop="15dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Halo Layout"
+                        android:textColor="#6d5dff"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/halo_layout_recyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp" />
+
             </LinearLayout>
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/cancelLinearLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@drawable/post_bottom_bar_background"
-            android:orientation="vertical"
-            android:paddingTop="16dp"
-            app:layout_constraintHorizontal_bias="0.5">
 
             <LinearLayout
+                android:id="@+id/serviceLinearLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="16dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/post_top_bar_background"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/prev_textView"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:background="@drawable/post_bottom_bar_background"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingTop="15dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Independent Visual Effect"
+                        android:textColor="#6d5dff"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/independent_vis_recyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/serviceLinearLayout3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/post_top_bar_background"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:background="@drawable/post_bottom_bar_background"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingTop="15dp"
+                    android:visibility="visible">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Aggregated Visual Effect"
+                        android:textColor="#6d5dff"
+                        android:textSize="14dp" />
+
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/aggregated_vis_recyclerview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginEnd="10dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/doneLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/post_bottom_bar_background"
+                android:orientation="vertical"
+                android:paddingTop="7dp"
+                app:layout_constraintHorizontal_bias="0.5">
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginStart="4dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Prev"
-                    android:textColor="@color/text"
-                    android:textSize="16dp" />
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/next_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Next"
+                        android:textColor="@color/text"
+                        android:textSize="16dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/cancelLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/post_bottom_bar_background"
+                android:orientation="vertical"
+                android:paddingTop="16dp"
+                android:paddingBottom="20dp"
+                app:layout_constraintHorizontal_bias="0.5">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/prev_textView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="4dp"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Prev"
+                        android:textColor="@color/text"
+                        android:textSize="16dp" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
+    </ScrollView>
 
 </android.support.constraint.ConstraintLayout>

@@ -7,6 +7,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,6 @@ import com.robertlevonyan.views.chip.OnCloseClickListener;
 import java.util.ArrayList;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 import io.apptik.widget.MultiSlider;
 
 public class Setting2Fragment extends Fragment {
@@ -32,7 +32,8 @@ public class Setting2Fragment extends Fragment {
     int filterEnhancmentMax = 7;
     int filterObservationWindowMin = 3;
     int filterObservationWindowMax = 7;
-    ArrayList<String> filterKeywordArrayList = new ArrayList<>();
+    ArrayList<String> keywordBlackList = new ArrayList<>();
+    ArrayList<String> keywordWhiteList = new ArrayList<>();
 
 
 
@@ -81,19 +82,36 @@ public class Setting2Fragment extends Fragment {
         });
 
         // Keyword Setting UI
-        final FlowLayout flowLayout = parentLayout.findViewById(R.id.flowLayout);
-        final TextInputLayout keywordInputLayout = parentLayout.findViewById(R.id.keyword_text_input);
-        final TextInputEditText keywordEditText = parentLayout.findViewById(R.id.keyword_editText);
         final InputMethodManager imm = (InputMethodManager) getActivity()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        keywordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+
+        final FlowLayout whiteFlowLayout = parentLayout.findViewById(R.id.whiteFlowLayout);
+        final TextInputLayout whiteKeywordTextInput = parentLayout.findViewById(R.id.white_keyword_text_input);
+        final TextInputEditText whiteKeywordEditText = parentLayout.findViewById(R.id.white_keyword_editText);
+        whiteKeywordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (i == EditorInfo.IME_ACTION_NEXT) {
+                    imm.hideSoftInputFromWindow(whiteKeywordEditText.getWindowToken(), 0);
+                    addKeyword(whiteFlowLayout, whiteKeywordEditText.getText().toString(), true);
+                    whiteKeywordEditText.setText("");
+                    whiteKeywordTextInput.clearFocus();
+                }
+                return false;
+            }
+        });
+
+        final FlowLayout blackFlowLayout = parentLayout.findViewById(R.id.blackFlowLayout);
+        final TextInputLayout blackKeywordTextInput = parentLayout.findViewById(R.id.black_keyword_text_input);
+        final TextInputEditText blackKeywordEditText = parentLayout.findViewById(R.id.black_keyword_editText);
+        blackKeywordEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
                 if (i == EditorInfo.IME_ACTION_DONE) {
-                    imm.hideSoftInputFromWindow(keywordEditText.getWindowToken(), 0);
-                    addKeyword(flowLayout, keywordEditText.getText().toString());
-                    keywordEditText.setText("");
-                    keywordInputLayout.clearFocus();
+                    imm.hideSoftInputFromWindow(blackKeywordEditText.getWindowToken(), 0);
+                    addKeyword(blackFlowLayout, blackKeywordEditText.getText().toString(), false);
+                    blackKeywordEditText.setText("");
+                    blackKeywordTextInput.clearFocus();
                 }
                 return false;
             }
@@ -130,20 +148,38 @@ public class Setting2Fragment extends Fragment {
     }
 
 
-    void addKeyword(FlowLayout flowLayout, String keyword) {
+    void addKeyword(FlowLayout flowLayout, String keyword, boolean isWhite) {
         if (keyword.isEmpty()) return;
+        final ArrayList<String> keywordList;
+        final int backGroundColor;
+        if (isWhite) {
+            keywordList = keywordWhiteList;
+            backGroundColor = ContextCompat.getColor(getContext(), R.color.holo_blue_light);
+        } else {
+            keywordList = keywordBlackList;
+            backGroundColor = ContextCompat.getColor(getContext(), R.color.holo_red_light);
+        }
 
-        filterKeywordArrayList.add(keyword);
+        if (keywordList.size() == 0) {
+            flowLayout.setVisibility(View.VISIBLE);
+        }
+        keywordList.add(keyword);
+
 
         final Chip chipView = (Chip)getLayoutInflater().inflate(R.layout.chip_view_layout, null);
         chipView.setChipText(keyword);
+        chipView.changeBackgroundColor(backGroundColor);
         flowLayout.addView(chipView);
         chipView.setOnCloseClickListener(new OnCloseClickListener() {
             @Override
             public void onCloseClick(View v) {
                 chipView.setVisibility(View.GONE);
+                keywordList.remove(chipView.getChipText());
+                if (keywordList.size() == 0) {
+                    ((ViewGroup)chipView.getParent()).setVisibility(View.GONE);
+                }
                 ((ViewGroup)chipView.getParent()).removeView(chipView);
-                filterKeywordArrayList.remove(chipView.getChipText());
+
             }
         });
     }

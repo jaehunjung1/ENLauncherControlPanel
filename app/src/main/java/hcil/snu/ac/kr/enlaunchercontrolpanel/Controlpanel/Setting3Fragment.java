@@ -1,12 +1,9 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.Controlpanel;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +20,6 @@ public class Setting3Fragment extends Fragment {
     int[] dummyDrawableIdList = {R.drawable.kakaotalk_logo, R.drawable.kakaotalk_logo,
             R.drawable.kakaotalk_logo, R.drawable.kakaotalk_logo};
     String[] dummyNameList = {"Preview 1", "Preview 2", "Preview 3", "Preview 4"};
-
 
     public Setting3Fragment() {
         // Required empty public constructor
@@ -49,6 +45,22 @@ public class Setting3Fragment extends Fragment {
         haloLayoutRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
+        RecyclerView indepVisRecyclerView = parentLayout.findViewById(R.id.independent_vis_recyclerview);
+        // TODO change this to independent vis adapter / indep vis ArrayList
+        HaloLayoutAdapter indepVisAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
+        indepVisRecyclerView.setAdapter(indepVisAdapter);
+        indepVisRecyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
+
+        RecyclerView aggregatedVisRecyclerview = parentLayout.findViewById(R.id.aggregated_vis_recyclerview);
+        // TODO change this to aggregated vis adatper / aggregated vis arraylist
+        HaloLayoutAdapter aggregatedVisAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
+        aggregatedVisRecyclerview.setAdapter(aggregatedVisAdapter);
+        aggregatedVisRecyclerview.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
+        );
+
 
         return parentLayout;
     }
@@ -61,5 +73,4 @@ public class Setting3Fragment extends Fragment {
             haloLayoutModelArrayList.add(model);
         }
     }
-
 }

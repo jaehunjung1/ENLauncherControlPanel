@@ -19,12 +19,22 @@
 
     </style>
 
-    <style name="TextInputEditText" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:colorControlActivated">@color/theme</item>
-        <item name="android:colorControlHighlight">@color/theme</item>
+    <style name="WhiteTextInputEditText" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:colorControlActivated">@color/holo_blue_light</item>
+        <item name="android:colorControlHighlight">@color/holo_blue_light</item>
     </style>
 
-    <style name="HintTextAppearance" parent="TextAppearance.Design.Hint">
-        <item name="android:textColor">@color/theme</item>
+    <style name="BlackTextInputEditText" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:colorControlActivated">@color/holo_red_light</item>
+        <item name="android:colorControlHighlight">@color/holo_red_light</item>
+    </style>
+
+
+    <style name="WhiteHintTextAppearance" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/holo_blue_light</item>
+    </style>
+
+    <style name="BlackHintTextAppearance" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/holo_red_light</item>
     </style>
 </resources>
