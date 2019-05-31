@@ -17,6 +17,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.MappingLayout;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutAdapter;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutModel;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.MappingContainer;
 
 public class Setting3Fragment extends Fragment {
 
@@ -43,17 +44,16 @@ public class Setting3Fragment extends Fragment {
         ViewGroup parentLayout = (ViewGroup)inflater.inflate(R.layout.fragment_setting3,
                 container, false);
 
-        ExpandableCardView haloLayoutCardView = parentLayout.findViewById(R.id.halo_layout_cardview);
-        LinearLayout haloLayoutInnerView = haloLayoutCardView.findViewById(R.id.innerView);
+        ExpandableCardView haloLayoutCardView = parentLayout.findViewById(R.id.halo_layout_card_view);
         RecyclerView haloLayoutRecyclerView = haloLayoutCardView.findViewById(R.id.halo_layout_recyclerview);
         HaloLayoutAdapter haloLayoutAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
         haloLayoutRecyclerView.setAdapter(haloLayoutAdapter);
         haloLayoutRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
-        haloLayoutInnerView.addView(new MappingLayout(getContext()));
 
         ExpandableCardView indepVisCardView = parentLayout.findViewById(R.id.independent_vis_cardview);
+
         RecyclerView indepVisRecyclerView = indepVisCardView.findViewById(R.id.halo_layout_recyclerview);
         // TODO change this to independent vis adapter / indep vis ArrayList
         HaloLayoutAdapter indepVisAdapter = new HaloLayoutAdapter(getContext(), haloLayoutModelArrayList);
@@ -61,6 +61,12 @@ public class Setting3Fragment extends Fragment {
         indepVisRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         );
+
+        LinearLayout indepVisInnerView = indepVisCardView.findViewById(R.id.innerView);
+        for (int i = 0; i < MappingContainer.visVarStringList.size(); i++) {
+            indepVisInnerView.addView(new MappingLayout(getContext(), MappingContainer.visVarStringList.get(i)));
+        }
+
 
         ExpandableCardView aggregatedVisCardView = parentLayout.findViewById(R.id.aggregated_vis_cardview);
         RecyclerView aggregatedVisRecyclerview = aggregatedVisCardView.findViewById(R.id.halo_layout_recyclerview);

@@ -28,11 +28,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <com.alespero.expandablecardview.ExpandableCardView
-                android:id="@+id/halo_layout_cardview"
+                android:id="@+id/halo_layout_card_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:title="Halo Layout"
-                app:inner_view="@layout/halo_layout_card_view"
+                app:inner_view="@layout/layout_card_view"
                 app:expandOnClick="true"
                 app:animationDuration="200"
                 app:startExpanded="false"/>
@@ -44,7 +44,7 @@
                 android:layout_marginTop="10dp"
                 app:animationDuration="200"
                 app:expandOnClick="true"
-                app:inner_view="@layout/layout_card_view"
+                app:inner_view="@layout/vis_card_view"
                 app:startExpanded="false"
                 app:title="Independent Visual Effect" />
 
@@ -56,7 +56,7 @@
                 android:layout_marginBottom="10dp"
                 app:animationDuration="200"
                 app:expandOnClick="true"
-                app:inner_view="@layout/layout_card_view"
+                app:inner_view="@layout/vis_card_view"
                 app:startExpanded="false"
                 app:title="Aggregated Visual Effect" />
 
