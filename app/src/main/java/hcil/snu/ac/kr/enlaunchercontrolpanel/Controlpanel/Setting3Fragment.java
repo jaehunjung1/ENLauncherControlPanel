@@ -7,13 +7,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.alespero.expandablecardview.ExpandableCardView;
 
 import java.util.ArrayList;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.MappingLayout;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.AggregatedMappingLayout;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.IndependentMappingLayout;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutAdapter;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutModel;
@@ -64,7 +66,8 @@ public class Setting3Fragment extends Fragment {
 
         LinearLayout indepVisInnerView = indepVisCardView.findViewById(R.id.innerView);
         for (int i = 0; i < MappingContainer.visVarStringList.size(); i++) {
-            indepVisInnerView.addView(new MappingLayout(getContext(), MappingContainer.visVarStringList.get(i)));
+            indepVisInnerView.
+                    addView(new IndependentMappingLayout(getContext(), MappingContainer.visVarStringList.get(i)));
         }
 
 
@@ -76,6 +79,12 @@ public class Setting3Fragment extends Fragment {
         aggregatedVisRecyclerview.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)
         );
+
+        LinearLayout aggregateVisInnerView = aggregatedVisCardView.findViewById(R.id.innerView);
+        for (int i = 0; i < MappingContainer.visVarStringList.size(); i++) {
+            aggregateVisInnerView
+                    .addView(new AggregatedMappingLayout(getContext(), MappingContainer.visVarStringList.get(i)));
+        }
 
 
         return parentLayout;

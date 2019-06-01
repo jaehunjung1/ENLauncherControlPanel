@@ -11,14 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.nex3z.flowlayout.FlowLayout;
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker;
@@ -27,11 +25,8 @@ import com.robertlevonyan.views.chip.Chip;
 import com.robertlevonyan.views.chip.OnCloseClickListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.MappingContainer;
@@ -54,7 +49,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.MappingContainer;
  *
  */
 
-public class MappingLayout extends LinearLayout {
+public class IndependentMappingLayout extends LinearLayout {
 
     ArrayAdapter<String> notiPropSpinnerAdapter;
 
@@ -65,9 +60,9 @@ public class MappingLayout extends LinearLayout {
     String visVar, notiProp = ""; // selected variable & property
 
 
-    public MappingLayout(Context context, String visVar) {
+    public IndependentMappingLayout(Context context, String visVar) {
         super(context);
-        inflate(getContext(), R.layout.mapping_layout, this);
+        inflate(getContext(), R.layout.independent_mapping_layout, this);
 
         this.visVar = visVar;
         ((TextView)findViewById(R.id.visvar_textview)).setText(visVar);

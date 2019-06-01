@@ -11,6 +11,9 @@ public class MappingContainer {
     public static List<String> notiPropStringList = new ArrayList<>(
             Arrays.asList("None", "Importance", "Interaction Stage", "Keyword")
     );
+    public static List<String> aggregateOPStringList = new ArrayList<>(
+            Arrays.asList("None", "Min", "Max", "Average", "Most Frequent")
+    );
 
     public static boolean isBothContinuous(String vis, String noti) {
         return (!isNominal(vis)) && (!isNominal(noti));
