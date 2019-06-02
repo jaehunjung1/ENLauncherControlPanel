@@ -124,7 +124,8 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
         return Bitmap.createScaledBitmap(bmp, bWidth, bHeight, false)
     }
 
-    init{}
+    init{
+    }
 
     fun getCurrentScreenNumber():LiveData<Int>{
         return currentScreenNumber

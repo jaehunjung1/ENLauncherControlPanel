@@ -151,7 +151,7 @@ public class Setting1Fragment extends Fragment {
                 final LinearLayout kNumList = dialogLayout.findViewById(R.id.dialog_list);
                 final int[] selectedKNum = new int[1];
                 final ArrayList<Integer> kNumArr = new ArrayList<>();;
-                for (int i = 0; i <= ControlPanelActivity.enavNum; i++) {
+                for (int i = 0; i <= ControlPanelActivity.Companion.getEnavNum(); i++) {
                     kNumArr.add(i);
                 }
                 for (int i = 0; i < kNumArr.size(); i++) {
@@ -198,7 +198,7 @@ public class Setting1Fragment extends Fragment {
                     public void onClick(View v) {
                         paramModel.setKNumLiveData(selectedKNum[0]);
                         aggregation.setText(String.format("K = %s",
-                                selectedKNum[0] == ControlPanelActivity.enavNum? "N" : selectedKNum[0]));
+                                selectedKNum[0] == ControlPanelActivity.Companion.getEnavNum() ? "N" : selectedKNum[0]));
                         mDialog.dismiss();
                     }
                 });

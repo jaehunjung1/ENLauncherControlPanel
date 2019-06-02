@@ -18,7 +18,7 @@ import kr.ac.snu.hcil.datahalo.visualEffects.AbstractAggregatedVisEffect
 
 class AppNotificationHalo(
         val appPackageName: String,
-        val visConfig: AppHaloConfig,
+        private var visConfig: AppHaloConfig,
         context: Context, attributeSet: AttributeSet?)
     : ConstraintLayout(context, attributeSet){
 
@@ -33,7 +33,7 @@ class AppNotificationHalo(
         val pivotView = ImageView(this.context).also{
             it.id = ANHComponentUIDGenerator.GLOBAL_PIVOT
             it.setBackgroundColor(Color.RED)
-            it.layoutParams = ConstraintLayout.LayoutParams(5, 5)
+            it.layoutParams = LayoutParams(5, 5)
         }
 
         addView(pivotView)
@@ -64,6 +64,10 @@ class AppNotificationHalo(
     private val currentIndependentVisEffects: MutableMap<Int, AbstractIndependentVisEffect> = mutableMapOf()
     private lateinit var currentAggregatedVisEffect: AbstractAggregatedVisEffect
 
+
+    fun setVisConfig(appHaloConfig: AppHaloConfig){
+        visConfig = appHaloConfig
+    }
 
     fun setAppHaloData(enhancedAppNotifications: EnhancedAppNotifications){
         //관련 없는 app의 notiData면 끝
