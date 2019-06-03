@@ -5,23 +5,21 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
-import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Animations.ValueAnimatorFactory;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.AggregatedENAView;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.ENAView;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.IndependentENAView;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.VisualParamContainer;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.animations.ValueAnimatorFactory;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.enaview.AggregatedENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.enaview.ENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.enaview.IndependentENAView;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.enaview.VisualParamContainer;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.StaticMode;
 
 public class AuraPreview extends ConstraintLayout {
     private Context context;

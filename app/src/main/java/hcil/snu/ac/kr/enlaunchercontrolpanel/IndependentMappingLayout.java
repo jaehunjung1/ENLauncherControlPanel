@@ -28,8 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.MappingContainer;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.MappingContainer;
 
 
 /*

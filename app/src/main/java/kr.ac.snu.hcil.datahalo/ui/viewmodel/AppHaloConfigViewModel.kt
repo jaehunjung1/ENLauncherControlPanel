@@ -14,17 +14,4 @@ class AppHaloConfigViewModel: ViewModel() {
     init{
         appHaloConfigLiveData.value = AppHaloConfig(SAMPLE_PACKAGE_NAME)
     }
-
-    /*
-    fun getAppHaloConfig() = appHaloConfigLiveData.value
-    fun setAppHaloConfig(config: AppHaloConfig){
-        appHaloConfigLiveData.value = config
-    }
-
-    fun retrieveAppHalo(context: Context):AppNotificationHalo?{
-        return getAppHaloConfig()?.let{
-            DataHaloManager.createAppHalo(context, SAMPLE_PACKAGE_NAME, it)
-        }
-    }
-    */
 }

@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.Animations;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.animations;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
@@ -6,10 +6,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.view.animation.LinearInterpolator;
-import android.widget.ImageView;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView.ENAView;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.enaview.ENAView;
 
 //TODO updatelistener와 addlistener를 서로 다른 valueanimator들이 서로 공유할 수 있도록 따로 빼기
 public class ValueAnimatorFactory {

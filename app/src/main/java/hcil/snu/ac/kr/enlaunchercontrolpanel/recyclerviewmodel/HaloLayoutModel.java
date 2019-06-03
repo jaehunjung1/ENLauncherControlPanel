@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel;
 
 public class HaloLayoutModel {
     private String label;

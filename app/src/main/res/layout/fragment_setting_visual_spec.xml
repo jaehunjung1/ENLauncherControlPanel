@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Controlpanel.Setting3Fragment">
+    tools:context=".controlpanel.VisualSpecFragment">
 
     <ScrollView
         android:id="@+id/fragment3_scroll_view"
@@ -59,68 +59,6 @@
                 app:inner_view="@layout/vis_card_view"
                 app:startExpanded="false"
                 app:title="Aggregated Visual Effect" />
-
-            <LinearLayout
-                android:id="@+id/doneLinearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/post_bottom_bar_background"
-                android:orientation="vertical"
-                android:paddingTop="7dp"
-                app:layout_constraintHorizontal_bias="0.5">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/next_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="4dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="Next"
-                        android:textColor="@color/text"
-                        android:textSize="16dp" />
-                </LinearLayout>
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:id="@+id/cancelLinearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/post_bottom_bar_background"
-                android:orientation="vertical"
-                android:paddingTop="16dp"
-                android:paddingBottom="20dp"
-                app:layout_constraintHorizontal_bias="0.5">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="16dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/prev_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="4dp"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical"
-                        android:text="Prev"
-                        android:textColor="@color/text"
-                        android:textSize="16dp" />
-                </LinearLayout>
-            </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
-
 </android.support.constraint.ConstraintLayout>

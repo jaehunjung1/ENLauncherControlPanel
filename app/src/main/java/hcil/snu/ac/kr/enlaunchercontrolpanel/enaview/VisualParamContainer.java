@@ -1,8 +1,8 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.enaview;
 
 import java.util.ArrayList;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.StaticMode;
 
 
 /* TODO convert this to AppHaloConfig

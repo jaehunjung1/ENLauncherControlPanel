@@ -90,8 +90,8 @@ class AppHaloConfig(val packageName: String){
     )
     var filterKeywordConfig = mapOf(
             WGBFilterVar.ACTIVE to false,
-            WGBFilterVar.WHITE_COND to setOf<NotiHierarchy>(),
-            WGBFilterVar.BLACK_COND to setOf<NotiHierarchy>()
+            WGBFilterVar.WHITE_COND to setOf<String>(),
+            WGBFilterVar.BLACK_COND to setOf<String>()
     )
     var maxNumOfIndependentNotifications: Int = 3
 

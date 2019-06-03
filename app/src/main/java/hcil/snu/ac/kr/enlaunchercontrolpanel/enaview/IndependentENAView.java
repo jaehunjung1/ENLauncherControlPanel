@@ -1,11 +1,11 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.enaview;
 
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities;
 
 public class IndependentENAView extends ENAView {
     public IndependentENAView(Context context) {

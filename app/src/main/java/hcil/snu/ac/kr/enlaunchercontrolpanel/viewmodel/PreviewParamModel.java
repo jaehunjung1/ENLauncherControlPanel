@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel;
 
 
 import android.arch.lifecycle.LiveData;

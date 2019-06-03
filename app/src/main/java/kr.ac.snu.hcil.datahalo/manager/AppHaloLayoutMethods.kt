@@ -34,7 +34,7 @@ interface InterfaceANHVisLayout{
                              independent: List<EnhancedNotification>,
                              independentVisEffects: Map<Int, AbstractIndependentVisEffect>,
                              aggregated: List<EnhancedNotification>,
-                             aggregatedVisEffect: AbstractAggregatedVisEffect)
+                             aggregatedVisEffect: AbstractAggregatedVisEffect?)
             : Pair<Map<Int, ConstraintLayout.LayoutParams>, ConstraintLayout.LayoutParams>
 }
 
@@ -50,7 +50,7 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
             independent: List<EnhancedNotification>,
             independentVisEffects: Map<Int, AbstractIndependentVisEffect>,
             aggregated: List<EnhancedNotification>,
-            aggregatedVisEffect: AbstractAggregatedVisEffect): Pair<Map<Int, ConstraintLayout.LayoutParams>, ConstraintLayout.LayoutParams> {
+            aggregatedVisEffect: AbstractAggregatedVisEffect?): Pair<Map<Int, ConstraintLayout.LayoutParams>, ConstraintLayout.LayoutParams> {
 
         val k = independent.size
         val eachAngle: Double = 360.0 / k

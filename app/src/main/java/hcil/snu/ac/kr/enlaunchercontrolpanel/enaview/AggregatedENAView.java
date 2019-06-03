@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.enaview;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -6,8 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 
-import hcil.snu.ac.kr.enlaunchercontrolpanel.Utilities.Utilities;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.StaticMode;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.StaticMode;
 
 public class AggregatedENAView extends ENAView {
     private int data; // TODO change this to real notification data

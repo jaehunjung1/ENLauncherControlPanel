@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.ENAView;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.enaview;
 
 import android.content.Context;
 import android.support.v7.widget.AppCompatImageView;

@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.Controlpanel;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import com.alespero.expandablecardview.ExpandableCardView;
@@ -17,18 +16,18 @@ import java.util.ArrayList;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.AggregatedMappingLayout;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.IndependentMappingLayout;
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutAdapter;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.RecyclerViewModel.HaloLayoutModel;
-import hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel.MappingContainer;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloLayoutAdapter;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloLayoutModel;
+import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.MappingContainer;
 
-public class Setting3Fragment extends Fragment {
+public class VisualSpecFragment extends Fragment {
 
     private ArrayList<HaloLayoutModel> haloLayoutModelArrayList;
     int[] dummyDrawableIdList = {R.drawable.kakaotalk_logo, R.drawable.kakaotalk_logo,
             R.drawable.kakaotalk_logo, R.drawable.kakaotalk_logo};
     String[] dummyNameList = {"Preview 1", "Preview 2", "Preview 3", "Preview 4"};
 
-    public Setting3Fragment() {
+    public VisualSpecFragment() {
         // Required empty public constructor
     }
 
@@ -43,7 +42,7 @@ public class Setting3Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ViewGroup parentLayout = (ViewGroup)inflater.inflate(R.layout.fragment_setting3,
+        ViewGroup parentLayout = (ViewGroup)inflater.inflate(R.layout.fragment_setting_visual_spec,
                 container, false);
 
         ExpandableCardView haloLayoutCardView = parentLayout.findViewById(R.id.halo_layout_card_view);

@@ -62,7 +62,7 @@ class AppNotificationHalo(
     //private val currentAggregatedNotificationIDs : MutableList<Int> = mutableListOf()
     private val currentIndependentNotiVisLayoutInfos: MutableMap<Int, LayoutParams> = mutableMapOf()
     private val currentIndependentVisEffects: MutableMap<Int, AbstractIndependentVisEffect> = mutableMapOf()
-    private lateinit var currentAggregatedVisEffect: AbstractAggregatedVisEffect
+    private  var currentAggregatedVisEffect: AbstractAggregatedVisEffect? = null
 
 
     fun setVisConfig(appHaloConfig: AppHaloConfig){

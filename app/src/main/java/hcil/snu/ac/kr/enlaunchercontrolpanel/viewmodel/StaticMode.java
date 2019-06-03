@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.ViewModel;
+package hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel;
 
 public enum StaticMode {
     SNAKE, FLOWER, PIZZA, PROGRESS;
