@@ -54,6 +54,7 @@ class VisDataConverter {
         ): Map<NotificationType, List<EnhancedNotification>> {
             val activatedFilters = optionFilters.filter { optionFilter -> optionFilter.value.enabled }
 
+            //TODO(whiteAndGray 확인)
             //Filter Black Out
             var whiteAndGray:List<EnhancedNotification> = data.notificationData
             activatedFilters.forEach{
@@ -76,8 +77,8 @@ class VisDataConverter {
                     Options.KEYWORD -> {
                         val blackKeywords = (wgbFilter as WGBFilterManager.WGBSetFilter<String>).blackCondition
                         whiteAndGray = whiteAndGray.filterNot{ notiData ->
-                            blackKeywords.fold(true){ acc: Boolean, keyword: String ->
-                                val result = acc && (notiData.notiContent.title.contains(keyword) || notiData.notiContent.content.contains(keyword))
+                            blackKeywords.fold(false){ acc: Boolean, keyword: String ->
+                                val result = acc || (notiData.notiContent.title.contains(keyword) || notiData.notiContent.content.contains(keyword))
                                 result
                             }
                         }

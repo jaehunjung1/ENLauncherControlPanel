@@ -108,11 +108,11 @@ abstract class AbstractIndependentVisObject(
     final override fun getAnimatorsByLifeStage(): Map<EnhancedNotificationLife, AnimatorSet> = animationMap
     final override fun setAnimParams(vararg params: IndependentVisObjectAnimParams) {
         val myMap: Map<EnhancedNotificationLife, MutableList<Animator>> = mapOf(
-                EnhancedNotificationLife.STATE_1 to mutableListOf(),
-                EnhancedNotificationLife.STATE_2 to mutableListOf(),
-                EnhancedNotificationLife.STATE_3 to mutableListOf(),
-                EnhancedNotificationLife.STATE_4 to mutableListOf(),
-                EnhancedNotificationLife.STATE_5 to mutableListOf()
+                EnhancedNotificationLife.STATE_1_JUST_TRIGGERED to mutableListOf(),
+                EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED to mutableListOf(),
+                EnhancedNotificationLife.STATE_3_JUST_INTERACTED to mutableListOf(),
+                EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED to mutableListOf(),
+                EnhancedNotificationLife.STATE_5_DECAYING to mutableListOf()
         )
 
         params.forEach{ animParam ->
@@ -213,7 +213,7 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.importanceRange, motions)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(motions.size != dataParams.contentGroupList.size)
+                        if(motions.size != dataParams.lifeList.size)
                             throw exceptionVisVariable(boundVisVar)
                         return MapFunctionUtilities.createMapFunc(dataParams.lifeList, motions)
                     }
@@ -343,6 +343,7 @@ abstract class AbstractIndependentVisObject(
 
         input.forEach{ propertyToValue ->
             val notiProp: NotiProperty = propertyToValue.key
+            //TODO(매핑이 null일 때 문제 해결해야할 듯)
             val visVar: NuNotiVisVariable = currMapping.filter{ it.value == notiProp}.toList()[0].first
             val notiVal: Any = propertyToValue.value
             when(visVar){

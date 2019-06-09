@@ -1,12 +1,18 @@
 package kr.ac.snu.hcil.datahalo.visconfig
 
+import android.animation.AnimatorSet
+import android.graphics.Color
+import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
+import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
+import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
-class AppHaloConfig(val packageName: String){
+data class AppHaloConfig(val packageName: String){
     companion object {
         fun applyLayoutConfig(appHaloConfig: AppHaloConfig, name: String): AppHaloConfig{
             return when(name){
@@ -89,7 +95,7 @@ class AppHaloConfig(val packageName: String){
             WGBFilterVar.BLACK_COND to setOf<NotiHierarchy>()
     )
     var filterKeywordConfig = mapOf(
-            WGBFilterVar.ACTIVE to false,
+            WGBFilterVar.ACTIVE to true,
             WGBFilterVar.WHITE_COND to setOf<String>(),
             WGBFilterVar.BLACK_COND to setOf<String>()
     )
@@ -104,23 +110,42 @@ class AppHaloConfig(val packageName: String){
 
     var independentVisEffectVisParams: List<IndependentVisEffectVisParams> = listOf(
             IndependentVisEffectVisParams(
-                    radius = mutableListOf(),
+                    radius = mutableListOf(100, 100, 100, 100, 100),
                     offsetAngle = 0f
             )
     )
 
     var independentVisualMappings: List<Map<NuNotiVisVariable, NotiProperty?>> = listOf(
             mapOf(
-                    NuNotiVisVariable.POSITION to null,
-                    NuNotiVisVariable.SIZE to null,
-                    NuNotiVisVariable.SHAPE to null,
-                    NuNotiVisVariable.MOTION to null,
-                    NuNotiVisVariable.COLOR to null
+                    NuNotiVisVariable.POSITION to NotiProperty.IMPORTANCE,
+                    NuNotiVisVariable.SIZE to NotiProperty.IMPORTANCE,
+                    NuNotiVisVariable.SHAPE to NotiProperty.CONTENT,
+                    NuNotiVisVariable.MOTION to NotiProperty.LIFE_STAGE,
+                    NuNotiVisVariable.COLOR to NotiProperty.LIFE_STAGE
             )
     )
 
     var independentVisualParameters: List<IndependentVisObjectVisParams> = listOf(
-            IndependentVisObjectVisParams()
+            IndependentVisObjectVisParams().also{
+                it.shapeList = listOf(
+
+                )
+                it.motionList = listOf(
+                        AnimatorSet(),
+                        AnimatorSet(),
+                        AnimatorSet(),
+                        AnimatorSet(),
+                        AnimatorSet()
+                )
+                it.colorList = listOf(
+                        Color.RED,
+                        Color.YELLOW,
+                        Color.GREEN,
+                        Color.BLUE,
+                        Color.DKGRAY
+                )
+
+            }
     )
 
     var independentDataParameters: List<IndependentVisObjectDataParams> = listOf(

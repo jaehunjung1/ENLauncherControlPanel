@@ -28,7 +28,7 @@ data class IndependentVisObjectVisParams(
 
 data class IndependentVisObjectDataParams(
         var importanceRange:Pair<Double, Double> = Pair(0.0, 1.0),
-        var lifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.STATE_1, EnhancedNotificationLife.STATE_2, EnhancedNotificationLife.STATE_3, EnhancedNotificationLife.STATE_4, EnhancedNotificationLife.STATE_5),
+        var lifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.STATE_1_JUST_TRIGGERED, EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.STATE_3_JUST_INTERACTED, EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED, EnhancedNotificationLife.STATE_5_DECAYING),
         var contentGroupMap: Map<String, List<String>> = emptyMap(),
         var tSaturation: Long = -1L, //3hrs
         var additional: Map<String, Any> = emptyMap()
@@ -43,11 +43,11 @@ data class IndependentVisObjectAnimParams(
         var duration: Long,
         var interpolator: TimeInterpolator,
         var sustained: List<EnhancedNotificationLife> = listOf(
-                EnhancedNotificationLife.STATE_1,
-                EnhancedNotificationLife.STATE_2,
-                EnhancedNotificationLife.STATE_3,
-                EnhancedNotificationLife.STATE_4,
-                EnhancedNotificationLife.STATE_5
+                EnhancedNotificationLife.STATE_1_JUST_TRIGGERED,
+                EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED,
+                EnhancedNotificationLife.STATE_3_JUST_INTERACTED,
+                EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED,
+                EnhancedNotificationLife.STATE_5_DECAYING
         ),
         var repeatCount: Int = ObjectAnimator.INFINITE,
         var repeatMode: Int = ObjectAnimator.REVERSE

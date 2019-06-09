@@ -10,7 +10,10 @@ class VisEffectManager {
         private fun exceptionVisEffectNotMatched(effectName: String) = Exception("$effectName Does Not Exist")
 
         private val registeredIndependentVisEffects:Map<String, String>
-                = mapOf("SingleVisObjEffect" to "SimpleIndependentVisEffect")
+                = mapOf(
+                "SingleVisObjIndependentEffect" to "SingleObjIndependentVisEffect",
+                "DoubleVisObjIndependentEffect" to "DoubleObjIndependentVisEffect"
+                )
         private val registeredAggregatedVisEffects: Map<String, String>
                 = mapOf("example" to "ExampleAggregatedVisEffect")
 
@@ -21,7 +24,7 @@ class VisEffectManager {
 
         fun createNewIndependentVisEffect(visEffectID: String, visConfig: AppHaloConfig): AbstractIndependentVisEffect{
             if(visEffectID in availableIndependentVisEffects){
-                return Class.forName("$PATH.${registeredIndependentVisEffects[visEffectID]}").getConstructor()
+                return Class.forName("$PATH.${registeredIndependentVisEffects[visEffectID]}").getConstructor(AppHaloConfig::class.java).newInstance(visConfig)
                         as AbstractIndependentVisEffect
             }
             else{

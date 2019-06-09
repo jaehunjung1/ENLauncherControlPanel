@@ -15,34 +15,27 @@ class DataHaloManager {
         private val appNotificationHalos: MutableMap<String, AppNotificationHalo> = mutableMapOf()
 
         fun createAppHalo(context: Context,
-                          packageName: String)
-                : AppNotificationHalo {
-            val config = AppHaloConfig(packageName)
-
-            return createAppHalo(context, packageName, config)
-        }
-
-        fun createAppHalo(context: Context,
-                          packageName: String,
                           config:AppHaloConfig)
                 : AppNotificationHalo{
-            if(packageName in appNotificationHalos.keys)
-                exceptionRedundantAddition(packageName)
+            if(config.packageName in appNotificationHalos.keys)
+                exceptionRedundantAddition(config.packageName)
 
-            val newAppHalo = AppNotificationHalo(packageName, config, context, null)
-            appNotificationHalos[packageName] = newAppHalo
+            val newAppHalo = AppNotificationHalo(context, null).also{
+                it.setVisConfig(config)
+            }
+            appNotificationHalos[config.packageName] = newAppHalo
 
             return newAppHalo
         }
 
         fun createAppHalo(
                 context: Context,
-                packageName: String,
                 config: AppHaloConfig,
                 enhancedData: EnhancedAppNotifications
         ): AppNotificationHalo
         {
-            return createAppHalo(context, packageName, config).also{
+            return createAppHalo(context, config).also{
+                it.setVisConfig(config)
                 it.setAppHaloData(enhancedData)
             }
         }

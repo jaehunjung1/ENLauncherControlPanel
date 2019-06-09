@@ -31,6 +31,7 @@ class AppHaloLayoutMethods {
 interface InterfaceANHVisLayout{
     val layoutID: String
     fun generateLayoutParams(target:ConstraintLayout,
+                             pivotViewID: Int,
                              independent: List<EnhancedNotification>,
                              independentVisEffects: Map<Int, AbstractIndependentVisEffect>,
                              aggregated: List<EnhancedNotification>,
@@ -41,12 +42,15 @@ interface InterfaceANHVisLayout{
 abstract class AbstractANHVisLayout(override val layoutID: String): InterfaceANHVisLayout{
     companion object{
         fun EXCEPTION_VIS_EFFECT_NOT_EXIST(notiID: Int) = Exception("VisEffect for $notiID Does Not Exist")
+        const val sizeOfIVE = 20
+        const val sizeOfAVE = 100
     }
 }
 
 object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
     override fun generateLayoutParams(
             target: ConstraintLayout,
+            pivotViewID: Int,
             independent: List<EnhancedNotification>,
             independentVisEffects: Map<Int, AbstractIndependentVisEffect>,
             aggregated: List<EnhancedNotification>,
@@ -60,16 +64,16 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
             val (wScale, hScale) = independentVisEffects[notiID]?.let{visEffect -> visEffect.independentVisObjects[0].getPosition()}
                     ?: throw EXCEPTION_VIS_EFFECT_NOT_EXIST(notiID)
 
-            val layoutparam = ConstraintLayout.LayoutParams(2,2).also{
-                it.circleConstraint = ANHComponentUIDGenerator.GLOBAL_PIVOT
-                it.circleRadius = Math.round(0.5 * Math.min(target.width, target.height) * Math.min(wScale, hScale) / 2).toInt()
+            val layoutparam = ConstraintLayout.LayoutParams(sizeOfIVE,sizeOfIVE).also{
+                it.circleConstraint = pivotViewID
+                it.circleRadius = Math.round(0.5 * Math.min(target.layoutParams.width, target.layoutParams.height) * Math.min(wScale, hScale) / 2).toInt()
                 it.circleAngle = (index * eachAngle).toFloat()
             }
             enhancedNotification.id to layoutparam
         }.toMap()
 
-        val aggregatedLP = ConstraintLayout.LayoutParams(2, 2).also{
-            it.circleConstraint = ANHComponentUIDGenerator.GLOBAL_PIVOT
+        val aggregatedLP = ConstraintLayout.LayoutParams(20, 20).also{
+            it.circleConstraint = pivotViewID
             it.circleRadius = Math.round(0.1 * target.height / 2).toInt()
             it.circleAngle = 0f
         }

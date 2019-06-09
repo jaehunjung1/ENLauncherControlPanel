@@ -30,9 +30,9 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
 
     private fun updateNotiEnhancement(notiData: EnhancedNotification, updateInterval: Long): EnhancedNotification {
         when(notiData.lifeCycle){
-            EnhancedNotificationLife.STATE_2 -> {
+            EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED -> {
                 if(notiData.timeElapsed >= notiData.lifeSpan)
-                    notiData.lifeCycle = EnhancedNotificationLife.STATE_5
+                    notiData.lifeCycle = EnhancedNotificationLife.STATE_5_DECAYING
                 else {
                     when (notiData.firstPattern) {
                         EnhancementPattern.DEC -> {
@@ -49,9 +49,9 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
                     }
                 }
             }
-            EnhancedNotificationLife.STATE_4 -> {
+            EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED -> {
                 if(notiData.timeElapsed >= notiData.lifeSpan)
-                    notiData.lifeCycle = EnhancedNotificationLife.STATE_5
+                    notiData.lifeCycle = EnhancedNotificationLife.STATE_5_DECAYING
                 else{
                     when(notiData.secondPattern){
                         EnhancementPattern.DEC -> {
@@ -68,23 +68,23 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
                     }
                 }
             }
-            EnhancedNotificationLife.STATE_1 -> {
-                notiData.lifeCycle = EnhancedNotificationLife.STATE_2
+            EnhancedNotificationLife.STATE_1_JUST_TRIGGERED -> {
+                notiData.lifeCycle = EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED
                 when(notiData.firstPattern){
                     EnhancementPattern.INC -> notiData.slope = (notiData.upperBound - notiData.enhanceOffset) / notiData.firstSaturationTime
                     EnhancementPattern.DEC -> notiData.slope = (notiData.enhanceOffset - notiData.lowerBound) / notiData.firstSaturationTime
                     EnhancementPattern.EQ -> notiData.slope = 0.0
                 }
             }
-            EnhancedNotificationLife.STATE_3 -> {
-                notiData.lifeCycle = EnhancedNotificationLife.STATE_4
+            EnhancedNotificationLife.STATE_3_JUST_INTERACTED -> {
+                notiData.lifeCycle = EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED
                 when(notiData.secondPattern){
                     EnhancementPattern.INC -> notiData.slope = (notiData.upperBound - notiData.currEnhancement) / notiData.secondSaturationTime
                     EnhancementPattern.DEC -> notiData.slope = (notiData.currEnhancement - notiData.lowerBound) / notiData.secondSaturationTime
                     EnhancementPattern.EQ -> notiData.slope = 0.0
                 }
             }
-            EnhancedNotificationLife.STATE_5 -> {
+            EnhancedNotificationLife.STATE_5_DECAYING -> {
                 notiData.currEnhancement = notiData.lowerBound
             }
         }
@@ -99,7 +99,7 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
                 it.value.apply{
                     notificationData.apply{
                         map { datum -> updateNotiEnhancement(datum, nowInMillis - lastUpdateInMillis) }
-                            .apply{ filter{ datum -> datum.lifeCycle != EnhancedNotificationLife.STATE_5 || datum.currEnhancement > 0.0} }
+                            .apply{ filter{ datum -> datum.lifeCycle != EnhancedNotificationLife.STATE_5_DECAYING || datum.currEnhancement > 0.0} }
                     }
                 }
             }?.toMutableMap()

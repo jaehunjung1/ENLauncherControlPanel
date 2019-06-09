@@ -13,7 +13,7 @@
         tools:replace="android:icon"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
-            android:name=".controlpanel.ControlPanelActivity"
+            android:name="hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.ControlPanelActivity"
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

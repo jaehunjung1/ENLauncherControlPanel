@@ -25,7 +25,7 @@ data class EnhancedNotification(
         override val lifeSpan: Long
 ): AbstractEnhancedData() {
     var lifeCycle: EnhancedNotificationLife =
-            EnhancedNotificationLife.STATE_1
+            EnhancedNotificationLife.STATE_1_JUST_TRIGGERED
     var firstPattern = EnhancementPattern.INC
     var secondPattern = EnhancementPattern.INC
 
@@ -51,8 +51,8 @@ data class EnhancedNotification(
     var independent = true
 
     fun proceedLifeCycleWhenDismiss(){
-        if(lifeCycle == EnhancedNotificationLife.STATE_1){
-            lifeCycle = EnhancedNotificationLife.STATE_3
+        if(lifeCycle == EnhancedNotificationLife.STATE_1_JUST_TRIGGERED){
+            lifeCycle = EnhancedNotificationLife.STATE_3_JUST_INTERACTED
         }
     }
 
