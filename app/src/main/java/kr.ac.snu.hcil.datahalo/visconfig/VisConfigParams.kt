@@ -19,7 +19,7 @@ data class IndependentVisObjectVisParams(
         var shapeList: List<VisObjectShape> = emptyList(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
         var motionList: List<AnimatorSet> = emptyList(),
-        var selectedColor: Int = Color.CYAN,
+        var selectedColor: Int = Color.BLACK,
         var colorList: List<Int> = emptyList(),
         var selecteSize: Double = 1.0,
         var sizeRange: Pair<Double, Double> = Pair(0.0, 1.0),

@@ -133,7 +133,7 @@ class VisDataConverter {
 
             val fromWhiteToGray = whiteAndGray.sortedWith(compareBy({it.whiteRank}, {it.currEnhancement}, {it.initTime}))
             val sampleCount = if(fromWhiteToGray.size > sampleMax) sampleMax else fromWhiteToGray.size
-            val independentNotis = if(fromWhiteToGray.isNotEmpty()) fromWhiteToGray.subList(0, sampleCount - 1) else emptyList()
+            val independentNotis = if(fromWhiteToGray.isNotEmpty()) fromWhiteToGray.subList(0, sampleCount) else emptyList()
             val aggregatedNotis = if(fromWhiteToGray.size > sampleCount) fromWhiteToGray.subList(sampleCount, fromWhiteToGray.size - 1) else emptyList()
 
             return mapOf(

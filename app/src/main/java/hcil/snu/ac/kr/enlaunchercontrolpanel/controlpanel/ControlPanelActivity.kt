@@ -67,7 +67,7 @@ class ControlPanelActivity : FragmentActivity() {
         previewHalo = AppNotificationHalo(context = this, attributeSet = null).also{
             it.setVisConfig(AppHaloConfig(previewPackageName))
         }
-        preview_frameLayout.addView(previewHalo, FrameLayout.LayoutParams(400, 400, Gravity.CENTER))
+        preview_frameLayout.addView(previewHalo, FrameLayout.LayoutParams(700, 700, Gravity.CENTER))
         previewHalo.setAppHaloData(EnhancedAppNotifications(previewPackageName).also{notifications ->
             notifications.notificationData = notificationData.toMutableList()
         })

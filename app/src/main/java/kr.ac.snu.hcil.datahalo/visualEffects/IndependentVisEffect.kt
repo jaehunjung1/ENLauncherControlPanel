@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.support.constraint.ConstraintLayout
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.utils.ANHComponentUIDGenerator
@@ -37,10 +38,10 @@ abstract class AbstractIndependentVisEffect(
 ): InterfaceIndependentVisEffect
 {
     final override val localPivotID: Int = View.generateViewId()
-    private val maxEffectSize = 10
+    //private val maxEffectSize = 100
     private val drawables: MutableList<Drawable> = mutableListOf()
     private val localLayoutParams: List<ConstraintLayout.LayoutParams>
-            = List(independentVisObjects.size){ConstraintLayout.LayoutParams(maxEffectSize, maxEffectSize)}
+            = List(independentVisObjects.size){ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)}
     private var animatorSet: AnimatorSet = AnimatorSet()
     private var currentCenterPolar: Pair<Int, Float> = Pair(-1, 0f)
     private var mappedNotificationID: Int = -1

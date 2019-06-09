@@ -3,9 +3,11 @@ package kr.ac.snu.hcil.datahalo.visualEffects
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.view.Gravity
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
@@ -381,34 +383,45 @@ abstract class AbstractIndependentVisObject(
         //val width: Double = visualParams.wRange.first + (visualParams.wRange.second - visualParams.wRange.first) * size
         //val height: Double = visualParams.hRange.first + (visualParams.hRange.second - visualParams.hRange.first) * size
 
+        val mySize = 60
+
+        val shapeDrawable = when(shape.type){
+            NewVisShape.RECT -> {
+                (shape.drawable as ShapeDrawable).also{
+                    it.paint.color = color
+                    it.intrinsicWidth = mySize
+                    it.intrinsicHeight = mySize
+                }
+            }
+            NewVisShape.OVAL -> {
+                (shape.drawable as ShapeDrawable).also{
+                    it.paint.color = color
+                    it.intrinsicWidth = mySize
+                    it.intrinsicHeight = mySize
+                }
+            }
+            NewVisShape.PATH -> {
+                (shape.drawable as ShapeDrawable).also{
+                    it.paint.color = color
+                    it.intrinsicWidth = mySize
+                    it.intrinsicHeight = mySize
+                }
+            }
+            NewVisShape.IMAGE -> {
+                ShapeDrawable().also{
+                    it.intrinsicWidth = mySize
+                    it.intrinsicHeight = mySize
+                }
+            }
+            NewVisShape.RAW -> {
+                (shape.drawable as TextDrawable).also{
+                    it.setColor(color)
+                }
+            }
+        }
+
         val resultDrawable = ScaleDrawable(
-                when(shape.type){
-                    NewVisShape.RECT -> {
-                        (shape.drawable as ShapeDrawable).also{
-                            it.paint.color = color
-                            //it.intrinsicWidth = Math.round(width).toInt()
-                            //it.intrinsicHeight = Math.round(height).toInt()
-                        }
-                    }
-                    NewVisShape.OVAL -> {
-                        (shape.drawable as ShapeDrawable).also{
-                            it.paint.color = color
-                        }
-                    }
-                    NewVisShape.PATH -> {
-                        (shape.drawable as ShapeDrawable).also{
-                            it.paint.color = color
-                        }
-                    }
-                    NewVisShape.IMAGE -> {
-                        ShapeDrawable()
-                    }
-                    NewVisShape.RAW -> {
-                        (shape.drawable as TextDrawable).also{
-                            it.setColor(color)
-                        }
-                    }
-                },
+                shapeDrawable,
                 Gravity.CENTER,
                 1.0f,
                 1.0f
@@ -416,7 +429,7 @@ abstract class AbstractIndependentVisObject(
             it.level = Math.round(10000 * size).toInt()
         }
 
-        return Pair(resultDrawable, motion.also{it.setTarget(resultDrawable)})
+        return Pair(shapeDrawable, motion.also{it.setTarget(resultDrawable)})
     }
 
 }

@@ -42,7 +42,7 @@ interface InterfaceANHVisLayout{
 abstract class AbstractANHVisLayout(override val layoutID: String): InterfaceANHVisLayout{
     companion object{
         fun EXCEPTION_VIS_EFFECT_NOT_EXIST(notiID: Int) = Exception("VisEffect for $notiID Does Not Exist")
-        const val sizeOfIVE = 20
+        const val sizeOfIVE = 10
         const val sizeOfAVE = 100
     }
 }

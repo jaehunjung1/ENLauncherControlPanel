@@ -110,7 +110,7 @@ data class AppHaloConfig(val packageName: String){
 
     var independentVisEffectVisParams: List<IndependentVisEffectVisParams> = listOf(
             IndependentVisEffectVisParams(
-                    radius = mutableListOf(100, 100, 100, 100, 100),
+                    radius = mutableListOf(0, 0, 0, 0, 0),
                     offsetAngle = 0f
             )
     )

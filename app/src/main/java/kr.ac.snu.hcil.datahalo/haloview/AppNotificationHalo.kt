@@ -36,6 +36,9 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
 
     init{
         clipChildren = false
+        clipToPadding = false
+        clipToOutline = false
+
         setBackgroundColor(Color.LTGRAY)
 
         id = View.generateViewId()
@@ -52,8 +55,8 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
         ConstraintSet().apply{
             clone(this@AppNotificationHalo)
 
-            constrainHeight(pivotView.id, 100)
-            constrainWidth(pivotView.id, 100)
+            constrainHeight(pivotView.id, 10)
+            constrainWidth(pivotView.id, 10)
 
             connect(pivotView.id, ConstraintSet.TOP, ConstraintSet.PARENT_ID, ConstraintSet.TOP)
             connect(pivotView.id, ConstraintSet.RIGHT, ConstraintSet.PARENT_ID, ConstraintSet.RIGHT)
