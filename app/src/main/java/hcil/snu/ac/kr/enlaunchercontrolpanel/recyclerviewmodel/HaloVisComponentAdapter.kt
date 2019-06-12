@@ -21,7 +21,7 @@ class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<H
         this.haloLayoutModelArrayList = hlmArrayList
     }
 
-    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): HaloVisComponentAdapter.HaloLayoutViewHolder {
+    override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): HaloLayoutViewHolder {
 
         val view = layoutInflater.inflate(R.layout.recyler_item_controlpanel, viewGroup, false)
         val holder = HaloLayoutViewHolder(view)

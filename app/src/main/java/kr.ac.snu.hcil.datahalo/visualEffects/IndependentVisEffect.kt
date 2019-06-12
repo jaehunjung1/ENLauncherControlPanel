@@ -95,19 +95,19 @@ abstract class AbstractIndependentVisEffect(
     }
 
     final override fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, pivotLayoutParams: ConstraintLayout.LayoutParams) {
-        val localPivotView = constraintLayout.findViewById<ImageView>(localPivotID)
+        var localPivotView = constraintLayout.findViewById<View>(localPivotID) as ImageView?
 
         if(localPivotView == null){
             //r: global pivot -> local pivot 사이의 거리
             //theta: 꼭대기 기준으로 r과 이루는 각도
             currentCenterPolar = Pair(pivotLayoutParams.circleRadius, pivotLayoutParams.circleAngle)
-            val newLocalPivotView = ImageView(constraintLayout.context).also{
+            localPivotView = ImageView(constraintLayout.context).also{
                 it.id = localPivotID
-                it.setBackgroundColor(Color.YELLOW)
+                //it.setBackgroundColor(Color.YELLOW)
                 it.layoutParams = pivotLayoutParams
             }
 
-            constraintLayout.addView(newLocalPivotView)
+            constraintLayout.addView(localPivotView)
         }
 
         if(currentCenterPolar.first != pivotLayoutParams.circleRadius || currentCenterPolar.second != pivotLayoutParams.circleAngle){
@@ -123,7 +123,7 @@ abstract class AbstractIndependentVisEffect(
                     it.id = visObj.getID()
                     it.setImageDrawable(drawables[index])
                     it.rotation = localLayoutParams[index].circleAngle
-                    it.setBackgroundColor(Color.GREEN)
+                    //it.setBackgroundColor(Color.GREEN)
                 }
                 constraintLayout.addView(imageView, localLayoutParams[index])
             }

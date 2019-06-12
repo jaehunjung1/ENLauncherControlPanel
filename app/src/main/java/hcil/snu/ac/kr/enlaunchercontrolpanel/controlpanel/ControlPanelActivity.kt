@@ -9,7 +9,9 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
 import android.view.Gravity
+import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 import kotlinx.android.synthetic.main.activity_controlpanel.*
@@ -71,6 +73,11 @@ class ControlPanelActivity : FragmentActivity() {
         previewHalo.setAppHaloData(EnhancedAppNotifications(previewPackageName).also{notifications ->
             notifications.notificationData = notificationData.toMutableList()
         })
+
+        preview_frameLayout.addView(
+                ImageView(this).also{ it.setImageDrawable(getDrawable(R.drawable.kakaotalk_logo))},
+                FrameLayout.LayoutParams(250, 250, Gravity.CENTER)
+        )
 
         appConfigViewModel = ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
         val appConfigObserver = Observer<AppHaloConfig>{ newConfig ->

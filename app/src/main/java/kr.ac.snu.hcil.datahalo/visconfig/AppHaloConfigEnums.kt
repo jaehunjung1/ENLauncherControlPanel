@@ -18,15 +18,15 @@ enum class NotificationType{
     AGGREGATED
 }
 
-enum class NotiProperty(value: String){
+enum class NotiProperty(val value: String){
     IMPORTANCE("importance"),
     LIFE_STAGE("life_stage"),
-    NOTIFICATION_CHANNEL("notification_channel"),
-    ELAPSED_TIME("elapsed_time"),
+    //NOTIFICATION_CHANNEL("notification_channel"),
+    //ELAPSED_TIME("elapsed_time"),
     CONTENT("notification_content")
 }
 
-enum class AggregatedNotiProperty(value: String){
+enum class AggregatedNotiProperty(val value: String){
     AGG_IMPORTANCE("importance"),
     AGG_LIFE_STAGE("life_stage"),
     AGG_NOTIFICATION_CHANNEL("notification_channel"),
@@ -54,11 +54,11 @@ enum class NotiAggregationType{
 }
 
 enum class NuNotiVisVariable{
-    POSITION,
-    SHAPE,
-    SIZE,
-    COLOR,
     MOTION,
+    SHAPE,
+    COLOR,
+    SIZE,
+    POSITION
 }
 
 enum class VisVarCustomizability{

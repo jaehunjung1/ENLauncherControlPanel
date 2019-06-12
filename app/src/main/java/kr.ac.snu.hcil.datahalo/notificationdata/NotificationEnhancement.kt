@@ -58,9 +58,9 @@ data class EnhancedNotification(
 
     fun getPropertyValue(property: NotiProperty): Any?{
         when(property){
-            NotiProperty.ELAPSED_TIME -> { return timeElapsed}
+            //NotiProperty.ELAPSED_TIME -> { return timeElapsed}
             NotiProperty.LIFE_STAGE -> {return lifeCycle}
-            NotiProperty.NOTIFICATION_CHANNEL -> {return channelHiearchy}
+            //NotiProperty.NOTIFICATION_CHANNEL -> {return channelHiearchy}
             NotiProperty.IMPORTANCE -> {return currEnhancement}
             NotiProperty.CONTENT -> {return notiContent}
             else -> {

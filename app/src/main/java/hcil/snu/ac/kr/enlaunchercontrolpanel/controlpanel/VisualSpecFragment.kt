@@ -21,6 +21,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.MappingContainer
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
 
 class VisualSpecFragment : Fragment() {
 
@@ -67,10 +68,13 @@ class VisualSpecFragment : Fragment() {
         indepVisRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
         val indepVisInnerView = indepVisCardView.findViewById<LinearLayout>(R.id.innerView)
-        for (i in MappingContainer.visVarStringList.indices) {
-            indepVisInnerView.addView(IndependentMappingLayout(context, MappingContainer.visVarStringList[i]))
-        }
 
+
+        NuNotiVisVariable.values().forEach{ visVar ->
+            indepVisInnerView.addView(
+                    IndependentMappingLayout(context!!, visVar, 0, appConfigViewModel)
+            )
+        }
 
         val aggregatedVisCardView = parentLayout.findViewById<ExpandableCardView>(R.id.aggregated_vis_cardview)
         val aggregatedVisRecyclerview = aggregatedVisCardView.findViewById<RecyclerView>(R.id.halo_layout_recyclerview)
