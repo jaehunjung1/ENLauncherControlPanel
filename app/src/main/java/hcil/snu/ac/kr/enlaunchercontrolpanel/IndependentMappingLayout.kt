@@ -21,18 +21,15 @@ import com.nex3z.flowlayout.FlowLayout
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
 import com.robertlevonyan.views.chip.Chip
 
-import java.util.ArrayList
-import java.util.Locale
-
 import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.independent_mapping_layout.view.*
-import kotlinx.android.synthetic.main.layout_nominal_mapping.view.*
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
+import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 
 /*
@@ -63,6 +60,15 @@ class IndependentMappingLayout(
     private var notiDataProp: NotiProperty? = null
     private var notiPropSpinnerAdapter: ArrayAdapter<String>
     private var initialSetFinished: Boolean = false
+
+    // 모든 액션은 얘를 수정시켜야 하고, 그 결과를 얘에 반영시켜야 함
+    private var visVarContents: List<Any> = emptyList()
+    private val notiDataPropContents: MutableList<Any> = mutableListOf()
+
+    companion object{
+        private fun exceptionKeywordGroupNotExist(groupName: String) = Exception("Cannot Access $groupName When Creating Keyword Frame")
+        private fun exceptionInvalidInputToView(viewType: String, content: String) = Exception("Invalid Input in $viewType, $content")
+    }
 
     init {
         View.inflate(getContext(), R.layout.independent_mapping_layout, this)
@@ -141,7 +147,7 @@ class IndependentMappingLayout(
         val dialogDone = dialogLayout.findViewById<View>(R.id.dialog_done)
         val dialogCancel = dialogLayout.findViewById<View>(R.id.dialog_cancel)
         dialogDone.setOnClickListener {
-            // TODO set Mapping Container
+            // TODO set Mapping Container 일단 가져와야지 다
 
             mDialog.dismiss()
         }
@@ -149,56 +155,122 @@ class IndependentMappingLayout(
 
     }
 
-    private fun addKeywordFrameView(
-            notiDataProp: NotiProperty?,
-            notiDataPropContents: List<String>,
+    private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
+        (inflater.inflate(R.layout.chip_view_layout, flowLayout) as Chip).let{ chipView ->
+            chipView.chipText = keyword
+            chipView.setOnCloseClickListener {
+                chipView.visibility = View.GONE
+                (chipView.parent as ViewGroup).removeView(chipView)
+                (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>)
+                        .find{keywordGroups -> keywordGroups.first == (flowLayout.tag as String) }
+                        ?.let{ keywordGroup -> keywordGroup.second.remove(keyword) }
+            }
+            flowLayout.addView(chipView)
+        }
+    }
+
+    private fun setKeywordFrameView(
+            notiDataPropContents: MutableList<Pair<String, MutableList<String>>>,
             notiPropDialogList: LinearLayout,
-            inflater: LayoutInflater,
-            configToLookUp: AppHaloConfig
+            inflater: LayoutInflater
             ){
-        notiDataPropContents.forEachIndexed { index, content ->
+        notiDataPropContents.forEachIndexed { index, keywordGroup ->
             (notiPropDialogList.getChildAt(index) as FrameLayout).also { frame ->
+                frame.removeAllViews()
                 frame.layoutParams.width = Utilities.dpToPx(context, 170)
                 val keywordFrame = inflater.inflate(R.layout.layout_keyword_mapping, parent as ViewGroup, false) as LinearLayout
-                val flowLayout = keywordFrame.findViewById<FlowLayout>(R.id.mapping_keyword_flowLayout)
 
-                configToLookUp.independentDataParameters[objIndex].contentGroupMap[content]?.forEach { keyword ->
-                    addKeywordToFlowLayout(flowLayout, keyword, inflater)
+                val flowLayout = keywordFrame.findViewById<FlowLayout>(R.id.mapping_keyword_flowLayout).apply{
+                    tag = keywordGroup.first
+                    keywordGroup.second.forEach{keyword ->  addKeywordToFlowLayout(this, keyword, inflater)}
                 }
 
-                val addButton = keywordFrame.findViewById<ImageButton>(R.id.mapping_keyword_add_button)
-                addButton.setOnClickListener {
-                    val mBuilder = AlertDialog.Builder(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar)
-                    val editText = EditText(context)
-                    mBuilder.setView(editText)
-                    mBuilder.setPositiveButton("OK") { dialogInterface, i -> addKeywordToFlowLayout(flowLayout, editText.text.toString(), inflater) }
-                    mBuilder.setNegativeButton("Cancel") { dialogInterface, i -> }
-
-                    val mDialog = mBuilder.create()
-                    mDialog.show()
+                keywordFrame.findViewById<ImageButton>(R.id.mapping_keyword_add_button).let{ addButton ->
+                    addButton.setOnClickListener {
+                        val mDialog = AlertDialog.Builder(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar).let { mBuilder ->
+                            val editText = EditText(context)
+                            mBuilder.setView(editText)
+                            mBuilder.setPositiveButton("OK") { dialogInterface, i ->
+                                val newKeyword = editText.text.toString()
+                                if(newKeyword.isNotEmpty() && newKeyword !in keywordGroup.second){
+                                    keywordGroup.second.add(newKeyword)
+                                    addKeywordToFlowLayout(flowLayout, newKeyword, inflater)
+                                }
+                            }
+                            mBuilder.setNegativeButton("Cancel") { _, _ -> }
+                            mBuilder.create()
+                        }
+                        mDialog.show()
+                    }
                 }
                 frame.addView(keywordFrame)
-                //Todo(update된 내용을 옮겨야 됨)
             }
         }
     }
 
-    private fun addSpinnerView(notiDataProp: NotiProperty?, notiDataPropContents: List<String>,  notiPropDialogList: LinearLayout){
-        val spinnerAdapter = getArrayAdapter(notiDataPropContents)
+    private fun setSpinnerView(selectedPropContentsIndices: List<Int>, givenPropContents: List<Any>, notiPropDialogList: LinearLayout){
+        val givenPropStringContents: List<String> =
+                when(notiDataProp){
+                    NotiProperty.IMPORTANCE -> {givenPropContents.map{
+                        val propContent = it as Pair<Double, Double>
+                        "${"%.1f".format(propContent.first)}-${"%.1f".format(propContent.second)}"}
+                    }
+                    NotiProperty.LIFE_STAGE -> {givenPropContents.map{
+                        val propContent = it as EnhancedNotificationLife
+                        propContent.name }
+                    }
+                    else -> {
+                        emptyList()
+                    }
+                }
+
+        val spinnerAdapter = getArrayAdapter(givenPropStringContents)
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_item)
-        notiDataPropContents.forEachIndexed{ index, _ ->
+        selectedPropContentsIndices.forEachIndexed{ index, indexVal ->
             (notiPropDialogList.getChildAt(index) as FrameLayout).also{ frame ->
+                frame.removeAllViews()
+
                 val spinner = Spinner(context)
                 spinner.adapter = spinnerAdapter
+                spinner.setSelection(indexVal)
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                        val text = adapterView.getItemAtPosition(i) as String
-                        //Todo(update된 내용을 옮겨야 됨)
+                        val selectedData = givenPropContents[i]
+
                     }
                     override fun onNothingSelected(adapterView: AdapterView<*>) {}
                 }
+
                 frame.addView(spinner)
             }
+        }
+    }
+
+    private fun setVisVarFrame(frame: FrameLayout, content: Any ){
+        frame.background = ContextCompat.getDrawable(context, R.drawable.rounded_rectangle)
+        frame.addView(TextView(context).apply { text = contentToString(notiVisVar, content) })
+        if (notiVisVar == NuNotiVisVariable.COLOR) {
+            val origColor = content as Int
+            frame.setBackgroundColor(origColor)
+            frame.setOnClickListener {
+                ColorPicker(context as Activity,
+                        Color.red(origColor), Color.green(origColor), Color.blue(origColor)
+                ).let { cp ->
+                    cp.show()
+                    cp.enableAutoClose()
+                    cp.setCallback { color -> frame.setBackgroundColor(color) }
+                }
+            }
+        }
+    }
+
+    private fun contentToString(notiVisVar: NuNotiVisVariable, content: Any): String{
+        return when (notiVisVar){
+            NuNotiVisVariable.MOTION -> content.toString()
+            NuNotiVisVariable.SHAPE -> (content as VisObjectShape).type.name
+            NuNotiVisVariable.COLOR -> (content as Int).let{"R:${Color.red(it)}, G:${Color.green(it)}, B:${Color.blue(it)}"}
+            NuNotiVisVariable.SIZE -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
+            NuNotiVisVariable.POSITION -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
         }
     }
 
@@ -221,115 +293,77 @@ class IndependentMappingLayout(
 
         // Load Settings From appHaloConfig
         viewModel.appHaloConfigLiveData.value?.let { configToLookUp ->
-            val visVarContents: List<Any> =
+            val independentVisParams = configToLookUp.independentVisualParameters[objIndex]
+            val independentDataParams = configToLookUp.independentDataParameters[objIndex]
+
+            visVarContents =
                     when (notiVisVar) {
                         NuNotiVisVariable.MOTION -> {
-                            configToLookUp.independentVisualParameters[objIndex].motionList
+                            independentVisParams.selectedMotionList
                         }
                         NuNotiVisVariable.SHAPE -> {
-                            configToLookUp.independentVisualParameters[objIndex].shapeList
+                            independentVisParams.selectedShapeList
                         }
                         NuNotiVisVariable.COLOR -> {
-                            configToLookUp.independentVisualParameters[objIndex].colorList
+                            independentVisParams.selectedColorList
                         }
                         NuNotiVisVariable.SIZE -> {
                             MapFunctionUtilities.bin(
-                                    configToLookUp.independentVisualParameters[objIndex].sizeRange,
+                                    independentVisParams.selectedSizeRange,
                                     5)
                         }
                         NuNotiVisVariable.POSITION -> {
                             MapFunctionUtilities.bin(
-                                    configToLookUp.independentVisualParameters[objIndex].posRange,
+                                    independentVisParams.selectedPosRange,
                                     5)
                         }
                     }
 
-            if(notiDataProp == null){
-                val content = visVarContents[0]
-                (visVarDialogList.getChildAt(0) as FrameLayout).also { frame ->
-                    frame.background = ContextCompat.getDrawable(context, R.drawable.rounded_rectangle)
-                    frame.addView(TextView(context).apply { text = content.toString() })
-                    if (notiVisVar == NuNotiVisVariable.COLOR) {
-                        val origColor = content as Int
-                        frame.setBackgroundColor(origColor)
-                        frame.setOnClickListener {
-                            ColorPicker(context as Activity,
-                                    Color.red(origColor), Color.green(origColor), Color.blue(origColor)
-                            ).let { cp ->
-                                cp.show()
-                                cp.enableAutoClose()
-                                cp.setCallback { color -> frame.setBackgroundColor(color) }
-                            }
-                        }
-                    }
-                }
-            }
-            else{
-                visVarContents.forEachIndexed { index, content ->
-                    (visVarDialogList.getChildAt(index) as FrameLayout).also { frame ->
-                        frame.background = ContextCompat.getDrawable(context, R.drawable.rounded_rectangle)
-                        frame.addView(TextView(context).apply { text = content.toString() })
-                        if (notiVisVar == NuNotiVisVariable.COLOR) {
-                            val origColor = content as Int
-                            frame.setBackgroundColor(origColor)
-                            frame.setOnClickListener {
-                                ColorPicker(context as Activity,
-                                        Color.red(origColor), Color.green(origColor), Color.blue(origColor)
-                                ).let { cp ->
-                                    cp.show()
-                                    cp.enableAutoClose()
-                                    cp.setCallback { color -> frame.setBackgroundColor(color) }
-                                }
-                            }
-                        }
-                    }
-                }
+            visVarContents.forEachIndexed { index, content ->
+                val frame = visVarDialogList.getChildAt(index) as FrameLayout
+                frame.removeAllViews()
+                if (index == 0 || notiDataProp != null)
+                    setVisVarFrame(frame, content)
             }
 
-            val notiDataPropContents: List<String> =
+            notiDataPropContents.clear()
+            notiDataPropContents.addAll(
                     when (notiDataProp) {
                         null -> emptyList()
                         NotiProperty.IMPORTANCE -> {
-                            MapFunctionUtilities.bin(
-                                    configToLookUp.independentDataParameters[objIndex].importanceRange,
-                                    5).map { "${"%.1f".format(it.first)}-${"%.1f".format(it.second)}" }
+                            independentDataParams.selectedImportanceRangeList
                         }
                         NotiProperty.LIFE_STAGE -> {
-                            configToLookUp.independentDataParameters[objIndex].lifeList.map { it.name }
+                            independentDataParams.selectedLifeList
                         }
                         NotiProperty.CONTENT -> {
-                            configToLookUp.independentDataParameters[objIndex].contentGroupMap.keys.toList()
+                            independentDataParams.keywordGroupMap.toList()
                         }
-                        else -> emptyList()
                     }
+            )
 
             when (notiDataProp) {
                 NotiProperty.CONTENT -> {
-                    addKeywordFrameView(notiDataProp, notiDataPropContents, notiPropDialogList, inflater, configToLookUp)
+                    setKeywordFrameView(notiDataPropContents as MutableList<Pair<String, MutableList<String>>>, notiPropDialogList, inflater)
                 }
                 NotiProperty.LIFE_STAGE -> {
-                    addSpinnerView(notiDataProp, notiDataPropContents, notiPropDialogList)
+                    val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{independentDataParams.givenLifeList.indexOf(it)}
+
+                    setSpinnerView(givenLifeStageIndices, independentDataParams.givenLifeList, notiPropDialogList)
                 }
                 NotiProperty.IMPORTANCE -> {
-                    addSpinnerView(notiDataProp, notiDataPropContents, notiPropDialogList)
+                    val givenImportanceList = MapFunctionUtilities.bin(independentDataParams.givenImportanceRange, 5)
+                    val givenImportanceIndices = (notiDataPropContents as MutableList<Pair<Double, Double>>).map{givenImportanceList.indexOf(it)}
+
+                    setSpinnerView(
+                            givenImportanceIndices,
+                            givenImportanceList,
+                            notiPropDialogList)
                 }
                 null -> {
 
                 }
-                else -> {
-
-                }
             }
-        }
-    }
-
-    private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
-        val chipView = inflater.inflate(R.layout.chip_view_layout, null) as Chip
-        chipView.chipText = keyword
-        flowLayout.addView(chipView)
-        chipView.setOnCloseClickListener {
-            chipView.visibility = View.GONE
-            (chipView.parent as ViewGroup).removeView(chipView)
         }
     }
 

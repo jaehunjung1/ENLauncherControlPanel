@@ -9,32 +9,39 @@ import android.graphics.drawable.shapes.OvalShape
 import android.util.Property
 import android.view.View
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
+import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 data class IndependentVisObjectVisParams(
         var selectedPos: Double = 0.5,
-        var posRange: Pair<Double, Double> = Pair(0.0, 1.0),
+        var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
+        var selectedPosRangeList: MutableList<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedPosRange, 5).toMutableList(),
         var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
-        var shapeList: List<VisObjectShape> = emptyList(),
+        var selectedShapeList: MutableList<VisObjectShape> = mutableListOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
-        var motionList: List<AnimatorSet> = emptyList(),
+        var selectedMotionList: MutableList<AnimatorSet> = mutableListOf(),
         var selectedColor: Int = Color.BLACK,
-        var colorList: List<Int> = emptyList(),
-        var selecteSize: Double = 1.0,
-        var sizeRange: Pair<Double, Double> = Pair(0.0, 1.0),
+        var selectedColorList: MutableList<Int> = mutableListOf(),
+        var selectedSize: Double = 1.0,
+        var selectedSizeRange: Pair<Double, Double> = Pair(0.0, 1.0),
+        var selectedSizeRangeList: MutableList<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedSizeRange, 5).toMutableList(),
         var additional: Map<String, Any> = emptyMap()
 )
 
 data class IndependentVisObjectDataParams(
-        var importanceRange:Pair<Double, Double> = Pair(0.0, 1.0),
-        var lifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.STATE_1_JUST_TRIGGERED, EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.STATE_3_JUST_INTERACTED, EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED, EnhancedNotificationLife.STATE_5_DECAYING),
-        var contentGroupMap: Map<String, List<String>> = emptyMap(),
+        val binNums: Int = 5,
+        var selectedImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
+        var selectedImportanceRangeList: MutableList<Pair<Double, Double>> =  MapFunctionUtilities.bin(selectedImportanceRange, binNums).toMutableList(),
+        var selectedLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.STATE_1_JUST_TRIGGERED, EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.STATE_3_JUST_INTERACTED, EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED, EnhancedNotificationLife.STATE_5_DECAYING),
+        var keywordGroupMap: Map<String, MutableList<String>> = emptyMap(),
         var tSaturation: Long = -1L, //3hrs
         var additional: Map<String, Any> = emptyMap()
 ){
-    val contentGroupList: List<String>
-        get() = contentGroupMap.keys.toList()
+    val keywordGroups: List<String>
+        get() = keywordGroupMap.keys.toList()
+    val givenImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0)
+    val givenLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.STATE_1_JUST_TRIGGERED, EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.STATE_3_JUST_INTERACTED, EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED, EnhancedNotificationLife.STATE_5_DECAYING)
 }
 
 data class IndependentVisObjectAnimParams(

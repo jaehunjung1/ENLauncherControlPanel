@@ -3,11 +3,9 @@ package kr.ac.snu.hcil.datahalo.visualEffects
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.view.Gravity
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
@@ -209,20 +207,20 @@ abstract class AbstractIndependentVisObject(
 
         when(boundVisVar){
             NuNotiVisVariable.MOTION -> {
-                val motions = visualParams.motionList
+                val motions = visualParams.selectedMotionList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.importanceRange, motions)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, motions)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(motions.size != dataParams.lifeList.size)
+                        if(motions.size != dataParams.selectedLifeList.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.lifeList, motions)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, motions)
                     }
                     NotiProperty.CONTENT -> {
-                        if(motions.size != dataParams.contentGroupList.size)
+                        if(motions.size != dataParams.keywordGroups.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.contentGroupList, motions)
+                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, motions)
                     }
                     else -> {
                         return {x -> motions[0]}
@@ -230,21 +228,21 @@ abstract class AbstractIndependentVisObject(
                 }
             }
             NuNotiVisVariable.SHAPE -> {
-                val shape = visualParams.shapeList
+                val shape = visualParams.selectedShapeList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.importanceRange, shape)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, shape)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(shape.size != dataParams.lifeList.size)
+                        if(shape.size != dataParams.selectedLifeList.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.lifeList, shape)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, shape)
 
                     }
                     NotiProperty.CONTENT -> {
-                        if(shape.size != dataParams.contentGroupList.size)
+                        if(shape.size != dataParams.keywordGroups.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.contentGroupList, shape)
+                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, shape)
                     }
                     else -> {
                         return {x -> shape[0]}
@@ -252,16 +250,16 @@ abstract class AbstractIndependentVisObject(
                 }
             }
             NuNotiVisVariable.POSITION -> {
-                val posRange = visualParams.posRange// 이값은 어디선가 와야겠지?
+                val posRange = visualParams.selectedPosRange// 이값은 어디선가 와야겠지?
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.importanceRange, posRange)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, posRange)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.lifeList, posRange)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, posRange)
                     }
                     NotiProperty.CONTENT -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.contentGroupList, posRange)
+                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, posRange)
                     }
                     else -> {
                         return {x -> (posRange.first + posRange.second) / 2}
@@ -269,20 +267,20 @@ abstract class AbstractIndependentVisObject(
                 }
             }
             NuNotiVisVariable.COLOR -> {
-                val colors = visualParams.colorList
+                val colors = visualParams.selectedColorList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.importanceRange, colors)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, colors)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(colors.size != dataParams.lifeList.size)
+                        if(colors.size != dataParams.selectedLifeList.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.lifeList, colors)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, colors)
                     }
                     NotiProperty.CONTENT -> {
-                        if(colors.size != dataParams.contentGroupList.size)
+                        if(colors.size != dataParams.keywordGroups.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.contentGroupList, colors)
+                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, colors)
                     }
                     else -> {
                         return {x -> colors[0]}
@@ -291,16 +289,16 @@ abstract class AbstractIndependentVisObject(
 
             }
             NuNotiVisVariable.SIZE -> {
-                val sizeRange = visualParams.sizeRange
+                val sizeRange = visualParams.selectedSizeRange
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.importanceRange, sizeRange)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, sizeRange)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.lifeList, sizeRange)
+                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, sizeRange)
                     }
                     NotiProperty.CONTENT -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.contentGroupList, sizeRange)
+                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, sizeRange)
                     }
                     else -> {
                         return {x -> (sizeRange.first + sizeRange.second) / 2}
@@ -315,7 +313,7 @@ abstract class AbstractIndependentVisObject(
 
         when (transparentVisVar){
             NuNotiVisVariable.SIZE -> {
-                return visualParams.selecteSize
+                return visualParams.selectedSize
             }
             NuNotiVisVariable.COLOR -> {
                 return visualParams.selectedColor
@@ -338,7 +336,7 @@ abstract class AbstractIndependentVisObject(
         val visualParams = getVisParams()
 
         var pos: Double = visualParams.selectedPos
-        var size: Double = visualParams.selecteSize
+        var size: Double = visualParams.selectedSize
         var shape: VisObjectShape = visualParams.selectedShape
         var color: Int = visualParams.selectedColor
         var motion: AnimatorSet = visualParams.selectedMotion
@@ -376,8 +374,8 @@ abstract class AbstractIndependentVisObject(
         }
 
         position = Pair(
-                visualParams.posRange.first + (visualParams.posRange.second - visualParams.posRange.first) * pos,
-                visualParams.posRange.first + (visualParams.posRange.second - visualParams.posRange.first) * pos
+                visualParams.selectedPosRange.first + (visualParams.selectedPosRange.second - visualParams.selectedPosRange.first) * pos,
+                visualParams.selectedPosRange.first + (visualParams.selectedPosRange.second - visualParams.selectedPosRange.first) * pos
         )
 
         //val width: Double = visualParams.wRange.first + (visualParams.wRange.second - visualParams.wRange.first) * size

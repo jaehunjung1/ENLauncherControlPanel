@@ -2,15 +2,11 @@ package kr.ac.snu.hcil.datahalo.visconfig
 
 import android.animation.AnimatorSet
 import android.graphics.Color
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
-import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
-import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 data class AppHaloConfig(val packageName: String){
     companion object {
@@ -127,17 +123,17 @@ data class AppHaloConfig(val packageName: String){
 
     var independentVisualParameters: List<IndependentVisObjectVisParams> = listOf(
             IndependentVisObjectVisParams().also{
-                it.shapeList = listOf(
+                it.selectedShapeList = mutableListOf(
 
                 )
-                it.motionList = listOf(
+                it.selectedMotionList = mutableListOf(
                         AnimatorSet(),
                         AnimatorSet(),
                         AnimatorSet(),
                         AnimatorSet(),
                         AnimatorSet()
                 )
-                it.colorList = listOf(
+                it.selectedColorList = mutableListOf(
                         Color.RED,
                         Color.YELLOW,
                         Color.GREEN,
