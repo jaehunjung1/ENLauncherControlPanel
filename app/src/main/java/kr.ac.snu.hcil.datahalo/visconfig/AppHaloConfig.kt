@@ -10,6 +10,7 @@ import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
 
 data class AppHaloConfig(val packageName: String){
     companion object {
+        /*
         fun applyLayoutConfig(appHaloConfig: AppHaloConfig, name: String): AppHaloConfig{
             return when(name){
                 "ClockwiseSortedLayout" -> {
@@ -59,6 +60,7 @@ data class AppHaloConfig(val packageName: String){
                 }
                 else -> {appHaloConfig}
             }
+
         }
 
         fun applyAggregatedEffectConfig(appHaloConfig: AppHaloConfig, name: String): AppHaloConfig{
@@ -72,6 +74,7 @@ data class AppHaloConfig(val packageName: String){
                 else -> {appHaloConfig}
             }
         }
+        */
     }
 
     //Filter & Sample Methods Configs
@@ -111,8 +114,15 @@ data class AppHaloConfig(val packageName: String){
             )
     )
 
-    var independentVisualMappings: List<Map<NuNotiVisVariable, NotiProperty?>> = listOf(
-            mapOf(
+    val independentVisualMappings: MutableList<Map<NuNotiVisVariable, NotiProperty?>> = mutableListOf(
+            mutableMapOf(
+                    NuNotiVisVariable.POSITION to NotiProperty.IMPORTANCE,
+                    NuNotiVisVariable.SIZE to NotiProperty.IMPORTANCE,
+                    NuNotiVisVariable.SHAPE to NotiProperty.CONTENT,
+                    NuNotiVisVariable.MOTION to NotiProperty.LIFE_STAGE,
+                    NuNotiVisVariable.COLOR to NotiProperty.LIFE_STAGE
+            ),
+            mutableMapOf(
                     NuNotiVisVariable.POSITION to NotiProperty.IMPORTANCE,
                     NuNotiVisVariable.SIZE to NotiProperty.IMPORTANCE,
                     NuNotiVisVariable.SHAPE to NotiProperty.CONTENT,
@@ -126,14 +136,14 @@ data class AppHaloConfig(val packageName: String){
                 it.selectedShapeList = mutableListOf(
 
                 )
-                it.selectedMotionList = mutableListOf(
+                it.selectedMotionList = listOf(
                         AnimatorSet(),
                         AnimatorSet(),
                         AnimatorSet(),
                         AnimatorSet(),
                         AnimatorSet()
                 )
-                it.selectedColorList = mutableListOf(
+                it.selectedColorList = listOf(
                         Color.RED,
                         Color.YELLOW,
                         Color.GREEN,

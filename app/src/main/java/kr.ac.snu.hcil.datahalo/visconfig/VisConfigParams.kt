@@ -16,23 +16,23 @@ import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 data class IndependentVisObjectVisParams(
         var selectedPos: Double = 0.5,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedPosRangeList: MutableList<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedPosRange, 5).toMutableList(),
+        var selectedPosRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedPosRange, 5),
         var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
-        var selectedShapeList: MutableList<VisObjectShape> = mutableListOf(),
+        var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
-        var selectedMotionList: MutableList<AnimatorSet> = mutableListOf(),
+        var selectedMotionList: List<AnimatorSet> = listOf(),
         var selectedColor: Int = Color.BLACK,
-        var selectedColorList: MutableList<Int> = mutableListOf(),
+        var selectedColorList: List<Int> = listOf(),
         var selectedSize: Double = 1.0,
         var selectedSizeRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedSizeRangeList: MutableList<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedSizeRange, 5).toMutableList(),
+        var selectedSizeRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedSizeRange, 5),
         var additional: Map<String, Any> = emptyMap()
 )
 
 data class IndependentVisObjectDataParams(
         val binNums: Int = 5,
         var selectedImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedImportanceRangeList: MutableList<Pair<Double, Double>> =  MapFunctionUtilities.bin(selectedImportanceRange, binNums).toMutableList(),
+        var selectedImportanceRangeList: List<Pair<Double, Double>> =  MapFunctionUtilities.bin(selectedImportanceRange, binNums),
         var selectedLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.STATE_1_JUST_TRIGGERED, EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.STATE_3_JUST_INTERACTED, EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED, EnhancedNotificationLife.STATE_5_DECAYING),
         var keywordGroupMap: Map<String, MutableList<String>> = emptyMap(),
         var tSaturation: Long = -1L, //3hrs

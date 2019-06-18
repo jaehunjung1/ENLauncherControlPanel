@@ -1,5 +1,6 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel
 
+import android.animation.AnimatorSet
 import android.app.Activity
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
@@ -62,7 +63,7 @@ class IndependentMappingLayout(
     private var initialSetFinished: Boolean = false
 
     // 모든 액션은 얘를 수정시켜야 하고, 그 결과를 얘에 반영시켜야 함
-    private var visVarContents: List<Any> = emptyList()
+    private val visVarContents: MutableList<Any> = mutableListOf()
     private val notiDataPropContents: MutableList<Any> = mutableListOf()
 
     companion object{
@@ -100,16 +101,14 @@ class IndependentMappingLayout(
         notiProp_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                 //i = 0을 none으로 사용하고 있는건가
-                if( i != 0 ){
-                    val spinnerVal = adapterView.getItemAtPosition(i) as String
-                    val propVal = if (spinnerVal == "none") null else NotiProperty.valueOf(spinnerVal)
-                    notiDataProp = propVal
+                val spinnerVal = adapterView.getItemAtPosition(i) as String
+                val propVal = if (spinnerVal == "none") null else NotiProperty.valueOf(spinnerVal)
+                notiDataProp = propVal
 
-                    if(initialSetFinished){
-                        showMappingDialog()
-                    }
-                    initialSetFinished = true
+                if(initialSetFinished){
+                    showMappingDialog()
                 }
+                initialSetFinished = true
             }
             override fun onNothingSelected(adapterView: AdapterView<*>) {}
         }
@@ -148,8 +147,49 @@ class IndependentMappingLayout(
         val dialogCancel = dialogLayout.findViewById<View>(R.id.dialog_cancel)
         dialogDone.setOnClickListener {
             // TODO set Mapping Container 일단 가져와야지 다
-
             mDialog.dismiss()
+            viewModel.appHaloConfigLiveData.value?.let{ currentConfig ->
+                val newMapping = currentConfig.independentVisualMappings[objIndex].mapValues{ entry ->
+                    if(entry.key == notiVisVar)
+                        notiDataProp
+                    else
+                        entry.value
+                }
+                currentConfig.independentVisualMappings[objIndex] = newMapping
+
+                when(notiVisVar){
+                    NuNotiVisVariable.MOTION -> {
+                        currentConfig.independentVisualParameters[objIndex].selectedMotionList = (visVarContents as MutableList<AnimatorSet>).toList()
+                    }
+                    NuNotiVisVariable.COLOR -> {
+                        currentConfig.independentVisualParameters[objIndex].selectedColorList = (visVarContents as MutableList<Int>).toList()
+                    }
+                    NuNotiVisVariable.SHAPE -> {
+                        currentConfig.independentVisualParameters[objIndex].selectedShapeList = (visVarContents as MutableList<VisObjectShape>).toList()
+                    }
+                    NuNotiVisVariable.SIZE -> {
+                        currentConfig.independentVisualParameters[objIndex].selectedSizeRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
+                    }
+                    NuNotiVisVariable.POSITION -> {
+                        currentConfig.independentVisualParameters[objIndex].selectedPosRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
+                    }
+                }
+
+                when(notiDataProp){
+                    NotiProperty.LIFE_STAGE -> {
+                        currentConfig.independentDataParameters[objIndex].selectedLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
+                    }
+                    NotiProperty.IMPORTANCE -> {
+                        currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
+                    }
+                    NotiProperty.CONTENT -> {
+                        currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
+                    }
+                    else -> {}
+                }
+
+                viewModel.appHaloConfigLiveData.value = currentConfig
+            }
         }
         dialogCancel.setOnClickListener { mDialog.dismiss() }
 
@@ -232,11 +272,11 @@ class IndependentMappingLayout(
 
                 val spinner = Spinner(context)
                 spinner.adapter = spinnerAdapter
-                spinner.setSelection(indexVal)
+                spinner.setSelection(indexVal) //indexVal 번째 순서에 있는 givenPropContent
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                         val selectedData = givenPropContents[i]
-
+                        notiDataPropContents[index] = selectedData
                     }
                     override fun onNothingSelected(adapterView: AdapterView<*>) {}
                 }
@@ -246,9 +286,37 @@ class IndependentMappingLayout(
         }
     }
 
-    private fun setVisVarFrame(frame: FrameLayout, content: Any ){
+    private fun setVisVarFrame(index: Int, frame: FrameLayout, content: Any ){
         frame.background = ContextCompat.getDrawable(context, R.drawable.rounded_rectangle)
         frame.addView(TextView(context).apply { text = contentToString(notiVisVar, content) })
+        when(notiVisVar){
+            NuNotiVisVariable.MOTION -> {
+                //TODO(Shape Selection View)
+            }
+            NuNotiVisVariable.COLOR -> {
+                val origColor = content as Int
+                frame.setBackgroundColor(origColor)
+                frame.setOnClickListener {
+                    ColorPicker(context as Activity,
+                            Color.red(origColor), Color.green(origColor), Color.blue(origColor)
+                    ).let { cp ->
+                        cp.show()
+                        cp.enableAutoClose()
+                        cp.setCallback { color ->
+                            frame.setBackgroundColor(color)
+                            visVarContents[index] = color
+                        }
+                    }
+                }
+            }
+            NuNotiVisVariable.SHAPE -> {
+                //TODO(Shape Selection View)
+            }
+            NuNotiVisVariable.SIZE -> {}
+            NuNotiVisVariable.POSITION -> {}
+        }
+
+
         if (notiVisVar == NuNotiVisVariable.COLOR) {
             val origColor = content as Int
             frame.setBackgroundColor(origColor)
@@ -296,7 +364,8 @@ class IndependentMappingLayout(
             val independentVisParams = configToLookUp.independentVisualParameters[objIndex]
             val independentDataParams = configToLookUp.independentDataParameters[objIndex]
 
-            visVarContents =
+            visVarContents.clear()
+            visVarContents.addAll(
                     when (notiVisVar) {
                         NuNotiVisVariable.MOTION -> {
                             independentVisParams.selectedMotionList
@@ -318,12 +387,18 @@ class IndependentMappingLayout(
                                     5)
                         }
                     }
+            )
 
             visVarContents.forEachIndexed { index, content ->
                 val frame = visVarDialogList.getChildAt(index) as FrameLayout
                 frame.removeAllViews()
-                if (index == 0 || notiDataProp != null)
-                    setVisVarFrame(frame, content)
+                if (notiDataProp != null){
+                    setVisVarFrame(index, frame, content)
+                }
+                else{
+                    if(index == 0)
+                        setVisVarFrame(index, frame, content)
+                }
             }
 
             notiDataPropContents.clear()
