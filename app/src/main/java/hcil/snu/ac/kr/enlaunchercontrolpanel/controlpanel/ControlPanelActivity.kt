@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.util.Log
 import android.view.Gravity
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 
@@ -28,8 +27,7 @@ class ControlPanelActivity : FragmentActivity() {
     companion object{
         private const val TAG = "HALO_SETTING_ACTIVITY"
         private const val NUM_PAGES = 2
-        private const val previewPackageName = "kr.ac.snu.hcil.datahalo.preview"
-        private val notificationData = listOf(
+        private val exampleNotifications = listOf(
                 EnhancedNotification(25123, "", System.currentTimeMillis(), 1000L * 60 * 60).also{
                     it.currEnhancement = 0.3
                     it.lifeCycle = EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED
@@ -66,13 +64,17 @@ class ControlPanelActivity : FragmentActivity() {
         setContentView(R.layout.activity_controlpanel)
 
         settingPager.adapter = ScreenSlidPagerAdapter(supportFragmentManager)
+
         previewHalo = AppNotificationHalo(context = this, attributeSet = null).also{
+            /*
             it.setVisConfig(AppHaloConfig(previewPackageName))
+            it.setAppHaloData(EnhancedAppNotifications(previewPackageName).also{notifications ->
+                notifications.notificationData = exampleNotifications.toMutableList()
+            })
+            */
         }
+
         preview_frameLayout.addView(previewHalo, FrameLayout.LayoutParams(700, 700, Gravity.CENTER))
-        previewHalo.setAppHaloData(EnhancedAppNotifications(previewPackageName).also{notifications ->
-            notifications.notificationData = notificationData.toMutableList()
-        })
 
         preview_frameLayout.addView(
                 ImageView(this).also{ it.setImageDrawable(getDrawable(R.drawable.kakaotalk_logo))},
@@ -84,9 +86,10 @@ class ControlPanelActivity : FragmentActivity() {
             Log.d(TAG, "Model Updated")
             newConfig?.let{
                 previewHalo.setVisConfig(it)
-                previewHalo.setAppHaloData(EnhancedAppNotifications(previewPackageName).also{notifications ->
-                    notifications.notificationData = notificationData.toMutableList()
+                previewHalo.setAppHaloData(EnhancedAppNotifications(AppHaloConfigViewModel.SAMPLE_PACKAGE_NAME).also{notifications ->
+                    notifications.notificationData = exampleNotifications.toMutableList()
                 })
+                preview_frameLayout.invalidate()
             }
         }
         appConfigViewModel.appHaloConfigLiveData.observe(this, appConfigObserver)

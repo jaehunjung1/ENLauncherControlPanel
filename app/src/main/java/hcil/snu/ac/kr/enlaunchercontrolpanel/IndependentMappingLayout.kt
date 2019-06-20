@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,6 +68,7 @@ class IndependentMappingLayout(
     private val notiDataPropContents: MutableList<Any> = mutableListOf()
 
     companion object{
+        private const val TAG = "IndepMappingLayout"
         private fun exceptionKeywordGroupNotExist(groupName: String) = Exception("Cannot Access $groupName When Creating Keyword Frame")
         private fun exceptionInvalidInputToView(viewType: String, content: String) = Exception("Invalid Input in $viewType, $content")
     }
@@ -100,7 +102,6 @@ class IndependentMappingLayout(
         // set item click listener for notiPropSpinner
         notiProp_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                //i = 0을 none으로 사용하고 있는건가
                 val spinnerVal = adapterView.getItemAtPosition(i) as String
                 val propVal = if (spinnerVal == "none") null else NotiProperty.valueOf(spinnerVal)
                 notiDataProp = propVal
@@ -147,7 +148,6 @@ class IndependentMappingLayout(
         val dialogCancel = dialogLayout.findViewById<View>(R.id.dialog_cancel)
         dialogDone.setOnClickListener {
             // TODO set Mapping Container 일단 가져와야지 다
-            mDialog.dismiss()
             viewModel.appHaloConfigLiveData.value?.let{ currentConfig ->
                 val newMapping = currentConfig.independentVisualMappings[objIndex].mapValues{ entry ->
                     if(entry.key == notiVisVar)
@@ -162,6 +162,7 @@ class IndependentMappingLayout(
                         currentConfig.independentVisualParameters[objIndex].selectedMotionList = (visVarContents as MutableList<AnimatorSet>).toList()
                     }
                     NuNotiVisVariable.COLOR -> {
+                        //TODO(값 체크)
                         currentConfig.independentVisualParameters[objIndex].selectedColorList = (visVarContents as MutableList<Int>).toList()
                     }
                     NuNotiVisVariable.SHAPE -> {
@@ -190,13 +191,15 @@ class IndependentMappingLayout(
 
                 viewModel.appHaloConfigLiveData.value = currentConfig
             }
+
+            mDialog.dismiss()
         }
         dialogCancel.setOnClickListener { mDialog.dismiss() }
 
     }
 
     private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
-        (inflater.inflate(R.layout.chip_view_layout, flowLayout) as Chip).let{ chipView ->
+        (inflater.inflate(R.layout.chip_view_layout, null) as Chip).let{ chipView ->
             chipView.chipText = keyword
             chipView.setOnCloseClickListener {
                 chipView.visibility = View.GONE
@@ -300,12 +303,13 @@ class IndependentMappingLayout(
                     ColorPicker(context as Activity,
                             Color.red(origColor), Color.green(origColor), Color.blue(origColor)
                     ).let { cp ->
-                        cp.show()
                         cp.enableAutoClose()
                         cp.setCallback { color ->
-                            frame.setBackgroundColor(color)
                             visVarContents[index] = color
+                            frame.setBackgroundColor(color)
+                            Log.d(TAG, "$color has Picked. ${visVarContents[index]}")
                         }
+                        cp.show()
                     }
                 }
             }
@@ -314,21 +318,6 @@ class IndependentMappingLayout(
             }
             NuNotiVisVariable.SIZE -> {}
             NuNotiVisVariable.POSITION -> {}
-        }
-
-
-        if (notiVisVar == NuNotiVisVariable.COLOR) {
-            val origColor = content as Int
-            frame.setBackgroundColor(origColor)
-            frame.setOnClickListener {
-                ColorPicker(context as Activity,
-                        Color.red(origColor), Color.green(origColor), Color.blue(origColor)
-                ).let { cp ->
-                    cp.show()
-                    cp.enableAutoClose()
-                    cp.setCallback { color -> frame.setBackgroundColor(color) }
-                }
-            }
         }
     }
 

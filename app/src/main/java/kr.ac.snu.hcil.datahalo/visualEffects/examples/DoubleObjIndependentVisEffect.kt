@@ -21,5 +21,5 @@ class DoubleObjIndependentVisEffect(appHaloConfig: AppHaloConfig)
                         animationParameters = appHaloConfig.independentAnimationParameters[1]
                 )
         ),
-        visualParameters = appHaloConfig.independentVisEffectVisParams[0]
+        visualParameters = appHaloConfig.independentVisEffectVisParams
 )

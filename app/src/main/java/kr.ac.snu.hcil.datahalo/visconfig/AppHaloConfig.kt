@@ -106,66 +106,10 @@ data class AppHaloConfig(val packageName: String){
     var aggregatedVisEffectName: String = VisEffectManager.availableAggregatedVisEffects[0]
 
     // 사용자 인풋으로 받고 아닌 경우에는 기본 설정으로 가야겠죠?
-
-    var independentVisEffectVisParams: List<IndependentVisEffectVisParams> = listOf(
-            IndependentVisEffectVisParams(
-                    radius = mutableListOf(0, 0, 0, 0, 0),
-                    offsetAngle = 0f
-            )
-    )
-
-    val independentVisualMappings: MutableList<Map<NuNotiVisVariable, NotiProperty?>> = mutableListOf(
-            mutableMapOf(
-                    NuNotiVisVariable.POSITION to NotiProperty.IMPORTANCE,
-                    NuNotiVisVariable.SIZE to NotiProperty.IMPORTANCE,
-                    NuNotiVisVariable.SHAPE to NotiProperty.CONTENT,
-                    NuNotiVisVariable.MOTION to NotiProperty.LIFE_STAGE,
-                    NuNotiVisVariable.COLOR to NotiProperty.LIFE_STAGE
-            ),
-            mutableMapOf(
-                    NuNotiVisVariable.POSITION to NotiProperty.IMPORTANCE,
-                    NuNotiVisVariable.SIZE to NotiProperty.IMPORTANCE,
-                    NuNotiVisVariable.SHAPE to NotiProperty.CONTENT,
-                    NuNotiVisVariable.MOTION to NotiProperty.LIFE_STAGE,
-                    NuNotiVisVariable.COLOR to NotiProperty.LIFE_STAGE
-            )
-    )
-
-    var independentVisualParameters: List<IndependentVisObjectVisParams> = listOf(
-            IndependentVisObjectVisParams().also{
-                it.selectedShapeList = mutableListOf(
-
-                )
-                it.selectedMotionList = listOf(
-                        AnimatorSet(),
-                        AnimatorSet(),
-                        AnimatorSet(),
-                        AnimatorSet(),
-                        AnimatorSet()
-                )
-                it.selectedColorList = listOf(
-                        Color.RED,
-                        Color.YELLOW,
-                        Color.GREEN,
-                        Color.BLUE,
-                        Color.DKGRAY
-                )
-
-            }
-    )
-
-    var independentDataParameters: List<IndependentVisObjectDataParams> = listOf(
-            IndependentVisObjectDataParams()
-    )
-
-    var independentAnimationParameters: List<List<IndependentVisObjectAnimParams>> = listOf(
-            listOf(
-                    IndependentVisObjectAnimParams(
-                            property = View.ALPHA,
-                            values = arrayOf(.5f),
-                            duration = 2 * 1000L,
-                            interpolator = LinearInterpolator())
-            )
-    )
+    val independentVisualMappings: MutableList<Map<NuNotiVisVariable, NotiProperty?>> = mutableListOf()
+    var independentVisEffectVisParams: IndependentVisEffectVisParams = IndependentVisEffectVisParams()
+    val independentVisualParameters: MutableList<IndependentVisObjectVisParams> = mutableListOf()
+    val independentDataParameters: MutableList<IndependentVisObjectDataParams> = mutableListOf()
+    val independentAnimationParameters: MutableList<List<IndependentVisObjectAnimParams>> = mutableListOf()
 
 }

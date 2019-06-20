@@ -34,7 +34,7 @@ interface InterfaceIndependentVisEffect{
 abstract class AbstractIndependentVisEffect(
         final override val effectID: String,
         final override val independentVisObjects: List<AbstractIndependentVisObject>,
-        val visualParameters: IndependentVisEffectVisParams
+        var visualParameters: IndependentVisEffectVisParams
 ): InterfaceIndependentVisEffect
 {
     final override val localPivotID: Int = View.generateViewId()

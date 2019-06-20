@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
 import android.view.Gravity
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
@@ -210,7 +211,7 @@ abstract class AbstractIndependentVisObject(
                 val motions = visualParams.selectedMotionList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, motions)
+                        return MapFunctionUtilities.createBinnedNumericRangeMapFunc(dataParams.selectedImportanceRangeList, motions)
                     }
                     NotiProperty.LIFE_STAGE -> {
                         if(motions.size != dataParams.selectedLifeList.size)
@@ -231,7 +232,7 @@ abstract class AbstractIndependentVisObject(
                 val shape = visualParams.selectedShapeList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, shape)
+                        return MapFunctionUtilities.createBinnedNumericRangeMapFunc(dataParams.selectedImportanceRangeList, shape)
                     }
                     NotiProperty.LIFE_STAGE -> {
                         if(shape.size != dataParams.selectedLifeList.size)
@@ -270,7 +271,7 @@ abstract class AbstractIndependentVisObject(
                 val colors = visualParams.selectedColorList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, colors)
+                        return MapFunctionUtilities.createBinnedNumericRangeMapFunc(dataParams.selectedImportanceRangeList, colors)
                     }
                     NotiProperty.LIFE_STAGE -> {
                         if(colors.size != dataParams.selectedLifeList.size)
@@ -334,7 +335,6 @@ abstract class AbstractIndependentVisObject(
     final override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
 
         val visualParams = getVisParams()
-
         var pos: Double = visualParams.selectedPos
         var size: Double = visualParams.selectedSize
         var shape: VisObjectShape = visualParams.selectedShape
@@ -372,11 +372,13 @@ abstract class AbstractIndependentVisObject(
                 else -> {}
             }
         }
-
+        /*
         position = Pair(
                 visualParams.selectedPosRange.first + (visualParams.selectedPosRange.second - visualParams.selectedPosRange.first) * pos,
                 visualParams.selectedPosRange.first + (visualParams.selectedPosRange.second - visualParams.selectedPosRange.first) * pos
         )
+        */
+        position = Pair(pos, pos)
 
         //val width: Double = visualParams.wRange.first + (visualParams.wRange.second - visualParams.wRange.first) * size
         //val height: Double = visualParams.hRange.first + (visualParams.hRange.second - visualParams.hRange.first) * size
@@ -392,11 +394,20 @@ abstract class AbstractIndependentVisObject(
                 }
             }
             NewVisShape.OVAL -> {
+                /*
                 (shape.drawable as ShapeDrawable).also{
                     it.paint.color = color
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
                 }
+                */
+                ShapeDrawable().also{
+                    it.shape = OvalShape()
+                    it.paint.color = color
+                    it.intrinsicWidth = mySize
+                    it.intrinsicHeight = mySize
+                }
+                //TODO(VisConfigParam의 ShapeDrawable 고쳐야 함 공유 문제)
             }
             NewVisShape.PATH -> {
                 (shape.drawable as ShapeDrawable).also{

@@ -24,7 +24,7 @@ class MapFunctionUtilities {
                 if(x is Double)
                 {
                     val index = newKeyList.indexOfFirst{
-                        if(it.first >= it.second)
+                        if(it.second >= it.first)
                             (x >= it.first) && (x < it.second)
                         else
                             (x <= it.first) && (x > it.second)
@@ -36,6 +36,25 @@ class MapFunctionUtilities {
                 }
             }
         }
+
+        fun<T> createBinnedNumericRangeMapFunc(keyRangeList: List<Pair<Double, Double>>, valRange: List<T>): (Any) -> (T?){
+            return {x:Any ->
+                if(x is Double)
+                {
+                    val index = keyRangeList.indexOfFirst{
+                        if(it.second >= it.first)
+                            (x >= it.first) && (x < it.second)
+                        else
+                            (x <= it.first) && (x > it.second)
+                    }
+                    valRange[index]
+                }
+                else{
+                    null
+                }
+            }
+        }
+
 
         fun<T> createMapFunc(keyRange: List<T>, valRange:Pair<Double, Double>, numOfBin: Int = keyRange.size): (T) -> Double {
             val newValList = bin(valRange, numOfBin) // [(0, 0.2), (0.2, 0.4), (0.4, 0.6)]
@@ -49,7 +68,7 @@ class MapFunctionUtilities {
 
 
         fun<T, R> createMapFunc(keyRange: List<T>, valRange: List<R>): (T) -> (R?){
-            return {key -> if(key in keyRange) valRange[keyRange.indexOf(key)] else null}
+            return { key -> if(key in keyRange) valRange[keyRange.indexOf(key)] else null}
         }
     }
 }

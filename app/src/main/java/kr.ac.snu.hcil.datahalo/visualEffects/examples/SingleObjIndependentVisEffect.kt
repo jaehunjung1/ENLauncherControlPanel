@@ -16,5 +16,5 @@ class SingleObjIndependentVisEffect(appHaloConfig: AppHaloConfig)
                         animationParameters = appHaloConfig.independentAnimationParameters[0]
                 )
         ),
-        visualParameters = appHaloConfig.independentVisEffectVisParams[0]
+        visualParameters = appHaloConfig.independentVisEffectVisParams
 )

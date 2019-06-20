@@ -14,7 +14,7 @@ import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 data class IndependentVisObjectVisParams(
-        var selectedPos: Double = 0.5,
+        var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
         var selectedPosRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedPosRange, 5),
         var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),

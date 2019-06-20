@@ -80,6 +80,22 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
     fun setVisConfig(appHaloConfig: AppHaloConfig){
         visConfig = appHaloConfig
         appPackageName = appHaloConfig.packageName
+
+        //parameter updates
+        currentIndependentNotiVisLayoutInfos.forEach{
+            //TODO()
+        }
+        currentIndependentVisEffects.values.forEachIndexed{index, effect ->
+            effect.visualParameters = appHaloConfig.independentVisEffectVisParams
+            effect.independentVisObjects.forEachIndexed{ index, visObj ->
+                visObj.setVisParams(appHaloConfig.independentVisualParameters[index])
+                visObj.setDataParams(appHaloConfig.independentDataParameters[index])
+                visObj.setAnimParams(*appHaloConfig.independentAnimationParameters[index].toTypedArray())
+                visObj.setVisMapping(appHaloConfig.independentVisualMappings[index])
+            }
+        }
+        currentAggregatedVisEffect
+
     }
 
     fun setAppHaloData(enhancedAppNotifications: EnhancedAppNotifications){
