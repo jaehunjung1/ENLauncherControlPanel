@@ -9,9 +9,11 @@ import android.graphics.drawable.shapes.OvalShape
 import android.util.Property
 import android.view.View
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
+import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
+import kotlin.math.roundToLong
 
 data class IndependentVisObjectVisParams(
         var selectedPos: Double = 1.0,
@@ -76,4 +78,14 @@ data class IndependentVisEffectVisParams(
 data class AggregatedVisEffectParams(
         var groupNumber: Int = 5,
         var contentGroupMap: Map<String, List<String>> = emptyMap()
+)
+
+data class NotificationEnhacementParams(
+        val initialImportance: Double = 0.5,
+        val lifespan: Long = 1000L * 60 * 60 * 6,
+        val importanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
+        val firstPattern: EnhancementPattern = EnhancementPattern.EQ,
+        val secondPattern: EnhancementPattern = EnhancementPattern.EQ,
+        val firstSaturationTime: Long = (lifespan * 0.5).roundToLong(),
+        val secondSaturationTime: Long= (lifespan * 0.5).roundToLong()
 )

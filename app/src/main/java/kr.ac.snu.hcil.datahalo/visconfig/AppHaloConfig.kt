@@ -100,6 +100,8 @@ data class AppHaloConfig(val packageName: String){
     )
     var maxNumOfIndependentNotifications: Int = 3
 
+    var notificationEnhancementParams: NotificationEnhacementParams = NotificationEnhacementParams()
+
     //AppHalo Layout & Visualization Methods
     var haloLayoutMethodName:String = AppHaloLayoutMethods.availiableLayouts[0]
     var independentVisEffectName: String = VisEffectManager.availableIndependentVisEffects[0]

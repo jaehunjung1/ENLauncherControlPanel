@@ -267,6 +267,9 @@ class IndependentMappingLayout(
                     }
                 }
 
+        givenPropContents.toMutableList().add(0, "None")
+        givenPropContents.toList()
+
         val spinnerAdapter = getArrayAdapter(givenPropStringContents)
         spinnerAdapter.setDropDownViewResource(R.layout.spinner_item)
         selectedPropContentsIndices.forEachIndexed{ index, indexVal ->
@@ -278,7 +281,11 @@ class IndependentMappingLayout(
                 spinner.setSelection(indexVal) //indexVal 번째 순서에 있는 givenPropContent
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                        val selectedData = givenPropContents[i]
+                        if(i == 0){
+                            //TODO(mapping)
+                            //notiDataPropContents[index] = selectedData
+                        }
+                        val selectedData = givenPropContents[i - 1]
                         notiDataPropContents[index] = selectedData
                     }
                     override fun onNothingSelected(adapterView: AdapterView<*>) {}

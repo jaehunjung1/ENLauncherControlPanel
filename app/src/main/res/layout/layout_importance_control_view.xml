@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Importance Plot"
+        android:textColor="@color/theme"
+        android:textSize="16sp"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="Initial Importance"
+        android:textColor="@color/theme"
+        android:textSize="16sp"
+        />
+
+    <io.apptik.widget.MultiSlider
+        android:id="@+id/initialImportanceSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:thumb="@drawable/seekbar_thumb"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginTop="10dp"
+        app:drawThumbsApart="true"
+        app:rangeColor="@color/theme"
+        app:scaleMax="10"
+        app:scaleMin="0"
+        app:scaleStep="1"
+        app:thumbNumber="1"
+        app:trackColor="@color/seek_bar_background" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:text = "Low"
+            />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text = "High"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="From Creation to Interaction"
+        android:textSize="16sp"
+        android:textColor="@color/theme"
+        />
+
+    <include
+        android:id="@+id/firstSaturation"
+        layout="@layout/layout_importance_saturation_control"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20dp"
+        android:text="From Interaction to Decay"
+        android:textSize="16sp"
+        android:textColor="@color/theme"
+        />
+
+    <include
+        android:id="@+id/secondSaturation"
+        layout="@layout/layout_importance_saturation_control"
+        />
+
+</LinearLayout>

@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import com.alespero.expandablecardview.ExpandableCardView
 
 import com.nex3z.flowlayout.FlowLayout
 import com.robertlevonyan.views.chip.Chip
@@ -22,6 +23,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 import io.apptik.widget.MultiSlider
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
+import kotlin.math.roundToLong
 
 
 class DataFilteringFragment : Fragment() {
@@ -50,8 +52,10 @@ class DataFilteringFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val parentLayout = inflater.inflate(R.layout.fragment_setting_data_filtering, container, false) as ViewGroup
 
+        val datafilteringCardView = parentLayout.findViewById<ExpandableCardView>(R.id.data_filter_card_view)
+
         // Enhancement Setting UI
-        val enhancementSeekbar = parentLayout.findViewById<MultiSlider>(R.id.enhancementSeekbar)
+        val enhancementSeekbar = datafilteringCardView.findViewById<MultiSlider>(R.id.enhancementSeekbar)
         enhancementSeekbar.getThumb(0).value = 2
         enhancementSeekbar.getThumb(1).value = 7
         enhancementSeekbar.setOnThumbValueChangeListener { _, _, thumbIndex, value ->
@@ -72,15 +76,15 @@ class DataFilteringFragment : Fragment() {
         }
 
         // Observation Setting UI
-        val observationWindowSeekbar = parentLayout.findViewById<MultiSlider>(R.id.observationWindowSeekbar)
+        val observationWindowSeekbar = datafilteringCardView.findViewById<MultiSlider>(R.id.observationWindowSeekbar)
         observationWindowSeekbar.getThumb(0).value = 2
         observationWindowSeekbar.getThumb(1).value = 7
         observationWindowSeekbar.setOnThumbValueChangeListener { _, _, thumbIndex, value ->
 
             if (thumbIndex == 0) {
-                filterObservationWindowMin = Math.round(value.toDouble() * maxTimeWindow / 9.0)
+                filterObservationWindowMin = (value.toDouble() * maxTimeWindow / 9.0).roundToLong()
             } else {
-                filterObservationWindowMax = Math.round(value.toDouble() * maxTimeWindow / 9.0)
+                filterObservationWindowMax = (value.toDouble() * maxTimeWindow / 9.0).roundToLong()
             }
 
             appConfigViewModel.appHaloConfigLiveData.value?.let{
@@ -98,9 +102,9 @@ class DataFilteringFragment : Fragment() {
         val imm = activity!!
                 .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        val whiteFlowLayout = parentLayout.findViewById<FlowLayout>(R.id.whiteFlowLayout)
-        val whiteKeywordTextInput = parentLayout.findViewById<TextInputLayout>(R.id.white_keyword_text_input)
-        val whiteKeywordEditText = parentLayout.findViewById<TextInputEditText>(R.id.white_keyword_editText)
+        val whiteFlowLayout = datafilteringCardView.findViewById<FlowLayout>(R.id.whiteFlowLayout)
+        val whiteKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.white_keyword_text_input)
+        val whiteKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.white_keyword_editText)
         whiteKeywordEditText.setOnEditorActionListener { _, i, _ ->
             if (i == EditorInfo.IME_ACTION_NEXT) {
                 imm.hideSoftInputFromWindow(whiteKeywordEditText.windowToken, 0)
@@ -120,9 +124,9 @@ class DataFilteringFragment : Fragment() {
             false
         }
 
-        val blackFlowLayout = parentLayout.findViewById<FlowLayout>(R.id.blackFlowLayout)
-        val blackKeywordTextInput = parentLayout.findViewById<TextInputLayout>(R.id.black_keyword_text_input)
-        val blackKeywordEditText = parentLayout.findViewById<TextInputEditText>(R.id.black_keyword_editText)
+        val blackFlowLayout = datafilteringCardView.findViewById<FlowLayout>(R.id.blackFlowLayout)
+        val blackKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.black_keyword_text_input)
+        val blackKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.black_keyword_editText)
         blackKeywordEditText.setOnEditorActionListener { _, i, _ ->
             if (i == EditorInfo.IME_ACTION_DONE) {
                 imm.hideSoftInputFromWindow(blackKeywordEditText.windowToken, 0)
@@ -141,6 +145,11 @@ class DataFilteringFragment : Fragment() {
             }
             false
         }
+
+        val enhancementSaturationCardView = parentLayout.findViewById<ExpandableCardView>(R.id.enhancement_card_view)
+        val enhancementSaturationView = enhancementSaturationCardView.findViewById<ImportanceControlView>(R.id.enhancement_control_view)
+        enhancementSaturationView.setViewModel(appConfigViewModel)
+
         return parentLayout
     }
 
@@ -174,6 +183,14 @@ class DataFilteringFragment : Fragment() {
                 (chipView.parent as ViewGroup).visibility = View.GONE
             }
             (chipView.parent as ViewGroup).removeView(chipView)
+            appConfigViewModel.appHaloConfigLiveData.value?.let{
+                it.filterKeywordConfig = mapOf(
+                        WGBFilterVar.ACTIVE to true,
+                        WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
+                        WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
+                )
+                appConfigViewModel.appHaloConfigLiveData.value = it
+            }
         }
     }
 }
