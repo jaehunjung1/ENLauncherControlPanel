@@ -122,7 +122,7 @@ public class IndependentMappingLayout extends LinearLayout {
 
         // if both continuous, need to create the continuous graph
         if (MappingContainer.isBothContinuous(visVar, notiProp)) {
-            // TODO
+            // TODO draw continuous graph
         } else {
             setMappingContent(dialogLayout);
         }
