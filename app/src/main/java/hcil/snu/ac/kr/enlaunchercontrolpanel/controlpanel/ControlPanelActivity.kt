@@ -26,7 +26,7 @@ class ControlPanelActivity : FragmentActivity() {
 
     companion object{
         private const val TAG = "HALO_SETTING_ACTIVITY"
-        private const val NUM_PAGES = 2
+        private const val NUM_PAGES = 4
         private val exampleNotifications = listOf(
                 EnhancedNotification(25123, "", System.currentTimeMillis(), 1000L * 60 * 60).also{
                     it.currEnhancement = 0.3
@@ -52,7 +52,9 @@ class ControlPanelActivity : FragmentActivity() {
     private inner class ScreenSlidPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm){
         private val fragments: List<Fragment> = listOf(
                 DataFilteringFragment(),
-                VisualSpecFragment()
+                VisualSpecFragment(),
+                IndepSpecFragment(),
+                AggreSpecFragment()
         )
         override fun getCount(): Int = NUM_PAGES
         override fun getItem(p0: Int): Fragment = fragments[p0]

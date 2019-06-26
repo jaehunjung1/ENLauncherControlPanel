@@ -2,4 +2,7 @@
     <string name="app_name">ENLauncherControlPanel</string>
     <string name="visual_var">Visual Variable</string>
     <string name="noti_property">Data Property</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
