@@ -12,13 +12,11 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SampleActivity"></activity>
         <activity
-            android:name=".Controlpanel.ControlPanelActivity"
+            android:name="hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.ControlPanelActivity"
             android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
