@@ -13,13 +13,10 @@ import android.widget.TextView
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 
 class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<HaloVisComponent>) : RecyclerView.Adapter<HaloVisComponentAdapter.HaloLayoutViewHolder>() {
-    private val layoutInflater: LayoutInflater
-    private val haloLayoutModelArrayList: List<HaloVisComponent>
+    private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
+    private val haloLayoutModelArrayList: List<HaloVisComponent> = hlmArrayList
 
-    init {
-        layoutInflater = LayoutInflater.from(context)
-        this.haloLayoutModelArrayList = hlmArrayList
-    }
+    var onItemClick: ((HaloVisComponent?) -> Unit)? = null
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): HaloLayoutViewHolder {
 
@@ -44,5 +41,13 @@ class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<H
     inner class HaloLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView = itemView.findViewById(R.id.recycler_item_imageview)
         var textView: TextView = itemView.findViewById(R.id.recycler_item_textview)
+        init{
+            itemView.setOnClickListener {
+                onItemClick?.invoke(
+                        if(itemCount == 0) null
+                        else haloLayoutModelArrayList[adapterPosition]
+                )
+            }
+        }
     }
 }

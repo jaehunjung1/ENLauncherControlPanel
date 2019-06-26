@@ -284,9 +284,11 @@ class IndependentMappingLayout(
                         if(i == 0){
                             //TODO(mapping)
                             //notiDataPropContents[index] = selectedData
+                        }else{
+                            val selectedData = givenPropContents[i - 1]
+                            notiDataPropContents[index] = selectedData
                         }
-                        val selectedData = givenPropContents[i - 1]
-                        notiDataPropContents[index] = selectedData
+
                     }
                     override fun onNothingSelected(adapterView: AdapterView<*>) {}
                 }

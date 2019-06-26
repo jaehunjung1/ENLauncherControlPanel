@@ -5,6 +5,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextPaint
 import android.text.TextWatcher
@@ -12,6 +14,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponent
+import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponentAdapter
 import io.apptik.widget.MultiSlider
 import kotlinx.android.synthetic.main.layout_importance_control_view.view.*
 import kotlinx.android.synthetic.main.layout_importance_saturation_control.view.*
@@ -26,8 +30,6 @@ import kotlin.math.roundToLong
  */
 class ImportanceControlView : LinearLayout {
 
-
-    //Properties Defined in XML
     enum class SaturationTimeUnit{
         MINUTES,
         HOURS,
@@ -49,8 +51,12 @@ class ImportanceControlView : LinearLayout {
     private var _saturationUnitAfterInteraction: SaturationTimeUnit = SaturationTimeUnit.MINUTES
 
     private var viewModel: AppHaloConfigViewModel? = null
-
     private var invalidateFlag = true
+
+    private var importanceSaturationExamples = listOf(
+            HaloVisComponent("example1", R.drawable.kakaotalk_logo)
+    )
+
 
     //Properties Set Programmatically
 
@@ -174,6 +180,11 @@ class ImportanceControlView : LinearLayout {
             flags = Paint.ANTI_ALIAS_FLAG
             textAlign = Paint.Align.LEFT
         }
+
+        val importanceSampleRecyclerView = findViewById<RecyclerView>(R.id.importanceExamples)
+        val haloLayoutAdapter = HaloVisComponentAdapter(context!!, importanceSaturationExamples)
+        importanceSampleRecyclerView.adapter = haloLayoutAdapter
+        importanceSampleRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
 
         initialImportanceSlider.apply{
