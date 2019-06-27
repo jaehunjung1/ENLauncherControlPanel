@@ -1,12 +1,12 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TextInputEditText
-import android.support.design.widget.TextInputLayout
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +26,7 @@ import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
 import kotlin.math.roundToLong
 
 
-class DataFilteringFragment : Fragment() {
+class DataFilteringFragment : androidx.fragment.app.Fragment() {
 
     // Data Parameters
     val maxTimeWindow: Long = 1000L * 60 * 60 * 24

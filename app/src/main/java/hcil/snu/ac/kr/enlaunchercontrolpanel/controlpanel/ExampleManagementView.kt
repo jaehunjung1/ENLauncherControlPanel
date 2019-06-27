@@ -1,22 +1,20 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.text.TextPaint
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
+import androidx.recyclerview.selection.SelectionPredicates
+import androidx.recyclerview.selection.SelectionTracker
+import androidx.recyclerview.selection.StableIdKeyProvider
+import androidx.recyclerview.selection.StorageStrategy
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloItemDetailsLookup
 import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponent
 import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponentAdapter
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
-import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 
 /**
  * TODO: document your custom view class.
@@ -27,6 +25,10 @@ class ExampleManagementView : LinearLayout {
     private var viewModel: AppHaloConfigViewModel? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewAdapter: HaloVisComponentAdapter
+    private var tracker: SelectionTracker<Long>? = null
+
+    private var currentHaloComponent: HaloVisComponent? = null
+    private var tempCounter: Int = 1
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -50,9 +52,6 @@ class ExampleManagementView : LinearLayout {
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
-
-
-
         invalidateExampleList()
     }
 
@@ -71,17 +70,29 @@ class ExampleManagementView : LinearLayout {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         }
 
+        tracker = SelectionTracker.Builder<Long>(
+                "haloComponentSelection",
+                recyclerView,
+                StableIdKeyProvider(recyclerView),
+                HaloItemDetailsLookup(recyclerView),
+                StorageStrategy.createLongStorage()
+        ).withSelectionPredicate(
+                SelectionPredicates.createSelectSingleAnything()
+        //selection predicate customization 할 수 있음
+        ).build().apply{
+            addObserver(object: SelectionTracker.SelectionObserver<Long>(){
+                override fun onSelectionChanged() {
+
+                }
+            })
+        }
+
         val addButon = findViewById<Button>(R.id.addButton).apply{
             setOnClickListener {
-                recyclerViewAdapter.onItemClick = {
-                    if(it == null){
+                if(currentHaloComponent != null){
 
-                    }
-                    else{
-                        
-                    }
                 }
-                _exampleDataList.add(HaloVisComponent("custom", R.drawable.kakaotalk_logo))
+                _exampleDataList.add(HaloVisComponent("custom_${tempCounter++}", R.drawable.kakaotalk_logo))
                 recyclerViewAdapter.notifyDataSetChanged()
             }
         }

@@ -4,7 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -41,7 +41,7 @@ abstract class AbstractIndependentVisEffect(
     //private val maxEffectSize = 100
     private val drawables: MutableList<Drawable> = mutableListOf()
     private val localLayoutParams: List<ConstraintLayout.LayoutParams>
-            = List(independentVisObjects.size){ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)}
+            = List(independentVisObjects.size){ ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)}
     private var animatorSet: AnimatorSet = AnimatorSet()
     private var currentCenterPolar: Pair<Int, Float> = Pair(-1, 0f)
     private var mappedNotificationID: Int = -1

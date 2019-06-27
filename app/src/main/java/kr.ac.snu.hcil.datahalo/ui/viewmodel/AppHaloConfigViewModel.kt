@@ -1,7 +1,7 @@
 package kr.ac.snu.hcil.datahalo.ui.viewmodel
 
 import android.animation.AnimatorSet
-import android.arch.lifecycle.*
+import androidx.lifecycle.*
 import android.graphics.Color
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape

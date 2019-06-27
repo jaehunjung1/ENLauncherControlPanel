@@ -4,7 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife

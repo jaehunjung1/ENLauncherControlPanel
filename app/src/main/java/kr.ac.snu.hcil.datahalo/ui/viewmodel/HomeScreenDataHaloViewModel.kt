@@ -1,12 +1,12 @@
 package kr.ac.snu.hcil.datahalo.ui.viewmodel
 
 import android.app.Application
-import android.arch.lifecycle.*
+import androidx.lifecycle.*
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Handler
-import android.support.v7.graphics.Palette
+import androidx.palette.graphics.Palette
 import android.util.Log
 import kr.ac.snu.hcil.datahalo.notificationdata.*
 import java.util.*
@@ -110,7 +110,7 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
         }
     }
 
-    var paletteMap: MutableMap<String, Palette> = mutableMapOf()
+    var paletteMap: MutableMap<String, androidx.palette.graphics.Palette> = mutableMapOf()
     var drawableMap: MutableMap<String, Drawable> = mutableMapOf()
 
     private val bWidth = 80

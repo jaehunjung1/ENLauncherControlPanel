@@ -2,8 +2,8 @@ package kr.ac.snu.hcil.datahalo.haloview
 
 import android.content.Context
 import android.graphics.Color
-import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView

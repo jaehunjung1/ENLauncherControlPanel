@@ -1,6 +1,6 @@
 package kr.ac.snu.hcil.datahalo.manager
 
-import android.support.constraint.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.utils.ANHComponentUIDGenerator
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
@@ -30,7 +30,7 @@ class AppHaloLayoutMethods {
 
 interface InterfaceANHVisLayout{
     val layoutID: String
-    fun generateLayoutParams(target:ConstraintLayout,
+    fun generateLayoutParams(target: ConstraintLayout,
                              pivotViewID: Int,
                              independent: List<EnhancedNotification>,
                              independentVisEffects: Map<Int, AbstractIndependentVisEffect>,

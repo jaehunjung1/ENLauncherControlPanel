@@ -1,12 +1,12 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentActivity
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentStatePagerAdapter
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentStatePagerAdapter
 import android.util.Log
 import android.view.Gravity
 import android.widget.FrameLayout
@@ -22,7 +22,7 @@ import kr.ac.snu.hcil.datahalo.notificationdata.NotiContent
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 
-class ControlPanelActivity : FragmentActivity() {
+class ControlPanelActivity : androidx.fragment.app.FragmentActivity() {
 
     companion object{
         private const val TAG = "HALO_SETTING_ACTIVITY"
@@ -49,13 +49,13 @@ class ControlPanelActivity : FragmentActivity() {
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
     private lateinit var previewHalo: AppNotificationHalo
 
-    private inner class ScreenSlidPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm){
-        private val fragments: List<Fragment> = listOf(
+    private inner class ScreenSlidPagerAdapter(fm: androidx.fragment.app.FragmentManager): androidx.fragment.app.FragmentStatePagerAdapter(fm){
+        private val fragments: List<androidx.fragment.app.Fragment> = listOf(
                 DataFilteringFragment(),
                 VisualSpecFragment()
         )
         override fun getCount(): Int = NUM_PAGES
-        override fun getItem(p0: Int): Fragment = fragments[p0]
+        override fun getItem(p0: Int): androidx.fragment.app.Fragment = fragments[p0]
     }
 
 

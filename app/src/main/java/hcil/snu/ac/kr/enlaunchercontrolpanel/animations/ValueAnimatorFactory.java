@@ -4,7 +4,7 @@ import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Handler;
-import android.support.constraint.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.view.animation.LinearInterpolator;
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.enaview.ENAView;

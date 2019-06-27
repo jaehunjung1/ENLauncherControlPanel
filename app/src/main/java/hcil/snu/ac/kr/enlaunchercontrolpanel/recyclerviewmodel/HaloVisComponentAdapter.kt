@@ -1,22 +1,27 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
-import android.support.v7.widget.RecyclerView
+import androidx.core.content.ContextCompat
+import androidx.cardview.widget.CardView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.selection.ItemDetailsLookup
+import androidx.recyclerview.selection.SelectionTracker
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 
 class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<HaloVisComponent>) : RecyclerView.Adapter<HaloVisComponentAdapter.HaloLayoutViewHolder>() {
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
-    private val haloLayoutModelArrayList: List<HaloVisComponent> = hlmArrayList
+    private val componentList: List<HaloVisComponent> = hlmArrayList
+    var tracker: SelectionTracker<Long>? = null
+    init{
+        setHasStableIds(true)
+    }
 
-    var onItemClick: ((HaloVisComponent?) -> Unit)? = null
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): HaloLayoutViewHolder {
 
@@ -30,24 +35,30 @@ class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<H
     }
 
     override fun onBindViewHolder(viewHolder: HaloLayoutViewHolder, i: Int) {
-        viewHolder.imageView.setImageResource(this.haloLayoutModelArrayList[i].drawableId)
-        viewHolder.textView.text = this.haloLayoutModelArrayList[i].label
+        tracker?.let{
+            viewHolder.bind(componentList[i], it.isSelected(i.toLong()))
+        }
     }
 
     override fun getItemCount(): Int {
-        return this.haloLayoutModelArrayList.size
+        return this.componentList.size
     }
+
+    override fun getItemId(position: Int): Long = position.toLong()
 
     inner class HaloLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var imageView: ImageView = itemView.findViewById(R.id.recycler_item_imageview)
         var textView: TextView = itemView.findViewById(R.id.recycler_item_textview)
-        init{
-            itemView.setOnClickListener {
-                onItemClick?.invoke(
-                        if(itemCount == 0) null
-                        else haloLayoutModelArrayList[adapterPosition]
-                )
-            }
+
+        fun bind(value: HaloVisComponent, activated: Boolean = false){
+            imageView.setImageResource(value.drawableId)
+            textView.text = value.label
+            itemView.isActivated = activated
+        }
+
+        fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> = object: ItemDetailsLookup.ItemDetails<Long>(){
+            override fun getPosition(): Int = adapterPosition
+            override fun getSelectionKey(): Long = itemId
         }
     }
 }
