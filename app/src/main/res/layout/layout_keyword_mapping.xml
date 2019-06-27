@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="170dp"
+    android:layout_width="160dp"
     android:layout_height="80dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <HorizontalScrollView
-        android:layout_width="150dp"
+        android:layout_width="130dp"
         android:layout_height="80dp"
         android:background="@drawable/rounded_rectangle">
 
@@ -21,15 +21,13 @@
 
     </HorizontalScrollView>
 
-    <ImageButton
+    <ImageView
         android:id="@+id/mapping_keyword_add_button"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="2dp"
-        android:background="@color/transparent"
-        app:srcCompat="@drawable/ic_outline_add_24px" />
-
+        android:background="@drawable/ic_outline_add_24px" />
 
 
 </LinearLayout>

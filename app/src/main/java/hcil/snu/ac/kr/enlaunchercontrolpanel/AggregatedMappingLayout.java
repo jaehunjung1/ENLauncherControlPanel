@@ -6,14 +6,17 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -178,105 +181,49 @@ public class AggregatedMappingLayout extends LinearLayout {
     private void setMappingContent(ViewGroup dialogLayout) {
         final LayoutInflater inflater = ((Activity)getContext()).getLayoutInflater();
 
+        int resourceId = notiProp.equals("Keyword")? R.layout.layout_nominal_dynamic_mapping : R.layout.layout_nominal_mapping;
 
         ((FrameLayout)dialogLayout.findViewById(R.id.dialog_frame_layout)).addView(
-                inflater.inflate(R.layout.layout_nominal_mapping, (ViewGroup)getParent(), false)
+                inflater.inflate(resourceId, (ViewGroup)getParent(), false)
         );
+
 
         TextView visVarTextView = dialogLayout.findViewById(R.id.vis_var_text_view);
         TextView notiPropTextView = dialogLayout.findViewById(R.id.noti_property_text_view);
         visVarTextView.setText(visVar);
         notiPropTextView.setText(notiProp);
 
-        LinearLayout visVarDialogList = dialogLayout.findViewById(R.id.vis_var_dialog_list);
-        LinearLayout notiPropDialogList = dialogLayout.findViewById(R.id.noti_prop_dialog_list);
-
-        // setting visVarListView
-        if (visVar.equals("Motion")) {
-            for (int i = 0; i < visVarDialogList.getChildCount(); i++) {
-                final FrameLayout frame = (FrameLayout) visVarDialogList.getChildAt(i);
-                frame.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rounded_rectangle));
-
-                // TODO for now, adding just dummy text view
-                TextView tv = new TextView(getContext());
-                tv.setText("Motion " + i);
-
-                frame.addView(tv);
-            }
-        } else if (visVar.equals("Shape")) {
-            for (int i = 0; i < visVarDialogList.getChildCount(); i++) {
-                final FrameLayout frame = (FrameLayout) visVarDialogList.getChildAt(i);
-                frame.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rounded_rectangle));
-
-                // TODO for now, addign just dummy text view
-                TextView tv = new TextView(getContext());
-                tv.setText("Shape " + i);
-
-                frame.addView(tv);
-            }
-        } else {
-            for (int i = 0; i < visVarDialogList.getChildCount(); i++) {
-                final FrameLayout frame = (FrameLayout) visVarDialogList.getChildAt(i);
-
-                // TODO color 반영 될 수 있도록 변경
-                final int origColor = ContextCompat.getColor(getContext(), R.color.holo_blue_light);
-                frame.setBackgroundColor(origColor);
-
-                frame.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final ColorPicker cp = new ColorPicker((Activity)getContext(),
-                                Color.red(origColor), Color.green(origColor), Color.blue(origColor)
-                        );
-                        cp.show();
-                        cp.enableAutoClose();
-                        cp.setCallback(new ColorPickerCallback() {
-                            @Override
-                            public void onColorChosen(int color) {
-                                frame.setBackgroundColor(color);
-                            }
-                        });
-                    }
-                });
-            }
-        }
+        final LinearLayout visVarDialogList = dialogLayout.findViewById(R.id.vis_var_dialog_list);
+        final LinearLayout notiPropDialogList = dialogLayout.findViewById(R.id.noti_prop_dialog_list);
 
         // Setting Noti Property ListView
         if (notiProp.equals("Keyword")) {
+            // frame add button
+            ImageButton addButton = dialogLayout.findViewById(R.id.frame_add_button);
+            addButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final FrameLayout notiFrame = new FrameLayout(getContext());
+                    notiFrame.setLayoutParams(notiPropDialogList.getChildAt(0).getLayoutParams());
+                    notiFrame.getLayoutParams().width = Utilities.dpToPx(getContext(), 160);
+
+                    addKeywordMapping(notiFrame, inflater);
+
+                    final FrameLayout visVarFrame = new FrameLayout(getContext());
+                    visVarFrame.setLayoutParams(visVarDialogList.getChildAt(0).getLayoutParams());
+
+                    addVisVarMapping(visVar, visVarDialogList.getChildCount(), visVarFrame);
+
+                }
+            });
+
+
             for (int i = 0; i < notiPropDialogList.getChildCount(); i++) {
                 final FrameLayout frame = (FrameLayout) notiPropDialogList.getChildAt(i);
-                frame.getLayoutParams().width = Utilities.dpToPx(getContext(), 170);
+                frame.getLayoutParams().width = Utilities.dpToPx(getContext(), 160);
 
-                LinearLayout keywordFrame = (LinearLayout)inflater.inflate(
-                        R.layout.layout_keyword_mapping, (ViewGroup)getParent(), false
-                );
-                final FlowLayout flowLayout = keywordFrame.findViewById(R.id.mapping_keyword_flowLayout);
-                final ImageButton addButton = keywordFrame.findViewById(R.id.mapping_keyword_add_button);
-                addButton.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        final AlertDialog.Builder mBuilder = new AlertDialog.Builder(
-                                getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar
-                        );
-                        final EditText editText = new EditText(getContext());
-                        mBuilder.setView(editText);
-                        mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                addKeywordToFlowLayout(flowLayout, editText.getText().toString(), inflater);
-                            }
-                        });
-                        mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                            }
-                        });
+                addKeywordMapping(frame, inflater);
 
-                        final AlertDialog mDialog = mBuilder.create();
-                        mDialog.show();
-                    }
-                });
-                frame.addView(keywordFrame);
             }
         } else {
             ArrayList<String> intervals = new ArrayList<>();
@@ -284,11 +231,11 @@ public class AggregatedMappingLayout extends LinearLayout {
                 for (int i = 1; i <= 5; i++) {
                     intervals.add("Stage " + i);
                 }
-            } else {
+            } else { // Noti Prop: Importance
                 for (int i = 1; i <= 5; i++) {
                     intervals.add(String.format(Locale.getDefault(),
                             "%.1f ~ %.1f", (1f / 5) * (i - 1), (1f / 5) * i
-                            ));
+                    ));
                 }
             }
             final ArrayAdapter<String> spinnerAdapter = getArrayAdapter(intervals);
@@ -314,6 +261,12 @@ public class AggregatedMappingLayout extends LinearLayout {
                 frame.addView(spinner);
             }
         }
+
+        for (int i = 0; i < visVarDialogList.getChildCount(); i++) {
+            final FrameLayout frame = (FrameLayout) visVarDialogList.getChildAt(i);
+            addVisVarMapping(visVar, i, frame);
+        }
+
     }
 
     private void addKeywordToFlowLayout(final FlowLayout flowLayout, String keyword, LayoutInflater inflater) {
@@ -356,6 +309,72 @@ public class AggregatedMappingLayout extends LinearLayout {
         };
     }
 
+    private void addKeywordMapping(FrameLayout frame, final LayoutInflater inflater) {
+        LinearLayout keywordFrame = (LinearLayout)inflater.inflate(
+                R.layout.layout_keyword_mapping, (ViewGroup)getParent(), false
+        );
+        final FlowLayout flowLayout = keywordFrame.findViewById(R.id.mapping_keyword_flowLayout);
+        final ImageView addButton = keywordFrame.findViewById(R.id.mapping_keyword_add_button);
+        addButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder mBuilder = new AlertDialog.Builder(
+                        getContext(), android.R.style.Theme_Holo_Light_Dialog_NoActionBar
+                );
+                final EditText editText = new EditText(getContext());
+                mBuilder.setView(editText);
+                mBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        addKeywordToFlowLayout(flowLayout, editText.getText().toString(), inflater);
+                    }
+                });
+                mBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+
+                final AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            }
+        });
+        frame.addView(keywordFrame);
+    }
+
+    private void addVisVarMapping(String visVar, int i, final FrameLayout frame) {
+        if (visVar.equals("Color")) {
+            // TODO color 반영 될 수 있도록 변경
+            final int origColor = ContextCompat.getColor(getContext(), R.color.holo_blue_light);
+            frame.setBackgroundColor(origColor);
+
+            frame.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final ColorPicker cp = new ColorPicker((Activity)getContext(),
+                            Color.red(origColor), Color.green(origColor), Color.blue(origColor)
+                    );
+                    cp.show();
+                    cp.enableAutoClose();
+                    cp.setCallback(new ColorPickerCallback() {
+                        @Override
+                        public void onColorChosen(int color) {
+                            frame.setBackgroundColor(color);
+                        }
+                    });
+                }
+            });
+        } else {
+            frame.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.rounded_rectangle));
+
+            TextView tv = new TextView(getContext());
+            tv.setText(visVar + " " + i);
+
+            frame.addView(tv);
+        }
+
+
+    }
 
 
 }
