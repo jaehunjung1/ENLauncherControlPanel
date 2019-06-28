@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
-import android.widget.Button
 import android.widget.LinearLayout
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -14,21 +13,16 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloItemDetailsLookup
 import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponent
 import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponentAdapter
+import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 
-/**
- * TODO: document your custom view class.
- */
-class ExampleManagementView : LinearLayout {
+class ExampleHaloComponentsManagementView : LinearLayout {
 
     private val _exampleDataList: MutableList<HaloVisComponent> = mutableListOf()
     private var viewModel: AppHaloConfigViewModel? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewAdapter: HaloVisComponentAdapter
     private var tracker: SelectionTracker<Long>? = null
-
-    private var currentHaloComponent: HaloVisComponent? = null
-    private var tempCounter: Int = 1
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -47,23 +41,22 @@ class ExampleManagementView : LinearLayout {
         set(value){
             _exampleDataList.clear()
             _exampleDataList.addAll(value)
-            invalidateExampleList()
+            recyclerViewAdapter.notifyDataSetChanged()
         }
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
-        invalidateExampleList()
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         // Load attributes
-        inflate(context, R.layout.layout_example_management_view, this)
+        inflate(context, R.layout.layout_example_components_management_view, this)
 
         val a = context.obtainStyledAttributes(
                 attrs, R.styleable.ExampleManagementView, defStyle, 0)
         a.recycle()
 
-        recyclerView = findViewById(R.id.exampleRecyclerView)
+        recyclerView = findViewById(R.id.exampleHaloVisComponentsRecyclerView)
         recyclerViewAdapter = HaloVisComponentAdapter(context, _exampleDataList)
         recyclerView.apply{
             adapter = recyclerViewAdapter
@@ -82,21 +75,33 @@ class ExampleManagementView : LinearLayout {
         ).build().apply{
             addObserver(object: SelectionTracker.SelectionObserver<Long>(){
                 override fun onSelectionChanged() {
-
+                    this@apply.selection.map{id ->
+                        val position = id.toInt()
+                        val selected: HaloVisComponent = recyclerViewAdapter.componentList[position]
+                        viewModel?.appHaloConfigLiveData?.value?.let{ appHaloConfig ->
+                            when(selected.componentType){
+                                HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT -> {
+                                    appHaloConfig.independentVisEffectName = selected.label!!
+                                }
+                                HaloVisComponent.HaloVisComponentType.AGGREGATED_VISEFFECT -> {
+                                    appHaloConfig.aggregatedVisEffectName = selected.label!!
+                                }
+                                HaloVisComponent.HaloVisComponentType.VISEFFECT_LAYOUT -> {
+                                    //appConfig의 layout 이름 바꾸면 런타임에 알아서 가져오는듯?
+                                    appHaloConfig.haloLayoutMethodName = selected.label!!
+                                }
+                                HaloVisComponent.HaloVisComponentType.IMPORTANCE_SATURATION -> {
+                                    VisDataManager.getExampleSaturationPattern(selected.label!!)?.let{
+                                        appHaloConfig.notificationEnhancementParams = it
+                                    }
+                                }
+                            }
+                            viewModel?.appHaloConfigLiveData?.value = appHaloConfig
+                        }
+                    }
                 }
             })
         }
-
-        val addButon = findViewById<Button>(R.id.addButton).apply{
-            setOnClickListener {
-                if(currentHaloComponent != null){
-
-                }
-                _exampleDataList.add(HaloVisComponent("custom_${tempCounter++}", R.drawable.kakaotalk_logo))
-                recyclerViewAdapter.notifyDataSetChanged()
-            }
-        }
-
     }
 
     private fun invalidateExampleList(){

@@ -16,7 +16,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 
 class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<HaloVisComponent>) : RecyclerView.Adapter<HaloVisComponentAdapter.HaloLayoutViewHolder>() {
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
-    private val componentList: List<HaloVisComponent> = hlmArrayList
+    val componentList: List<HaloVisComponent> = hlmArrayList
     var tracker: SelectionTracker<Long>? = null
     init{
         setHasStableIds(true)

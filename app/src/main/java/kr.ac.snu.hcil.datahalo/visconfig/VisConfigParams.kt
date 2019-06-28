@@ -81,11 +81,11 @@ data class AggregatedVisEffectParams(
 )
 
 data class NotificationEnhacementParams(
-        val initialImportance: Double = 0.5,
-        val lifespan: Long = 1000L * 60 * 60 * 6,
-        val importanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        val firstPattern: EnhancementPattern = EnhancementPattern.EQ,
-        val secondPattern: EnhancementPattern = EnhancementPattern.EQ,
-        val firstSaturationTime: Long = (lifespan * 0.5).roundToLong(),
-        val secondSaturationTime: Long= (lifespan * 0.5).roundToLong()
+        var initialImportance: Double = 0.5,
+        var lifespan: Long = 1000L * 60 * 60 * 6,
+        var importanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
+        var firstPattern: EnhancementPattern = EnhancementPattern.EQ,
+        var secondPattern: EnhancementPattern = EnhancementPattern.EQ,
+        var firstSaturationTime: Long = (lifespan * 0.5).roundToLong(),
+        var secondSaturationTime: Long= (lifespan * 0.5).roundToLong()
 )

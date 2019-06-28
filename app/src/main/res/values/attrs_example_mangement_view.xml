@@ -1,5 +1,5 @@
 <resources>
-    <declare-styleable name="ExampleManagementView">
+    <declare-styleable name="ExampleHaloComponentsManagementView">
 
     </declare-styleable>
 </resources>

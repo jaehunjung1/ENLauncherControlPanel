@@ -2,12 +2,51 @@ package kr.ac.snu.hcil.datahalo.manager
 
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
+import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
 import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
 import kr.ac.snu.hcil.datahalo.utils.WGBFilterManager
 import kr.ac.snu.hcil.datahalo.visconfig.*
 
-class VisDataConverter {
+class VisDataManager {
     companion object{
+        val exampleImportanceSaturationPatterns: Map<String, String> = mapOf(
+                "type1" to "Importance Increases Fast Just After It Triggers, and Slowly Fades Out",
+                "type2" to "Importance Decreases Fast Just After It Triggers, and Slowly"
+        )
+
+        fun getExampleSaturationPattern(key: String): NotificationEnhacementParams?{
+            return when(key){
+                "type1" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.5,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.INC,
+                            secondPattern = EnhancementPattern.DEC,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
+                "type2" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.5,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.DEC,
+                            secondPattern = EnhancementPattern.DEC,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
+                else -> null
+            }
+        }
+
+        fun convert(data: EnhancedAppNotifications, visConfig: AppHaloConfig): Map<NotificationType, List<EnhancedNotification>>{
+            val optionFilters = constructFilters(visConfig)
+            val sampleMax = visConfig.maxNumOfIndependentNotifications
+            return filterAndCategorizeEnhancedNotifications(data, optionFilters, sampleMax)
+        }
 
         private fun constructFilters(visConfig: AppHaloConfig): Map<Options, WGBFilterManager.WGBFilter<out Any>>{
             return mapOf(
@@ -41,11 +80,6 @@ class VisDataConverter {
             )
         }
 
-        fun convert(data: EnhancedAppNotifications, visConfig: AppHaloConfig): Map<NotificationType, List<EnhancedNotification>>{
-            val optionFilters = constructFilters(visConfig)
-            val sampleMax = visConfig.maxNumOfIndependentNotifications
-            return filterAndCategorizeEnhancedNotifications(data, optionFilters, sampleMax)
-        }
 
         private fun filterAndCategorizeEnhancedNotifications(
                 data: EnhancedAppNotifications,

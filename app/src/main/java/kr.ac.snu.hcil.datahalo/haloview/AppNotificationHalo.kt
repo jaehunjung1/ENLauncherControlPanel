@@ -10,7 +10,7 @@ import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotificationType
-import kr.ac.snu.hcil.datahalo.manager.VisDataConverter
+import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.visualEffects.AbstractIndependentVisEffect
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
@@ -105,7 +105,7 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
             return
 
         visConfig?.let{config ->
-            val result = VisDataConverter.convert(enhancedAppNotifications, config)
+            val result = VisDataManager.convert(enhancedAppNotifications, config)
             val independentNotis = result[NotificationType.INDEPENDENT]?: emptyList()
             val aggregatedNotis = result[NotificationType.AGGREGATED]?: emptyList()
 

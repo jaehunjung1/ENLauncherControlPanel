@@ -38,13 +38,13 @@ class VisualSpecFragment : androidx.fragment.app.Fragment() {
         } ?: throw Exception("Invalid Activity")
 
         haloLayoutMethodVisComponents = AppHaloLayoutMethods.availiableLayouts.map{
-            HaloVisComponent(it, R.drawable.kakaotalk_logo)
+            HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.VISEFFECT_LAYOUT)
         }
         haloIndependentEffectVisComponents = VisEffectManager.availableIndependentVisEffects.map{
-            HaloVisComponent(it, R.drawable.kakaotalk_logo)
+            HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT)
         }
         haloAggregatedEffectVisComponents = VisEffectManager.availableAggregatedVisEffects.map{
-            HaloVisComponent(it, R.drawable.kakaotalk_logo)
+            HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.AGGREGATED_VISEFFECT)
         }
     }
 
