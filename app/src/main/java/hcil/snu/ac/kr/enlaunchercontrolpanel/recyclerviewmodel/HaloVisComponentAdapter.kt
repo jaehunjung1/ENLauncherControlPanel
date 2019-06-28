@@ -27,10 +27,11 @@ class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<H
 
         val view = layoutInflater.inflate(R.layout.recyler_item_controlpanel, viewGroup, false)
         val holder = HaloLayoutViewHolder(view)
+        /*
         holder.itemView.setOnClickListener { view ->
             val card = (view as ViewGroup).getChildAt(0) as CardView
             card.setCardBackgroundColor(ContextCompat.getColor(context, R.color.chip_background))
-        }
+        }*/
         return holder
     }
 
@@ -47,8 +48,8 @@ class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<H
     override fun getItemId(position: Int): Long = position.toLong()
 
     inner class HaloLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var imageView: ImageView = itemView.findViewById(R.id.recycler_item_imageview)
-        var textView: TextView = itemView.findViewById(R.id.recycler_item_textview)
+        private var imageView: ImageView = itemView.findViewById(R.id.recycler_item_imageview)
+        private var textView: TextView = itemView.findViewById(R.id.recycler_item_textview)
 
         fun bind(value: HaloVisComponent, activated: Boolean = false){
             imageView.setImageResource(value.drawableId)
@@ -58,7 +59,7 @@ class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<H
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> = object: ItemDetailsLookup.ItemDetails<Long>(){
             override fun getPosition(): Int = adapterPosition
-            override fun getSelectionKey(): Long = itemId
+            override fun getSelectionKey(): Long? = itemId
         }
     }
 }

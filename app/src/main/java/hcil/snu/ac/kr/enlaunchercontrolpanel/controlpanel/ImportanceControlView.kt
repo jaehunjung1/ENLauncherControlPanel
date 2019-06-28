@@ -19,6 +19,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponentA
 import io.apptik.widget.MultiSlider
 import kotlinx.android.synthetic.main.layout_importance_control_view.view.*
 import kotlinx.android.synthetic.main.layout_importance_saturation_control.view.*
+import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
@@ -53,10 +54,9 @@ class ImportanceControlView : LinearLayout {
     private var viewModel: AppHaloConfigViewModel? = null
     private var invalidateFlag = true
 
-    private var importanceSaturationExamples = listOf(
-            HaloVisComponent("example1", R.drawable.kakaotalk_logo)
-    )
-
+    private var importanceSaturationExamples = VisDataManager.exampleImportanceSaturationPatterns.map{
+        HaloVisComponent(it.key, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.IMPORTANCE_SATURATION)
+    }
 
     //Properties Set Programmatically
 
@@ -181,11 +181,16 @@ class ImportanceControlView : LinearLayout {
             textAlign = Paint.Align.LEFT
         }
 
+        /*
         val importanceSampleRecyclerView = findViewById<RecyclerView>(R.id.importanceExamples)
         val haloLayoutAdapter = HaloVisComponentAdapter(context!!, importanceSaturationExamples)
         importanceSampleRecyclerView.adapter = haloLayoutAdapter
         importanceSampleRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+        */
 
+        findViewById<ExampleHaloComponentsManagementView>(R.id.exampleSelectionView).apply{
+            exampleDataList = importanceSaturationExamples
+        }
 
         initialImportanceSlider.apply{
             setOnThumbValueChangeListener { _, _, _, value ->
@@ -293,6 +298,12 @@ class ImportanceControlView : LinearLayout {
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
+
+        findViewById<ExampleHaloComponentsManagementView>(R.id.exampleSelectionView).apply{
+            setViewModel(appConfigViewModel)
+        }
+
+
         appConfigViewModel.appHaloConfigLiveData.value?.let{
             invalidateFlag = false
             val currentParam = it.notificationEnhancementParams

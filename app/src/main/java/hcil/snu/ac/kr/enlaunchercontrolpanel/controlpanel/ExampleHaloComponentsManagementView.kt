@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
+import android.util.Log
 import android.widget.LinearLayout
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
@@ -18,6 +19,9 @@ import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 
 class ExampleHaloComponentsManagementView : LinearLayout {
 
+    companion object{
+        private const val TAG = "ComponentExamplesView"
+    }
     private val _exampleDataList: MutableList<HaloVisComponent> = mutableListOf()
     private var viewModel: AppHaloConfigViewModel? = null
     private lateinit var recyclerView: RecyclerView
@@ -53,7 +57,7 @@ class ExampleHaloComponentsManagementView : LinearLayout {
         inflate(context, R.layout.layout_example_components_management_view, this)
 
         val a = context.obtainStyledAttributes(
-                attrs, R.styleable.ExampleManagementView, defStyle, 0)
+                attrs, R.styleable.ExampleHaloComponentsManagementView, defStyle, 0)
         a.recycle()
 
         recyclerView = findViewById(R.id.exampleHaloVisComponentsRecyclerView)
@@ -72,10 +76,13 @@ class ExampleHaloComponentsManagementView : LinearLayout {
         ).withSelectionPredicate(
                 SelectionPredicates.createSelectSingleAnything()
         //selection predicate customization 할 수 있음
-        ).build().apply{
-            addObserver(object: SelectionTracker.SelectionObserver<Long>(){
+        ).build()
+
+
+        tracker?.addObserver(object: SelectionTracker.SelectionObserver<Long>(){
                 override fun onSelectionChanged() {
-                    this@apply.selection.map{id ->
+                    Log.d(TAG, "On Selection Changed ${tracker?.selection?.size()}")
+                    tracker?.selection?.map{id ->
                         val position = id.toInt()
                         val selected: HaloVisComponent = recyclerViewAdapter.componentList[position]
                         viewModel?.appHaloConfigLiveData?.value?.let{ appHaloConfig ->
@@ -100,8 +107,17 @@ class ExampleHaloComponentsManagementView : LinearLayout {
                         }
                     }
                 }
+                override fun onItemStateChanged(key: Long, selected: Boolean) {
+                    Log.d(TAG, "On Item at $key is Changed to $selected")
+                    super.onItemStateChanged(key, selected)
+                }
+
+                override fun onSelectionRefresh() {
+                    Log.d(TAG, "On Selection is Refreshed")
+                    super.onSelectionRefresh()
+                }
             })
-        }
+        recyclerViewAdapter.tracker = tracker
     }
 
     private fun invalidateExampleList(){
