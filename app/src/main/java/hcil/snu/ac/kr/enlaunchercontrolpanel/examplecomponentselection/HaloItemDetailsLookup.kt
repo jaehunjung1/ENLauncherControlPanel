@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection
 
 import android.view.MotionEvent
 import androidx.recyclerview.selection.ItemDetailsLookup

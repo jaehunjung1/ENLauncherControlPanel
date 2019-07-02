@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection
 
 data class HaloVisComponent(var label: String? = null, var drawableId: Int = 0, val componentType: HaloVisComponentType){
     enum class HaloVisComponentType{

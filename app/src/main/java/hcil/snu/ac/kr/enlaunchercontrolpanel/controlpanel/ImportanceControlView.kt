@@ -1,12 +1,9 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.text.Editable
 import android.text.TextPaint
 import android.text.TextWatcher
@@ -14,9 +11,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
-import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponent
-import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponentAdapter
-import io.apptik.widget.MultiSlider
+import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
+import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponent
 import kotlinx.android.synthetic.main.layout_importance_control_view.view.*
 import kotlinx.android.synthetic.main.layout_importance_saturation_control.view.*
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
@@ -188,7 +184,7 @@ class ImportanceControlView : LinearLayout {
         importanceSampleRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         */
 
-        findViewById<ExampleHaloComponentsManagementView>(R.id.exampleSelectionView).apply{
+        findViewById<ComponentExampleSelectionView>(R.id.exampleSelectionView).apply{
             exampleDataList = importanceSaturationExamples
         }
 
@@ -204,7 +200,7 @@ class ImportanceControlView : LinearLayout {
         val firstSaturationUnit = firstSaturationControl.findViewById<Spinner>(R.id.saturationUnit)
 
         firstSaturationImportancePattern.apply{
-            adapter = ArrayAdapter(context, R.layout.spinner_item, EnhancementPattern.values())
+            adapter = ArrayAdapter(context, R.layout.item_spinner, EnhancementPattern.values())
             onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     patternBeforeInteraction = getItemAtPosition(position) as EnhancementPattern
@@ -231,7 +227,7 @@ class ImportanceControlView : LinearLayout {
         val secondSaturationUnit = secondSaturationControl.findViewById<Spinner>(R.id.saturationUnit)
 
         secondSaturationImportancePattern.apply{
-            adapter = ArrayAdapter(context, R.layout.spinner_item, EnhancementPattern.values())
+            adapter = ArrayAdapter(context, R.layout.item_spinner, EnhancementPattern.values())
             onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     patternAfterInteraction = getItemAtPosition(position) as EnhancementPattern
@@ -271,7 +267,7 @@ class ImportanceControlView : LinearLayout {
         })
 
         firstSaturation.saturationUnit.apply{
-            adapter = ArrayAdapter(context, R.layout.spinner_item, SaturationTimeUnit.values())
+            adapter = ArrayAdapter(context, R.layout.item_spinner, SaturationTimeUnit.values())
             onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     _saturationUnitBeforeInteraction = getItemAtPosition(position) as SaturationTimeUnit
@@ -282,7 +278,7 @@ class ImportanceControlView : LinearLayout {
         }
 
         secondSaturation.saturationUnit.apply{
-            adapter = ArrayAdapter(context, R.layout.spinner_item, SaturationTimeUnit.values())
+            adapter = ArrayAdapter(context, R.layout.item_spinner, SaturationTimeUnit.values())
             onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                     _saturationUnitAfterInteraction = getItemAtPosition(position) as SaturationTimeUnit
@@ -299,7 +295,7 @@ class ImportanceControlView : LinearLayout {
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
 
-        findViewById<ExampleHaloComponentsManagementView>(R.id.exampleSelectionView).apply{
+        findViewById<ComponentExampleSelectionView>(R.id.exampleSelectionView).apply{
             setViewModel(appConfigViewModel)
         }
 

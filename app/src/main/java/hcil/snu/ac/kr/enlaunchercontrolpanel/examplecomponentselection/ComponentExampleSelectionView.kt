@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection
 
 import android.content.Context
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,13 +11,10 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StableIdKeyProvider
 import androidx.recyclerview.selection.StorageStrategy
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
-import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloItemDetailsLookup
-import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponent
-import hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel.HaloVisComponentAdapter
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 
-class ExampleHaloComponentsManagementView : LinearLayout {
+class ComponentExampleSelectionView : LinearLayout {
 
     companion object{
         private const val TAG = "ComponentExamplesView"
@@ -57,7 +54,7 @@ class ExampleHaloComponentsManagementView : LinearLayout {
         inflate(context, R.layout.layout_example_components_management_view, this)
 
         val a = context.obtainStyledAttributes(
-                attrs, R.styleable.ExampleHaloComponentsManagementView, defStyle, 0)
+                attrs, R.styleable.ComponentExampleSelectionView, defStyle, 0)
         a.recycle()
 
         recyclerView = findViewById(R.id.exampleHaloVisComponentsRecyclerView)

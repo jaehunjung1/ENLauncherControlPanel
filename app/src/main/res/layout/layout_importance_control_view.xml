@@ -14,7 +14,7 @@
         android:textSize="16sp"
         />
 
-    <hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.ExampleHaloComponentsManagementView
+    <hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
         android:id = "@+id/exampleSelectionView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

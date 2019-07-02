@@ -1,8 +1,6 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.recyclerviewmodel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection
 
 import android.content.Context
-import androidx.core.content.ContextCompat
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -25,7 +23,7 @@ class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<H
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): HaloLayoutViewHolder {
 
-        val view = layoutInflater.inflate(R.layout.recyler_item_controlpanel, viewGroup, false)
+        val view = layoutInflater.inflate(R.layout.item_examplecomponentselection, viewGroup, false)
         val holder = HaloLayoutViewHolder(view)
         /*
         holder.itemView.setOnClickListener { view ->

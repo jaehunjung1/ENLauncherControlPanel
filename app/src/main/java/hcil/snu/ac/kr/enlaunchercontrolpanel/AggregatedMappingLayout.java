@@ -68,7 +68,7 @@ public class AggregatedMappingLayout extends LinearLayout {
         ((TextView)findViewById(R.id.visvar_textview)).setText(visVar);
 
         notiPropSpinnerAdapter = getArrayAdapter(MappingContainer.notiPropStringList);
-        notiPropSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+        notiPropSpinnerAdapter.setDropDownViewResource(R.layout.item_spinner);
         notiPropSpinner = findViewById(R.id.notiProp_spinner);
         notiPropSpinner.setAdapter(notiPropSpinnerAdapter);
 
@@ -91,7 +91,7 @@ public class AggregatedMappingLayout extends LinearLayout {
         });
 
         aggOPSpinnerAdapter = getArrayAdapter(MappingContainer.aggregateOPStringList);
-        aggOPSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+        aggOPSpinnerAdapter.setDropDownViewResource(R.layout.item_spinner);
         aggOPSpinner = findViewById(R.id.aggregateOP_spinner);
         aggOPSpinner.setAdapter(aggOPSpinnerAdapter);
 
@@ -292,7 +292,7 @@ public class AggregatedMappingLayout extends LinearLayout {
                 }
             }
             final ArrayAdapter<String> spinnerAdapter = getArrayAdapter(intervals);
-            spinnerAdapter.setDropDownViewResource(R.layout.spinner_item);
+            spinnerAdapter.setDropDownViewResource(R.layout.item_spinner);
             for (int i = 0; i < notiPropDialogList.getChildCount(); i++) {
                 final FrameLayout frame = (FrameLayout) notiPropDialogList.getChildAt(i);
 
@@ -330,7 +330,7 @@ public class AggregatedMappingLayout extends LinearLayout {
     }
 
     private ArrayAdapter<String> getArrayAdapter(List<String> stringList) {
-        return new ArrayAdapter<String>(getContext(), R.layout.spinner_item, stringList) {
+        return new ArrayAdapter<String>(getContext(), R.layout.item_spinner, stringList) {
             @Override
             public boolean isEnabled(int position){
                 if (position == 0) {

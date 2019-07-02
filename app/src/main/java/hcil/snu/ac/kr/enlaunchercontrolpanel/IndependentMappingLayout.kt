@@ -28,7 +28,6 @@ import kotlinx.android.synthetic.main.independent_mapping_layout.view.*
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
-import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
@@ -83,7 +82,7 @@ class IndependentMappingLayout(
             it.toList()
         }
         notiPropSpinnerAdapter = getArrayAdapter(spinnerValues)
-        notiPropSpinnerAdapter.setDropDownViewResource(R.layout.spinner_item)
+        notiPropSpinnerAdapter.setDropDownViewResource(R.layout.item_spinner)
         notiProp_spinner.adapter = notiPropSpinnerAdapter
 
         viewModel.appHaloConfigLiveData.value?.let{
@@ -271,7 +270,7 @@ class IndependentMappingLayout(
         givenPropContents.toList()
 
         val spinnerAdapter = getArrayAdapter(givenPropStringContents)
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item)
+        spinnerAdapter.setDropDownViewResource(R.layout.item_spinner)
         selectedPropContentsIndices.forEachIndexed{ index, indexVal ->
             (notiPropDialogList.getChildAt(index) as FrameLayout).also{ frame ->
                 frame.removeAllViews()
@@ -441,7 +440,7 @@ class IndependentMappingLayout(
     }
 
     private fun getArrayAdapter(stringList: List<String>): ArrayAdapter<String> {
-        return object : ArrayAdapter<String>(context, R.layout.spinner_item, stringList) {
+        return object : ArrayAdapter<String>(context, R.layout.item_spinner, stringList) {
             override fun isEnabled(position: Int): Boolean {
                 return true
                 /*
