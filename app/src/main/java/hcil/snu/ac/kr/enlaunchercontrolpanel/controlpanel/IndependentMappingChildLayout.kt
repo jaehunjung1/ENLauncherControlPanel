@@ -1,5 +1,6 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 
+import android.animation.AnimatorSet
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
@@ -29,10 +30,16 @@ class IndependentMappingChildLayout : LinearLayout {
         private const val TAG = "Inde_Map_Child"
     }
 
+    interface ChildViewInteractionListener{
+        fun onMappingContentsUpdated()
+    }
+
     private var notiVisVar: NuNotiVisVariable = NuNotiVisVariable.MOTION
     private var notiDataProp: NotiProperty? = null
     private var viewModel: AppHaloConfigViewModel? = null
     private var objIndex: Int = -1
+
+    private var mappingContentsChangedListener: ChildViewInteractionListener? = null
 
     private val visVarContents: MutableList<Any> = mutableListOf()
     private val notiDataPropContents: MutableList<Any> = mutableListOf()
@@ -72,6 +79,49 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
+    fun setMappingContentsChangedListener(listener: ChildViewInteractionListener){
+        mappingContentsChangedListener = listener
+    }
+
+    private fun updateAppConfig(){
+        viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
+
+            when(notiVisVar){
+                NuNotiVisVariable.MOTION -> {
+                    currentConfig.independentVisualParameters[objIndex].selectedMotionList = (visVarContents as MutableList<AnimatorSet>).toList()
+                }
+                NuNotiVisVariable.COLOR -> {
+                    currentConfig.independentVisualParameters[objIndex].selectedColorList = (visVarContents as MutableList<Int>).toList()
+                }
+                NuNotiVisVariable.SHAPE -> {
+                    currentConfig.independentVisualParameters[objIndex].selectedShapeList = (visVarContents as MutableList<VisObjectShape>).toList()
+                }
+                NuNotiVisVariable.SIZE -> {
+                    currentConfig.independentVisualParameters[objIndex].selectedSizeRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
+                }
+                NuNotiVisVariable.POSITION -> {
+                    currentConfig.independentVisualParameters[objIndex].selectedPosRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
+                }
+            }
+
+            when(notiDataProp){
+                NotiProperty.LIFE_STAGE -> {
+                    currentConfig.independentDataParameters[objIndex].selectedLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
+                }
+                NotiProperty.IMPORTANCE -> {
+                    currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
+                }
+                NotiProperty.CONTENT -> {
+                    currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
+                }
+                else -> {}
+            }
+
+            viewModel?.appHaloConfigLiveData?.value = currentConfig
+            mappingContentsChangedListener?.onMappingContentsUpdated()
+        }
+    }
+
     private fun setDiscreteMapping(appConfig: AppHaloConfig){
         View.inflate(context, R.layout.item_child_nominal_expandablecontrolpanel, this)
 
@@ -102,7 +152,6 @@ class IndependentMappingChildLayout : LinearLayout {
                 }
         )
 
-
         //visVar Contents 가져오고
         visVarContents.clear()
         visVarContents.addAll(
@@ -112,7 +161,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             listOf(independentVisParams.selectedMotion)
                         }
                         else{
-                            independentVisParams.selectedMotionList.subList(0, notiDataPropContents.size - 1)
+                            independentVisParams.selectedMotionList.subList(0, notiDataPropContents.size)
                         }
                     }
                     NuNotiVisVariable.SHAPE -> {
@@ -120,7 +169,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             listOf(independentVisParams.selectedShape)
                         }
                         else{
-                            independentVisParams.selectedShapeList.subList(0, notiDataPropContents.size - 1)
+                            independentVisParams.selectedShapeList.subList(0, notiDataPropContents.size)
                         }
 
                     }
@@ -129,13 +178,13 @@ class IndependentMappingChildLayout : LinearLayout {
                             listOf(independentVisParams.selectedColor)
                         }
                         else{
-                            independentVisParams.selectedColorList.subList(0, notiDataPropContents.size - 1)
+                            independentVisParams.selectedColorList.subList(0, notiDataPropContents.size)
                         }
                     }
                     NuNotiVisVariable.SIZE -> {
                         if(notiDataPropContents.size == 0)
                         {
-                            listOf(independentVisParams.selectedSize)
+                            listOf(independentVisParams.selectedSizeRange)
                         }
                         else{
                             MapFunctionUtilities.bin(
@@ -147,7 +196,7 @@ class IndependentMappingChildLayout : LinearLayout {
                     NuNotiVisVariable.POSITION -> {
                         if(notiDataPropContents.size == 0)
                         {
-                            listOf(independentVisParams.selectedPos)
+                            listOf(independentVisParams.selectedPosRange)
                         }
                         else{
                             MapFunctionUtilities.bin(
@@ -172,7 +221,7 @@ class IndependentMappingChildLayout : LinearLayout {
 
         when (notiDataProp) {
             NotiProperty.CONTENT -> {
-                setKeywordFrameView(notiDataPropContents as MutableList<Pair<String, MutableList<String>>>, notiPropLayout, (context as Activity).layoutInflater)
+                setKeywordFrameView(notiDataPropContents as MutableList<Pair<String, MutableList<String>>>, notiPropLayout, context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
             }
             NotiProperty.LIFE_STAGE -> {
                 val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{independentDataParams.givenLifeList.indexOf(it)}
@@ -188,11 +237,8 @@ class IndependentMappingChildLayout : LinearLayout {
                         givenImportanceList,
                         notiPropLayout)
             }
-            null -> {
-
-            }
+            null -> { }
         }
-
     }
 
     private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
@@ -204,6 +250,7 @@ class IndependentMappingChildLayout : LinearLayout {
                 (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>)
                         .find{keywordGroups -> keywordGroups.first == (flowLayout.tag as String) }
                         ?.let{ keywordGroup -> keywordGroup.second.remove(keyword) }
+                updateAppConfig()
             }
             flowLayout.addView(chipView)
         }
@@ -217,9 +264,9 @@ class IndependentMappingChildLayout : LinearLayout {
         notiDataPropContents.forEachIndexed { index, keywordGroup ->
             notiPropLayout.addView(
                     FrameLayout(context).also { frame ->
-                        frame.removeAllViews()
-                        frame.layoutParams.width = Utilities.dpToPx(context, 170)
-                        val keywordFrame = inflater.inflate(R.layout.layout_keyword_mapping, parent as ViewGroup, false) as LinearLayout
+                        //frame.removeAllViews()
+                        //frame.layoutParams.width = Utilities.dpToPx(context, 170)
+                        val keywordFrame = inflater.inflate(R.layout.layout_keyword_mapping, null, false) as LinearLayout
 
                         val flowLayout = keywordFrame.findViewById<FlowLayout>(R.id.mapping_keyword_flowLayout).apply{
                             tag = keywordGroup.first
@@ -246,7 +293,7 @@ class IndependentMappingChildLayout : LinearLayout {
                         }
                         frame.addView(keywordFrame)
                     },
-                    LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply{
+                    LayoutParams(Utilities.dpToPx(context, 170), LayoutParams.WRAP_CONTENT).apply{
                         marginStart = Utilities.dpToPx(context, 10)
                         marginEnd = Utilities.dpToPx(context, 10)
                     }
@@ -270,31 +317,31 @@ class IndependentMappingChildLayout : LinearLayout {
                     }
                 }
 
-        givenPropContents.toMutableList().add(0, "None")
-        givenPropContents.toList()
 
-        val spinnerAdapter = getArrayAdapter(givenPropStringContents)
+
+        val spinnerAdapter = getArrayAdapter(givenPropStringContents.toMutableList().apply{
+            add(0, "None")
+        }.toList())
         spinnerAdapter.setDropDownViewResource(R.layout.item_spinner)
         selectedPropContentsIndices.forEachIndexed{ index, indexVal ->
             notiPropLayout.addView(
                     FrameLayout(context).also{ frame ->
                         val spinner = Spinner(context)
                         spinner.adapter = spinnerAdapter
-                        spinner.setSelection(indexVal) //indexVal 번째 순서에 있는 givenPropContent
+                        spinner.setSelection(indexVal + 1) //indexVal 번째 순서에 있는 givenPropContent
                         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                                 if(i == 0){
                                     //TODO(mapping)
                                     //notiDataPropContents[index] = selectedData
-                                }else{
+                                } else{
                                     val selectedData = givenPropContents[i - 1]
                                     notiDataPropContents[index] = selectedData
                                 }
-
+                                updateAppConfig()
                             }
                             override fun onNothingSelected(adapterView: AdapterView<*>) {}
                         }
-
                         frame.addView(spinner)
                     },
                     LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply{
@@ -302,7 +349,6 @@ class IndependentMappingChildLayout : LinearLayout {
                         marginEnd = Utilities.dpToPx(context, 10)
                     }
             )
-
         }
     }
 
@@ -325,6 +371,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             visVarContents[index] = color
                             frame.setBackgroundColor(color)
                             Log.d(TAG, "$color Picked. ${visVarContents[index]}")
+                            updateAppConfig()
                         }
                         cp.show()
                     }
@@ -357,6 +404,7 @@ class IndependentMappingChildLayout : LinearLayout {
         val a = context.obtainStyledAttributes(
                 attrs, R.styleable.IndependentMappingChildLayout, defStyle, 0)
         a.recycle()
+        mappingContentsChangedListener = null
     }
 
     private fun getArrayAdapter(stringList: List<String>): ArrayAdapter<String> {

@@ -2,12 +2,12 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ExpandableListView
 import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 
@@ -19,13 +19,15 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponentAdapter
 import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponent
 import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.MappingContainer
-import kotlinx.android.synthetic.main.activity_controlpanel.*
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
-import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
+import android.widget.Toast
+
+
+
 
 class VisualSpecFragment : androidx.fragment.app.Fragment() {
 
@@ -65,6 +67,7 @@ class VisualSpecFragment : androidx.fragment.app.Fragment() {
         val parentLayout = inflater.inflate(R.layout.fragment_setting_visual_spec,
                 container, false) as ViewGroup
 
+        /*
         val haloLayoutCardView = parentLayout.findViewById<ExpandableCardView>(R.id.halo_layout_card_view)
         val haloLayoutRecyclerView = haloLayoutCardView.findViewById<RecyclerView>(R.id.halo_layout_recyclerview)
         val haloLayoutAdapter = HaloVisComponentAdapter(context!!, haloLayoutMethodVisComponents)
@@ -99,6 +102,30 @@ class VisualSpecFragment : androidx.fragment.app.Fragment() {
         for (i in MappingContainer.visVarStringList.indices) {
             aggregateVisInnerView.addView(AggregatedMappingLayout(context, MappingContainer.visVarStringList[i]))
         }
+
+        */
+        val testExpandableListView = parentLayout.findViewById<ExpandableListView>(R.id.text_expandable_list_view)
+        testExpandableListView.setAdapter(
+                MappingExpandableListAdapter().apply{
+                    setViewModel(appConfigViewModel)
+                }
+        )
+
+        testExpandableListView.setOnGroupClickListener{parent, view, groupPos, id ->
+            Toast.makeText(context, "c click = $groupPos", Toast.LENGTH_SHORT).show()
+            false
+        }
+        /*
+        testExpandableListView.setOnChildClickListener{parent, view, groupPos, id ->
+
+        }
+        testExpandableListView.setOnGroupCollapseListener {
+
+        }
+        testExpandableListView.setOnGroupExpandListener {
+
+        }
+        */
 
         return parentLayout
     }

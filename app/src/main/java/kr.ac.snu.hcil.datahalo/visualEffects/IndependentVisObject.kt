@@ -344,7 +344,11 @@ abstract class AbstractIndependentVisObject(
         input.forEach{ propertyToValue ->
             val notiProp: NotiProperty = propertyToValue.key
             //TODO(매핑이 null일 때 문제 해결해야할 듯)
-            val visVar: NuNotiVisVariable = currMapping.filter{ it.value == notiProp}.toList()[0].first
+
+            val temp = currMapping.filter{it.value == notiProp}.toList()
+            val visVar: NuNotiVisVariable? = if(temp.isEmpty()) null else temp[0].first
+
+
             val notiVal: Any = propertyToValue.value
             when(visVar){
                 in boundConversions -> {

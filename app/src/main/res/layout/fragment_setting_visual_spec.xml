@@ -59,6 +59,11 @@
                 app:inner_view="@layout/vis_card_view"
                 app:startExpanded="false"
                 app:title="Aggregated Visual Effect" />
+            <ExpandableListView
+                android:id="@+id/text_expandable_list_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,36 +3,39 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
+    android:layout_marginStart="20dp"
+    android:layout_marginEnd="20dp"
     >
     <TextView
         android:id="@+id/selected_vis_var_text_view"
         style="@android:style/Widget.DeviceDefault.Light.TextView"
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal|center_vertical"
         android:text="Motion"
         android:textColor="@color/text"
         android:textSize="14sp"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:textIsSelectable="false"
+        />
 
     <TextView
-        android:layout_width="0dp"
+        android:layout_width="100dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
         android:gravity="center_horizontal|center_vertical"
         android:text="to"
         android:textColor="@color/theme"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textIsSelectable="false"
+        />
 
     <Spinner
+        android:layout_width="wrap_content"
         android:id="@+id/selected_noti_prop_spinner"
-        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:spinnerMode="dialog" />
 
 </LinearLayout>

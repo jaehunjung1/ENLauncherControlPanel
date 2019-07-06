@@ -20,12 +20,20 @@ class IndependentMappingParentLayout : LinearLayout {
         private const val TAG = "IndepMappingLayout"
     }
 
+    interface GroupViewInteractionListener{
+        fun onMappingUpdate(visVar: NuNotiVisVariable, notiProp: NotiProperty?)
+    }
+
     private var notiVisVar: NuNotiVisVariable = NuNotiVisVariable.MOTION
     private var notiDataProp: NotiProperty? = null
     private var objIndex: Int = -1
     private var viewModel: AppHaloConfigViewModel? = null
+    private var adapter: MappingExpandableListAdapter? = null
 
     private var initialSetFinished: Boolean = false
+
+    private var mappingChangedListener: GroupViewInteractionListener? = null
+
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -39,11 +47,21 @@ class IndependentMappingParentLayout : LinearLayout {
         init(attrs, defStyle)
     }
 
-    fun setProperties(visVar:NuNotiVisVariable, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
+    fun setProperties(visVar:NuNotiVisVariable, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null, expandableAdapter: MappingExpandableListAdapter){
         notiVisVar = visVar
         notiDataProp = notiProp
         objIndex = index
         viewModel = appConfigViewModel
+        adapter = expandableAdapter
+        findViewById<TextView>(R.id.selected_vis_var_text_view).text = notiVisVar.name
+        findViewById<Spinner>(R.id.selected_noti_prop_spinner).setSelection(
+                when(notiProp){
+                    null -> 0
+                    NotiProperty.IMPORTANCE -> notiProp.ordinal + 1
+                    NotiProperty.LIFE_STAGE -> notiProp.ordinal + 1
+                    NotiProperty.CONTENT -> notiProp.ordinal + 1
+                }
+        )
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
@@ -55,6 +73,8 @@ class IndependentMappingParentLayout : LinearLayout {
         View.inflate(context, R.layout.item_parent_expandablecontrolpanel, this)
 
         findViewById<Spinner>(R.id.selected_noti_prop_spinner).let{spinner ->
+            spinner.isFocusable = false
+            spinner.isFocusableInTouchMode = false
 
             val spinnerValues = NotiProperty.values().map{it.name}.toMutableList().let{
                 it.add(0, "none")
@@ -77,19 +97,22 @@ class IndependentMappingParentLayout : LinearLayout {
                 }
                 override fun onNothingSelected(adapterView: AdapterView<*>) {}
             }
-            spinner.setSelection(0)
+            mappingChangedListener = null
         }
     }
 
-    private fun invalidateObjAndViewModel(){
-        findViewById<TextView>(R.id.selected_vis_var_text_view).text = notiVisVar.name
+    fun setMappingChangedListener(listener: GroupViewInteractionListener){
+        mappingChangedListener = listener
+    }
 
-        viewModel?.appHaloConfigLiveData?.value?.let{appConfig ->
+    private fun invalidateObjAndViewModel(){
+        viewModel?.appHaloConfigLiveData?.value?.let{ appConfig ->
             val newMapping: Map<NuNotiVisVariable, NotiProperty?> = appConfig.independentVisualMappings[objIndex].mapValues{
                 if(it.key == notiVisVar) notiDataProp else it.value
             }
             appConfig.independentVisualMappings[objIndex] = newMapping
             viewModel?.appHaloConfigLiveData?.value = appConfig
+            mappingChangedListener?.onMappingUpdate(notiVisVar, notiDataProp)
         }
     }
 
