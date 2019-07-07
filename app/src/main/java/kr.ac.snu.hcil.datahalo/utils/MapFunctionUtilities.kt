@@ -57,13 +57,18 @@ class MapFunctionUtilities {
 
         //TODO(충분히 null 나올 수 있음. 데이터 매핑에서 사용자가 선택하지 않은 property value는 null처리 해줘야 함
 
-        fun<T> createMapFunc(keyRange: List<T>, valRange:Pair<Double, Double>, numOfBin: Int = keyRange.size): (T) -> Double {
+        fun<T> createMapFunc(keyRange: List<T>, valRange:Pair<Double, Double>, numOfBin: Int = keyRange.size): (T) -> Double? {
             val newValList = bin(valRange, numOfBin) // [(0, 0.2), (0.2, 0.4), (0.4, 0.6)]
 
-            return{key:T ->
+            return { key: T ->
                 val index = keyRange.indexOf(key)
-                val pair = newValList[index]
-                (pair.first + pair.second) / 2
+                if (index == -1) {
+                    null
+
+                } else {
+                    val pair = newValList[index]
+                    (pair.first + pair.second) / 2
+                }
             }
         }
 
