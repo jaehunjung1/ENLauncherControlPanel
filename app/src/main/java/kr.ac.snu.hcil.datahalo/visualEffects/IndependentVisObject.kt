@@ -109,11 +109,11 @@ abstract class AbstractIndependentVisObject(
     final override fun getAnimatorsByLifeStage(): Map<EnhancedNotificationLife, AnimatorSet> = animationMap
     final override fun setAnimParams(vararg params: IndependentVisObjectAnimParams) {
         val myMap: Map<EnhancedNotificationLife, MutableList<Animator>> = mapOf(
-                EnhancedNotificationLife.STATE_1_JUST_TRIGGERED to mutableListOf(),
-                EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED to mutableListOf(),
-                EnhancedNotificationLife.STATE_3_JUST_INTERACTED to mutableListOf(),
-                EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED to mutableListOf(),
-                EnhancedNotificationLife.STATE_5_DECAYING to mutableListOf()
+                EnhancedNotificationLife.JUST_TRIGGERED to mutableListOf(),
+                EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED to mutableListOf(),
+                EnhancedNotificationLife.JUST_INTERACTED to mutableListOf(),
+                EnhancedNotificationLife.INTERACTED_NOT_DECAYING to mutableListOf(),
+                EnhancedNotificationLife.DECAYING to mutableListOf()
         )
 
         params.forEach{ animParam ->

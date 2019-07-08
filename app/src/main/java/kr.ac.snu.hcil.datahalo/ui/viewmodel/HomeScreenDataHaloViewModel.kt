@@ -6,7 +6,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
 import android.os.Handler
-import androidx.palette.graphics.Palette
 import android.util.Log
 import kr.ac.snu.hcil.datahalo.notificationdata.*
 import java.util.*
@@ -30,9 +29,9 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
 
     private fun updateNotiEnhancement(notiData: EnhancedNotification, updateInterval: Long): EnhancedNotification {
         when(notiData.lifeCycle){
-            EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED -> {
+            EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED -> {
                 if(notiData.timeElapsed >= notiData.lifeSpan)
-                    notiData.lifeCycle = EnhancedNotificationLife.STATE_5_DECAYING
+                    notiData.lifeCycle = EnhancedNotificationLife.DECAYING
                 else {
                     when (notiData.firstPattern) {
                         EnhancementPattern.DEC -> {
@@ -49,9 +48,9 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
                     }
                 }
             }
-            EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED -> {
+            EnhancedNotificationLife.INTERACTED_NOT_DECAYING -> {
                 if(notiData.timeElapsed >= notiData.lifeSpan)
-                    notiData.lifeCycle = EnhancedNotificationLife.STATE_5_DECAYING
+                    notiData.lifeCycle = EnhancedNotificationLife.DECAYING
                 else{
                     when(notiData.secondPattern){
                         EnhancementPattern.DEC -> {
@@ -68,23 +67,23 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
                     }
                 }
             }
-            EnhancedNotificationLife.STATE_1_JUST_TRIGGERED -> {
-                notiData.lifeCycle = EnhancedNotificationLife.STATE_2_TRIGGERED_NOT_INTERACTED
+            EnhancedNotificationLife.JUST_TRIGGERED -> {
+                notiData.lifeCycle = EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
                 when(notiData.firstPattern){
                     EnhancementPattern.INC -> notiData.slope = (notiData.upperBound - notiData.enhanceOffset) / notiData.firstSaturationTime
                     EnhancementPattern.DEC -> notiData.slope = (notiData.enhanceOffset - notiData.lowerBound) / notiData.firstSaturationTime
                     EnhancementPattern.EQ -> notiData.slope = 0.0
                 }
             }
-            EnhancedNotificationLife.STATE_3_JUST_INTERACTED -> {
-                notiData.lifeCycle = EnhancedNotificationLife.STATE_4_INTERACTED_NOT_DECAYED
+            EnhancedNotificationLife.JUST_INTERACTED -> {
+                notiData.lifeCycle = EnhancedNotificationLife.INTERACTED_NOT_DECAYING
                 when(notiData.secondPattern){
                     EnhancementPattern.INC -> notiData.slope = (notiData.upperBound - notiData.currEnhancement) / notiData.secondSaturationTime
                     EnhancementPattern.DEC -> notiData.slope = (notiData.currEnhancement - notiData.lowerBound) / notiData.secondSaturationTime
                     EnhancementPattern.EQ -> notiData.slope = 0.0
                 }
             }
-            EnhancedNotificationLife.STATE_5_DECAYING -> {
+            EnhancedNotificationLife.DECAYING -> {
                 notiData.currEnhancement = notiData.lowerBound
             }
         }
@@ -99,7 +98,7 @@ class HomeScreenDataHaloViewModel(application: Application) : AndroidViewModel(a
                 it.value.apply{
                     notificationData.apply{
                         map { datum -> updateNotiEnhancement(datum, nowInMillis - lastUpdateInMillis) }
-                            .apply{ filter{ datum -> datum.lifeCycle != EnhancedNotificationLife.STATE_5_DECAYING || datum.currEnhancement > 0.0} }
+                            .apply{ filter{ datum -> datum.lifeCycle != EnhancedNotificationLife.DECAYING || datum.currEnhancement > 0.0} }
                     }
                 }
             }?.toMutableMap()

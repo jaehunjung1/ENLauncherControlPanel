@@ -2,32 +2,18 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
-import android.widget.LinearLayout
 import androidx.lifecycle.Observer
-
-import com.alespero.expandablecardview.ExpandableCardView
-
-import hcil.snu.ac.kr.enlaunchercontrolpanel.AggregatedMappingLayout
-import hcil.snu.ac.kr.enlaunchercontrolpanel.IndependentMappingLayout
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
-import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponentAdapter
 import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponent
-import hcil.snu.ac.kr.enlaunchercontrolpanel.viewmodel.MappingContainer
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
-import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
 import android.widget.Toast
-
-
-
 
 class VisualSpecFragment : androidx.fragment.app.Fragment() {
 
@@ -38,10 +24,6 @@ class VisualSpecFragment : androidx.fragment.app.Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        appConfigViewModel = activity?.run{
-            ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
-        } ?: throw Exception("Invalid Activity")
 
         haloLayoutMethodVisComponents = AppHaloLayoutMethods.availiableLayouts.map{
             HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.VISEFFECT_LAYOUT)

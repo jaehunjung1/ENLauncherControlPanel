@@ -10,9 +10,9 @@
         <item name="multiSliderStyle">@style/Widget.MultiSlider</item>
     </style>
 
-    <style name = "NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name = "android:windowActionBar">false</item>
-        <item name = "android:windowNoTitle">true</item>
+    <style name="NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="Widget.MultiSlider" parent="android:Widget">
@@ -37,4 +37,13 @@
     <style name="BlackHintTextAppearance" parent="TextAppearance.Design.Hint">
         <item name="android:textColor">@color/holo_red_light</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

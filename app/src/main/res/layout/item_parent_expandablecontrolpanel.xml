@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="20dp"
-    android:layout_marginEnd="20dp"
-    >
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    android:layout_marginStart="30dp"
+    android:layout_marginEnd="10dp">
+
     <TextView
         android:id="@+id/selected_vis_var_text_view"
         style="@android:style/Widget.DeviceDefault.Light.TextView"
@@ -21,19 +23,19 @@
         />
 
     <TextView
-        android:layout_width="100dp"
+        android:layout_width="50dp"
         android:layout_height="match_parent"
         android:gravity="center_horizontal|center_vertical"
         android:text="to"
         android:textColor="@color/theme"
         android:textSize="14sp"
-        android:textIsSelectable="false"
-        />
+        android:textIsSelectable="false" />
 
     <Spinner
-        android:layout_width="wrap_content"
         android:id="@+id/selected_noti_prop_spinner"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal|center_vertical"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:spinnerMode="dialog" />

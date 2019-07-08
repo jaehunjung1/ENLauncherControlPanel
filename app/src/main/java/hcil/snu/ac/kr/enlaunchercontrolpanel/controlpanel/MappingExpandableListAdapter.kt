@@ -19,10 +19,12 @@ class MappingExpandableListAdapter: BaseExpandableListAdapter() {
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
+
         appConfigViewModel.appHaloConfigLiveData.value?.let{appHaloConfig ->
             visVartoNotiPropMappings.clear()
             visVartoNotiPropMappings.addAll(appHaloConfig.independentVisualMappings[0].toList())
         }
+
         notifyDataSetInvalidated()
     }
 
@@ -50,7 +52,9 @@ class MappingExpandableListAdapter: BaseExpandableListAdapter() {
         val (visVar, notiProp) = getGroup(groupPosition)
         val context = parent!!.context
 
-        return convertView ?: IndependentMappingParentLayout(context).apply{
+        return (convertView as IndependentMappingParentLayout?)?.apply{
+            setProperties(visVar, notiProp, 0, viewModel, this@MappingExpandableListAdapter)
+        } ?: IndependentMappingParentLayout(context).apply{
             setProperties(visVar, notiProp, 0, viewModel, this@MappingExpandableListAdapter)
             setMappingChangedListener(object: IndependentMappingParentLayout.GroupViewInteractionListener{
                 override fun onMappingUpdate(visVar: NuNotiVisVariable, notiProp: NotiProperty?) {
