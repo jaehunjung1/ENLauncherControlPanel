@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.text.Editable
 import android.text.TextPaint
 import android.text.TextWatcher
@@ -53,6 +54,8 @@ class ImportanceControlView : LinearLayout {
     private var importanceSaturationExamples = VisDataManager.exampleImportanceSaturationPatterns.map{
         HaloVisComponent(it.key, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.IMPORTANCE_SATURATION)
     }
+
+    private var importanceExampleSelector: ComponentExampleSelectionView? = null
 
     //Properties Set Programmatically
 
@@ -143,6 +146,12 @@ class ImportanceControlView : LinearLayout {
         init(attrs, defStyle)
     }
 
+    fun load(bundle: Bundle?){
+        importanceExampleSelector?.loadSelection(bundle)
+    }
+    fun save(bundle: Bundle){
+        importanceExampleSelector?.saveSelection(bundle)
+    }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
         // Load attributes
@@ -184,7 +193,7 @@ class ImportanceControlView : LinearLayout {
         importanceSampleRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         */
 
-        findViewById<ComponentExampleSelectionView>(R.id.exampleSelectionView).apply{
+        importanceExampleSelector = findViewById<ComponentExampleSelectionView>(R.id.exampleSelectionView).apply{
             exampleDataList = importanceSaturationExamples
         }
 

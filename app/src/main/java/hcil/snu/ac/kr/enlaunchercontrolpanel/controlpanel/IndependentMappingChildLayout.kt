@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -210,21 +211,6 @@ class IndependentMappingChildLayout : LinearLayout {
             tableLayout.addView(TableRow(context), TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT))
         }
 
-        visVarContents.forEachIndexed { index, content ->
-            val tableRow = tableLayout.getChildAt(index) as TableRow
-
-            val frame = FrameLayout(context)
-            setVisVarFrame(index, frame, content)
-            tableRow.addView(
-                    frame,
-                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
-                        //marginStart = Utilities.dpToPx(context, 10)
-                        //marginEnd = Utilities.dpToPx(context, 10)
-                        column = 0
-                    }
-            )
-        }
-
         when (notiDataProp) {
             NotiProperty.CONTENT -> {
                 setNewKeywordFrameView(notiDataPropContents as MutableList<Pair<String, MutableList<String>>>, tableLayout, context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
@@ -241,6 +227,53 @@ class IndependentMappingChildLayout : LinearLayout {
                 setNewSpinnerView(givenImportanceIndices, givenImportanceList, tableLayout)
             }
             null -> { }
+        }
+
+        if(notiDataPropContents.size == 0){
+            val tableRow = tableLayout.getChildAt(0) as TableRow
+            tableRow.addView(
+                    TextView(context).apply{
+                        text = "Not Mapped"
+                        textSize = 16f
+                        gravity = Gravity.CENTER
+                    },
+                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT ).apply{
+                        column = 0
+                        gravity = Gravity.CENTER
+                    }
+            )
+        }
+
+        visVarContents.forEachIndexed { index, content ->
+            val tableRow = tableLayout.getChildAt(index) as TableRow
+
+            val frame = FrameLayout(context)
+            setVisVarFrame(index, frame, content)
+
+            tableRow.addView(
+                    TextView(context).apply{
+                        text = "to"
+                        textSize = 13f
+                        gravity = Gravity.CENTER
+                    },
+                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
+                        gravity = Gravity.CENTER
+                        column = 1
+                    }
+            )
+
+
+            tableRow.addView(
+                    frame,
+                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
+                        marginStart = Utilities.dpToPx(context, 10)
+                        marginEnd = Utilities.dpToPx(context, 10)
+                        topMargin = Utilities.dpToPx(context, 10)
+                        bottomMargin = Utilities.dpToPx(context, 10)
+                        gravity = Gravity.CENTER
+                        column = 2
+                    }
+            )
         }
 
     }
@@ -388,8 +421,6 @@ class IndependentMappingChildLayout : LinearLayout {
             val tr = notiPropLayout.getChildAt(index) as TableRow
             tr.addView(
                     FrameLayout(context).also { frame ->
-                        //frame.removeAllViews()
-                        //frame.layoutParams.width = Utilities.dpToPx(context, 170)
                         val keywordFrame = inflater.inflate(R.layout.layout_keyword_mapping, null, false) as LinearLayout
 
                         val flowLayout = keywordFrame.findViewById<FlowLayout>(R.id.mapping_keyword_flowLayout).apply{
@@ -415,13 +446,17 @@ class IndependentMappingChildLayout : LinearLayout {
                                 mDialog.show()
                             }
                         }
-                        frame.addView(keywordFrame)
+                        frame.addView(
+                                keywordFrame,
+                                FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply{
+                                    gravity = Gravity.CENTER
+                                }
+                        )
                     },
 
                     TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
-                        //marginStart = Utilities.dpToPx(context, 10)
-                        //marginEnd = Utilities.dpToPx(context, 10)
-                        column = 1
+                        gravity = Gravity.CENTER
+                        column = 0
                     }
             )
         }
@@ -513,9 +548,9 @@ class IndependentMappingChildLayout : LinearLayout {
                         }
                         frame.addView(spinner)
                     },
-                    LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply{
-                        marginStart = Utilities.dpToPx(context, 10)
-                        marginEnd = Utilities.dpToPx(context, 10)
+                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
+                        gravity = Gravity.CENTER
+                        column = 0
                     }
             )
         }
@@ -575,7 +610,12 @@ class IndependentMappingChildLayout : LinearLayout {
 
     private fun setVisVarFrame(index: Int, frame: FrameLayout, content: Any ){
         frame.background = ContextCompat.getDrawable(context, R.drawable.rounded_rectangle)
-        frame.addView(TextView(context).apply { text = contentToString(notiVisVar, content) })
+        frame.addView(
+                TextView(context).apply {
+                    text = contentToString(notiVisVar, content)
+                    gravity = Gravity.CENTER
+                }
+        )
         when(notiVisVar){
             NuNotiVisVariable.MOTION -> {
                 //TODO(Shape Selection View)

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusableInTouchMode="true"
-    tools:context=".controlpanel.DataFilteringFragment">
+    tools:context=".controlpanel.HaloDataSettingFragment">
 
     <ScrollView
         android:id="@+id/scroll_view"
@@ -16,39 +16,11 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/linear_Layout"
+        <include
+            android:id="@+id/data_filtering_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical"
-            android:weightSum="12"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.alespero.expandablecardview.ExpandableCardView
-                android:id="@+id/data_filter_card_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:title="Data Filtering"
-                app:inner_view="@layout/datafilter_card_view"
-                app:expandOnClick="true"
-                app:animationDuration="200"
-                app:startExpanded="false"/>
-
-            <com.alespero.expandablecardview.ExpandableCardView
-                android:id="@+id/enhancement_card_view"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:title="Enhancement Saturation"
-                app:inner_view="@layout/enhancement_card_view"
-                app:expandOnClick="true"
-                app:animationDuration="200"
-                app:startExpanded="false"/>
-        </LinearLayout>
+            layout="@layout/datafilter_card_view"/>
     </ScrollView>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

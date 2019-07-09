@@ -1,6 +1,7 @@
 package hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection
 
 import android.content.Context
+import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.util.AttributeSet
@@ -47,6 +48,13 @@ class ComponentExampleSelectionView : LinearLayout {
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
+    }
+
+    fun loadSelection(bundle: Bundle?){
+        tracker?.onRestoreInstanceState(bundle)
+    }
+    fun saveSelection(bundle: Bundle){
+        tracker?.onSaveInstanceState(bundle)
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
@@ -115,6 +123,7 @@ class ComponentExampleSelectionView : LinearLayout {
                 }
             })
         recyclerViewAdapter.tracker = tracker
+
     }
 
     private fun invalidateExampleList(){

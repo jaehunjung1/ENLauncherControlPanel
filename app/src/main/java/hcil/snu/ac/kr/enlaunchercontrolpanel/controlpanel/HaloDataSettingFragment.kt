@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.LinearLayout
 import com.alespero.expandablecardview.ExpandableCardView
 
 import com.nex3z.flowlayout.FlowLayout
@@ -26,7 +27,7 @@ import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
 import kotlin.math.roundToLong
 
 
-class DataFilteringFragment : androidx.fragment.app.Fragment() {
+class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
 
     // Data Parameters
     val maxTimeWindow: Long = 1000L * 60 * 60 * 24
@@ -52,7 +53,7 @@ class DataFilteringFragment : androidx.fragment.app.Fragment() {
                               savedInstanceState: Bundle?): View? {
         val parentLayout = inflater.inflate(R.layout.fragment_setting_data_filtering, container, false) as ViewGroup
 
-        val datafilteringCardView = parentLayout.findViewById<ExpandableCardView>(R.id.data_filter_card_view)
+        val datafilteringCardView = parentLayout.findViewById<LinearLayout>(R.id.data_filtering_view)
 
         // Enhancement Setting UI
         val enhancementSeekbar = datafilteringCardView.findViewById<MultiSlider>(R.id.enhancementSeekbar)
@@ -145,10 +146,6 @@ class DataFilteringFragment : androidx.fragment.app.Fragment() {
             }
             false
         }
-
-        val enhancementSaturationCardView = parentLayout.findViewById<ExpandableCardView>(R.id.enhancement_card_view)
-        val enhancementSaturationView = enhancementSaturationCardView.findViewById<ImportanceControlView>(R.id.enhancement_control_view)
-        enhancementSaturationView.setViewModel(appConfigViewModel)
 
         return parentLayout
     }

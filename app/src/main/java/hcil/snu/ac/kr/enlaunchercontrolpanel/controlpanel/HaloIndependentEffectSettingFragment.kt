@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
 import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponent
 import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponentAdapter
 
@@ -29,10 +30,13 @@ class HaloIndependentEffectSettingFragment : Fragment() {
 
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
     private lateinit var visComponents: List<HaloVisComponent>
+    private var componentExamples = VisEffectManager.availableIndependentVisEffects.map{
+        HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT)
+    }
+    private var componentExampleSelector: ComponentExampleSelectionView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         visComponents = VisEffectManager.availableIndependentVisEffects.map{
             HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT)
         }
@@ -43,15 +47,20 @@ class HaloIndependentEffectSettingFragment : Fragment() {
 
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        componentExampleSelector?.saveSelection(outState)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_halo_independent_effect_setting, container, false).also{
 
-            val recyclerView = it.findViewById<RecyclerView>(R.id.recycler_view)
-            val indepVisAdapter = HaloVisComponentAdapter(context!!, visComponents)
-            recyclerView.adapter = indepVisAdapter
-            recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            componentExampleSelector = it.findViewById<ComponentExampleSelectionView>(R.id.exampleSelectionView).apply{
+                exampleDataList = componentExamples
+                loadSelection(savedInstanceState)
+            }
 
             val testExpandableListView = it.findViewById<ExpandableListView>(R.id.expandable_mapping_list)
             testExpandableListView.setAdapter(

@@ -48,10 +48,7 @@ class NewControlPanelActivity : AppCompatActivity() {
     private lateinit var previewHalo: AppNotificationHalo
 
     private inner class ScreenSlidPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm){
-        val fragments: MutableMap<String, Fragment> = mutableMapOf(
-                "Enhancement" to DataFilteringFragment(),
-                "Indpendent" to HaloIndependentEffectSettingFragment.newInstance()
-        )
+        val fragments: MutableMap<String, Fragment> = mutableMapOf()
         override fun getCount(): Int = fragments.size
         override fun getItem(p0: Int): Fragment = fragments.toList()[p0].second
         override fun getPageTitle(position: Int): CharSequence? = fragments.keys.toList()[position]
@@ -69,13 +66,15 @@ class NewControlPanelActivity : AppCompatActivity() {
         )
 
         val viewPagerAdapter = ScreenSlidPagerAdapter(supportFragmentManager).apply{
-            fragments["aaa"] = Fragment()
+            fragments["Data"] = HaloDataSettingFragment()
+            fragments["Enhancement"] = HaloEnhancementSettingFragment.newInstance()
+            fragments["Layout"] = Fragment()
+            fragments["Indpendent"] = HaloIndependentEffectSettingFragment.newInstance()
+            fragments["Aggregated"] = HaloIndependentEffectSettingFragment.newInstance()
         }
 
         view_pager.adapter = viewPagerAdapter
         tabs.setupWithViewPager(view_pager)
-
-
 
         appConfigViewModel = ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
         val appConfigObserver = Observer<AppHaloConfig>{ newConfig ->

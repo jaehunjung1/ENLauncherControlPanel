@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:stretchColumns="*">
+    android:stretchColumns="0,2">
 
     <TableRow
         android:layout_width="match_parent"
@@ -20,10 +20,18 @@
             android:textSize="14sp" />
 
         <TextView
-            android:id="@+id/noti_prop_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
+            android:layout_gravity="center_horizontal"
+            android:text="To"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/noti_prop_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="2"
             android:layout_gravity="center_horizontal"
             android:text="Noti Property"
             android:textSize="14sp" />
