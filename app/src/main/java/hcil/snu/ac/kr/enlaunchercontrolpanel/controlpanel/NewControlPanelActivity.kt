@@ -3,17 +3,21 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.activity_new_control_panel.*
-import kotlinx.android.synthetic.main.activity_new_control_panel.preview_frameLayout
+import kotlinx.android.synthetic.main.activity_new_control_panel.preview_layout
+import kotlinx.android.synthetic.main.activity_new_control_panel.view.*
 import kr.ac.snu.hcil.datahalo.haloview.AppNotificationHalo
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
@@ -58,17 +62,23 @@ class NewControlPanelActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_control_panel)
 
-        previewHalo = AppNotificationHalo(context = this, attributeSet = null)
-        preview_frameLayout.addView(previewHalo, FrameLayout.LayoutParams(700, 700, Gravity.CENTER))
-        preview_frameLayout.addView(
-                ImageView(this).also{ it.setImageDrawable(getDrawable(R.drawable.kakaotalk_logo))},
-                FrameLayout.LayoutParams(250, 250, Gravity.CENTER)
+        previewHalo = AppNotificationHalo(this, null).apply{
+            id = View.generateViewId()
+        }
+
+        preview_layout.addView(previewHalo, FrameLayout.LayoutParams(Utilities.dpToPx(this, 200), Utilities.dpToPx(this, 200), Gravity.CENTER))
+        preview_layout.addView(
+                ImageView(this).apply{
+                    id = View.generateViewId()
+                    setImageDrawable(getDrawable(R.drawable.kakaotalk_logo))
+                },
+                FrameLayout.LayoutParams(Utilities.dpToPx(this, 80), Utilities.dpToPx(this, 80), Gravity.CENTER)
         )
 
         val viewPagerAdapter = ScreenSlidPagerAdapter(supportFragmentManager).apply{
             fragments["Data"] = HaloDataSettingFragment()
             fragments["Enhancement"] = HaloEnhancementSettingFragment.newInstance()
-            fragments["Layout"] = Fragment()
+            fragments["Layout"] = HaloLayoutFragment.newInstance()
             fragments["Indpendent"] = HaloIndependentEffectSettingFragment.newInstance()
             fragments["Aggregated"] = HaloIndependentEffectSettingFragment.newInstance()
         }
@@ -84,7 +94,7 @@ class NewControlPanelActivity : AppCompatActivity() {
                 previewHalo.setAppHaloData(EnhancedAppNotifications(AppHaloConfigViewModel.SAMPLE_PACKAGE_NAME).also{ notifications ->
                     notifications.notificationData = exampleNotifications.toMutableList()
                 })
-                preview_frameLayout.invalidate()
+                preview_layout.invalidate()
             }
         }
         appConfigViewModel.appHaloConfigLiveData.observe(this, appConfigObserver)

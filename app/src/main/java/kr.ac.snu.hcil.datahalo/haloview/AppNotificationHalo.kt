@@ -39,7 +39,7 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
         clipToPadding = false
         clipToOutline = false
 
-        setBackgroundColor(Color.LTGRAY)
+        //setBackgroundColor(Color.LTGRAY)
 
         id = View.generateViewId()
 

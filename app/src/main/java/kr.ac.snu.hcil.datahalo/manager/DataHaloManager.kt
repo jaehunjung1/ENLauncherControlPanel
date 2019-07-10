@@ -20,7 +20,7 @@ class DataHaloManager {
             if(config.packageName in appNotificationHalos.keys)
                 exceptionRedundantAddition(config.packageName)
 
-            val newAppHalo = AppNotificationHalo(context, null).also{
+            val newAppHalo = AppNotificationHalo(context).also{
                 it.setVisConfig(config)
             }
             appNotificationHalos[config.packageName] = newAppHalo
