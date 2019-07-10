@@ -58,6 +58,7 @@ class HaloIndependentEffectSettingFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_halo_independent_effect_setting, container, false).also{
 
             componentExampleSelector = it.findViewById<ComponentExampleSelectionView>(R.id.exampleSelectionView).apply{
+                setViewModel(appConfigViewModel)
                 exampleDataList = componentExamples
                 loadSelection(savedInstanceState)
             }

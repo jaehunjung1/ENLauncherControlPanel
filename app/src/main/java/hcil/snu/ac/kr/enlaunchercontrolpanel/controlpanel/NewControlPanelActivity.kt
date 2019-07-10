@@ -3,9 +3,11 @@ package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.MenuItem
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -13,6 +15,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.navigation.NavigationView
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.activity_new_control_panel.*
@@ -26,7 +29,7 @@ import kr.ac.snu.hcil.datahalo.notificationdata.NotiContent
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 
-class NewControlPanelActivity : AppCompatActivity() {
+class NewControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object{
         private const val TAG = "HALO_SETTING_ACTIVITY"
         private val exampleNotifications = listOf(
@@ -58,6 +61,10 @@ class NewControlPanelActivity : AppCompatActivity() {
         override fun getPageTitle(position: Int): CharSequence? = fragments.keys.toList()[position]
     }
 
+    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_control_panel)
@@ -76,6 +83,7 @@ class NewControlPanelActivity : AppCompatActivity() {
         )
 
         val viewPagerAdapter = ScreenSlidPagerAdapter(supportFragmentManager).apply{
+            fragments["Fast"] = HaloExampleCollectionFragment.newInstance()
             fragments["Data"] = HaloDataSettingFragment()
             fragments["Enhancement"] = HaloEnhancementSettingFragment.newInstance()
             fragments["Layout"] = HaloLayoutFragment.newInstance()
@@ -98,5 +106,15 @@ class NewControlPanelActivity : AppCompatActivity() {
             }
         }
         appConfigViewModel.appHaloConfigLiveData.observe(this, appConfigObserver)
+
+
+        setSupportActionBar(tool_bar)
+        supportActionBar?.apply{
+            title = "abasdfasdf"
+            setDisplayHomeAsUpEnabled(true)
+        }
+
+        controlpanel_drawer.addDrawerListener(ActionBarDrawerToggle(this, controlpanel_drawer, tool_bar, R.string.drawer_open, R.string.drawer_closed))
+        controlpanel_navigation_view.setNavigationItemSelectedListener(this)
     }
 }

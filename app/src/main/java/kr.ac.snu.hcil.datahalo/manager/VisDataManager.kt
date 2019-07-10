@@ -11,7 +11,13 @@ class VisDataManager {
     companion object{
         val exampleImportanceSaturationPatterns: Map<String, String> = mapOf(
                 "type1" to "Importance Increases Fast Just After It Triggers, and Slowly Fades Out",
-                "type2" to "Importance Decreases Fast Just After It Triggers, and Slowly"
+                "type2" to "Importance Decreases Fast Just After It Triggers, and Slowly",
+                "type3" to "Importance Decreases Fast Just After It Triggers, and Slowly",
+                "type4" to "Importance Decreases Fast Just After It Triggers, and Slowly",
+                "type5" to "Importance Decreases Fast Just After It Triggers, and Slowly",
+                "type6" to "Importance Decreases Fast Just After It Triggers, and Slowly",
+                "type7" to "Importance Decreases Fast Just After It Triggers, and Slowly"
+
         )
 
         fun getExampleSaturationPattern(key: String): NotificationEnhacementParams?{
@@ -28,6 +34,61 @@ class VisDataManager {
                     )
                 }
                 "type2" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.5,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.DEC,
+                            secondPattern = EnhancementPattern.DEC,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
+                "type3" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.5,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.DEC,
+                            secondPattern = EnhancementPattern.DEC,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
+                "type4" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.5,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.DEC,
+                            secondPattern = EnhancementPattern.DEC,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
+                "type5" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.5,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.DEC,
+                            secondPattern = EnhancementPattern.DEC,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
+                "type6" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.5,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.DEC,
+                            secondPattern = EnhancementPattern.DEC,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
+                "type7" -> {
                     NotificationEnhacementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
