@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/visual_setting"
+        android:id="@+id/examples"
         android:icon="@mipmap/ic_launcher_round"
-        android:title="Visual Setting"
+        android:title="Predefined Examples"
         />
 
     <item
-        android:id="@+id/data_filtering"
+        android:id="@+id/data_manipulation"
         android:icon="@mipmap/ic_launcher_round"
         android:title="Data Setting"
         />
 
     <item
-        android:id="@+id/importance_setting"
+        android:id="@+id/visual_setting"
         android:icon="@mipmap/ic_launcher_round"
-        android:title="Importance Setting"
+        android:title="Visual Setting"
         />
-
 </menu>

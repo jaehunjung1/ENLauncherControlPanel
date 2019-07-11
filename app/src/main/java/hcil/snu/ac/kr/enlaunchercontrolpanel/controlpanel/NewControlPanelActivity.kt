@@ -9,7 +9,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.GravityCompat
+
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
@@ -20,7 +21,7 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.activity_new_control_panel.*
 import kotlinx.android.synthetic.main.activity_new_control_panel.preview_layout
-import kotlinx.android.synthetic.main.activity_new_control_panel.view.*
+
 import kr.ac.snu.hcil.datahalo.haloview.AppNotificationHalo
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
@@ -54,6 +55,17 @@ class NewControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigation
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
     private lateinit var previewHalo: AppNotificationHalo
 
+    private val controlPanelFragments: Map<String, Fragment> = mapOf(
+            "Predefined Components" to HaloExampleCollectionFragment.newInstance(),
+            "Notification Filters" to HaloDataSettingFragment(),
+            "Enhancement Patterns" to HaloEnhancementSettingFragment.newInstance(),
+            "Layout Methods" to HaloLayoutFragment.newInstance(),
+            "Independent Effects" to HaloIndependentEffectSettingFragment.newInstance(),
+            "Aggregated Effects" to HaloIndependentEffectSettingFragment.newInstance()
+    )
+    private var viewPagerAdapter: ScreenSlidPagerAdapter? = null
+
+
     private inner class ScreenSlidPagerAdapter(fm: FragmentManager): FragmentStatePagerAdapter(fm){
         val fragments: MutableMap<String, Fragment> = mutableMapOf()
         override fun getCount(): Int = fragments.size
@@ -61,8 +73,36 @@ class NewControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigation
         override fun getPageTitle(position: Int): CharSequence? = fragments.keys.toList()[position]
     }
 
-    override fun onNavigationItemSelected(p0: MenuItem): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        viewPagerAdapter?.let{adapter ->
+            setViewPager(adapter, item.itemId)
+        }
+        controlpanel_drawer.closeDrawer(GravityCompat.START)
+        return false
+    }
+
+    private fun setViewPager(adapter: ScreenSlidPagerAdapter, itemId: Int){
+        adapter.apply{
+            fragments.clear()
+            when(itemId){
+                R.id.examples -> {
+                    fragments["Predefined Components"] = controlPanelFragments["Predefined Components"]!!
+                }
+                R.id.data_manipulation -> {
+                    fragments["Notification Filters"] = controlPanelFragments["Notification Filters"]!!
+                    fragments["Enhancement Patterns"] = controlPanelFragments["Enhancement Patterns"]!!
+                }
+                R.id.visual_setting -> {
+                    fragments["Layout Methods"] = controlPanelFragments["Layout Methods"]!!
+                    fragments["Independent Effects"] = controlPanelFragments["Independent Effects"]!!
+                    fragments["Aggregated Effects"] = controlPanelFragments["Aggregated Effects"]!!
+                }
+                else -> {}
+            }
+        }
+        view_pager.adapter = adapter
+        tabs.setupWithViewPager(view_pager, true)
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -82,17 +122,9 @@ class NewControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigation
                 FrameLayout.LayoutParams(Utilities.dpToPx(this, 80), Utilities.dpToPx(this, 80), Gravity.CENTER)
         )
 
-        val viewPagerAdapter = ScreenSlidPagerAdapter(supportFragmentManager).apply{
-            fragments["Fast"] = HaloExampleCollectionFragment.newInstance()
-            fragments["Data"] = HaloDataSettingFragment()
-            fragments["Enhancement"] = HaloEnhancementSettingFragment.newInstance()
-            fragments["Layout"] = HaloLayoutFragment.newInstance()
-            fragments["Indpendent"] = HaloIndependentEffectSettingFragment.newInstance()
-            fragments["Aggregated"] = HaloIndependentEffectSettingFragment.newInstance()
+        viewPagerAdapter = ScreenSlidPagerAdapter(supportFragmentManager).apply{
+            setViewPager(this, R.id.examples)
         }
-
-        view_pager.adapter = viewPagerAdapter
-        tabs.setupWithViewPager(view_pager)
 
         appConfigViewModel = ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
         val appConfigObserver = Observer<AppHaloConfig>{ newConfig ->
@@ -110,7 +142,7 @@ class NewControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigation
 
         setSupportActionBar(tool_bar)
         supportActionBar?.apply{
-            title = "abasdfasdf"
+            title = "App Halo Setting"
             setDisplayHomeAsUpEnabled(true)
         }
 
