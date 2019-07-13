@@ -12,11 +12,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import com.nex3z.flowlayout.FlowLayout
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
 import com.robertlevonyan.views.chip.Chip
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.ContToContUI
 import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.aggregated_mapping_layout.view.*
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
@@ -657,6 +660,33 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     private fun setRangeMapping(appConfig: AppHaloConfig){
+        lateinit var mappingUI: ContToContUI
+
+        View.inflate(context, R.layout.item_child_new_range_mapping, this)
+
+        val constraintLayout = findViewById<ConstraintLayout>(R.id.range_mapping_layout)
+        constraintLayout.addView(ContToContUI(context).apply {
+            mappingUI = this
+            id = View.generateViewId()
+            layoutParams = ConstraintLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        })
+        constraintLayout.getChildAt(0).apply {
+            val set = ConstraintSet()
+            set.clone(constraintLayout)
+            set.connect(this.id, ConstraintSet.TOP, constraintLayout.id, ConstraintSet.TOP)
+            set.connect(this.id, ConstraintSet.RIGHT, constraintLayout.id, ConstraintSet.RIGHT)
+            set.connect(this.id, ConstraintSet.LEFT, constraintLayout.id, ConstraintSet.LEFT)
+            set.connect(this.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
+            set.applyTo(constraintLayout)
+        }
+
+
+
+
+
+
+
 
     }
 
