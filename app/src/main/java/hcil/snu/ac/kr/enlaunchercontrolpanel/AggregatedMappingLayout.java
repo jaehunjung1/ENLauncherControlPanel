@@ -116,9 +116,6 @@ public class AggregatedMappingLayout extends LinearLayout {
             }
         });
 
-
-
-
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -206,14 +203,18 @@ public class AggregatedMappingLayout extends LinearLayout {
                     final FrameLayout notiFrame = new FrameLayout(getContext());
                     notiFrame.setLayoutParams(notiPropDialogList.getChildAt(0).getLayoutParams());
                     notiFrame.getLayoutParams().width = Utilities.dpToPx(getContext(), 160);
+                    ((LinearLayout.LayoutParams)notiFrame.getLayoutParams()).topMargin = 0;
 
                     addKeywordMapping(notiFrame, inflater);
+                    notiPropDialogList.addView(notiFrame);
 
                     final FrameLayout visVarFrame = new FrameLayout(getContext());
                     visVarFrame.setLayoutParams(visVarDialogList.getChildAt(0).getLayoutParams());
+                    ((LinearLayout.LayoutParams)visVarFrame.getLayoutParams()).topMargin = 0;
+
 
                     addVisVarMapping(visVar, visVarDialogList.getChildCount(), visVarFrame);
-
+                    visVarDialogList.addView(visVarFrame);
                 }
             });
 
