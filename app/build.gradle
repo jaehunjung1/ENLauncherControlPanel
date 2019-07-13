@@ -48,6 +48,9 @@ dependencies {
     api 'com.robertlevonyan.view:MaterialChipView:1.2.1'
     implementation 'com.alespero:expandable-cardview:0.8'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+
 }
 repositories {
     mavenCentral()

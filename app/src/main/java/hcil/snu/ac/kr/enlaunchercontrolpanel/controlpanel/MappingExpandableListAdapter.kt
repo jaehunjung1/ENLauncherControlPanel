@@ -16,7 +16,6 @@ class MappingExpandableListAdapter: BaseExpandableListAdapter() {
     private var viewModel: AppHaloConfigViewModel? = null
 
 
-
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
 
