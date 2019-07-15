@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.settingfragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -13,10 +13,10 @@ import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisCo
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 
-class HaloLayoutFragment : Fragment() {
+class HaloLayoutSettingFragment : Fragment() {
     companion object {
         @JvmStatic
-        fun newInstance() = HaloLayoutFragment()
+        fun newInstance() = HaloLayoutSettingFragment()
     }
 
     private lateinit var appConfigViewModel: AppHaloConfigViewModel

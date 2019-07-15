@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.settingfragments.*
 import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.activity_new_control_panel.*
 import kotlinx.android.synthetic.main.activity_new_control_panel.preview_layout
@@ -59,9 +60,9 @@ class NewControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigation
             "Predefined Components" to HaloExampleCollectionFragment.newInstance(),
             "Notification Filters" to HaloDataSettingFragment(),
             "Enhancement Patterns" to HaloEnhancementSettingFragment.newInstance(),
-            "Layout Methods" to HaloLayoutFragment.newInstance(),
+            "Layout Methods" to HaloLayoutSettingFragment.newInstance(),
             "Independent Effects" to HaloIndependentEffectSettingFragment.newInstance(),
-            "Aggregated Effects" to HaloIndependentEffectSettingFragment.newInstance()
+            "Aggregated Effects" to HaloAggregatedEffectSettingFragment.newInstance()
     )
     private var viewPagerAdapter: ScreenSlidPagerAdapter? = null
 

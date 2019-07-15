@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.settingfragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.componentviews.ImportanceControlView
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 
 class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {

@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.settingfragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,19 +7,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
+import hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.componentviews.IndependentMappingExpandableListAdapter
 import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
 import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponent
-import hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponentAdapter
 
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
-import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 
 class HaloIndependentEffectSettingFragment : Fragment() {
 
@@ -29,7 +25,6 @@ class HaloIndependentEffectSettingFragment : Fragment() {
     }
 
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
-    private lateinit var visComponents: List<HaloVisComponent>
     private var componentExamples = VisEffectManager.availableIndependentVisEffects.map{
         HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT)
     }
@@ -37,10 +32,6 @@ class HaloIndependentEffectSettingFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        visComponents = VisEffectManager.availableIndependentVisEffects.map{
-            HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT)
-        }
-
         appConfigViewModel = activity?.run {
             ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
@@ -65,7 +56,7 @@ class HaloIndependentEffectSettingFragment : Fragment() {
 
             val testExpandableListView = it.findViewById<ExpandableListView>(R.id.expandable_mapping_list)
             testExpandableListView.setAdapter(
-                    MappingExpandableListAdapter().apply{
+                    IndependentMappingExpandableListAdapter().apply{
                         setViewModel(appConfigViewModel)
                     }
             )

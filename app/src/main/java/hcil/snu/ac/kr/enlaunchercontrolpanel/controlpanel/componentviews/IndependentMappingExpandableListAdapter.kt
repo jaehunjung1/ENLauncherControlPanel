@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.componentviews
 
 import android.view.View
 import android.view.ViewGroup
@@ -6,7 +6,7 @@ import android.widget.BaseExpandableListAdapter
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.*
 
-class MappingExpandableListAdapter: BaseExpandableListAdapter() {
+class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
     companion object{
         private const val TAG = "Expandable_Mapping_Adapter"
         private fun exceptionVisVarDuplicated(visVar: NuNotiVisVariable) = Exception("$TAG: $visVar Duplicated")
@@ -14,8 +14,6 @@ class MappingExpandableListAdapter: BaseExpandableListAdapter() {
 
     private val visVartoNotiPropMappings: MutableList<Pair<NuNotiVisVariable, NotiProperty?>> = mutableListOf()
     private var viewModel: AppHaloConfigViewModel? = null
-
-
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
         viewModel = appConfigViewModel
@@ -53,9 +51,9 @@ class MappingExpandableListAdapter: BaseExpandableListAdapter() {
         val context = parent!!.context
 
         return (convertView as IndependentMappingParentLayout?)?.apply{
-            setProperties(visVar, notiProp, 0, viewModel, this@MappingExpandableListAdapter)
+            setProperties(visVar, notiProp, 0, viewModel)
         } ?: IndependentMappingParentLayout(context).apply{
-            setProperties(visVar, notiProp, 0, viewModel, this@MappingExpandableListAdapter)
+            setProperties(visVar, notiProp, 0, viewModel)
             setMappingChangedListener(object: IndependentMappingParentLayout.GroupViewInteractionListener{
                 override fun onMappingUpdate(visVar: NuNotiVisVariable, notiProp: NotiProperty?) {
                     visVartoNotiPropMappings[visVartoNotiPropMappings.indexOfFirst{it.first == visVar}] = Pair(visVar, notiProp)
@@ -82,12 +80,7 @@ class MappingExpandableListAdapter: BaseExpandableListAdapter() {
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val (visVar, notiProp) = getGroup(groupPosition)
         val context = parent!!.context
-        /*
-        return ((convertView as IndependentMappingChildLayout?) ?: IndependentMappingChildLayout(context)).apply{
-            setProperties(visVar, notiProp, 0, viewModel)
 
-        }
-        */
         return IndependentMappingChildLayout(context).apply{
             setProperties(visVar, notiProp, 0, viewModel)
 

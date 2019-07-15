@@ -1,11 +1,7 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.componentviews
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.drawable.Drawable
-import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +24,6 @@ class IndependentMappingParentLayout : LinearLayout {
     private var notiDataProp: NotiProperty? = null
     private var objIndex: Int = -1
     private var viewModel: AppHaloConfigViewModel? = null
-    private var adapter: MappingExpandableListAdapter? = null
 
     private var initialSetFinished: Boolean = false
 
@@ -47,12 +42,11 @@ class IndependentMappingParentLayout : LinearLayout {
         init(attrs, defStyle)
     }
 
-    fun setProperties(visVar:NuNotiVisVariable, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null, expandableAdapter: MappingExpandableListAdapter){
+    fun setProperties(visVar:NuNotiVisVariable, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
         notiVisVar = visVar
         notiDataProp = notiProp
         objIndex = index
         viewModel = appConfigViewModel
-        adapter = expandableAdapter
         findViewById<TextView>(R.id.selected_vis_var_text_view).text = notiVisVar.name
         findViewById<Spinner>(R.id.selected_noti_prop_spinner).setSelection(
                 when(notiProp){
@@ -70,7 +64,7 @@ class IndependentMappingParentLayout : LinearLayout {
                 attrs, R.styleable.IndependentMappingParentLayout, defStyle, 0)
 
         a.recycle()
-        View.inflate(context, R.layout.item_parent_expandablecontrolpanel, this)
+        View.inflate(context, R.layout.item_parent_indep_expandable_controlpanel, this)
 
         findViewById<Spinner>(R.id.selected_noti_prop_spinner).let{spinner ->
             spinner.isFocusable = false

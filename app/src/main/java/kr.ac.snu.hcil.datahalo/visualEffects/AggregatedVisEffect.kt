@@ -8,7 +8,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
-import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
 import kr.ac.snu.hcil.datahalo.utils.ANHComponentUIDGenerator
 import kr.ac.snu.hcil.datahalo.utils.CoordinateConverter
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
@@ -119,7 +118,7 @@ abstract class AbstractAggregatedVisEffect(
     private fun group(
             enhancedNotifications: List<EnhancedNotification>,
             groupByProp: NotiProperty,
-            visEffectParams: AggregatedVisEffectParams = AggregatedVisEffectParams()
+            visEffectParams: AggregatedVisEffectVisParams = AggregatedVisEffectVisParams()
     ): Map<Any, List<EnhancedNotification>>{
         return enhancedNotifications.groupBy {
             when(groupByProp){

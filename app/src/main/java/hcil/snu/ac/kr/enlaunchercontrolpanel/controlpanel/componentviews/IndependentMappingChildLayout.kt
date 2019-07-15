@@ -1,4 +1,4 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.componentviews
 
 import android.animation.AnimatorSet
 import android.app.Activity
@@ -18,7 +18,6 @@ import com.pes.androidmaterialcolorpickerdialog.ColorPicker
 import com.robertlevonyan.views.chip.Chip
 import hcil.snu.ac.kr.enlaunchercontrolpanel.R
 import hcil.snu.ac.kr.enlaunchercontrolpanel.utilities.Utilities
-import kotlinx.android.synthetic.main.aggregated_mapping_layout.view.*
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
@@ -278,125 +277,6 @@ class IndependentMappingChildLayout : LinearLayout {
 
     }
 
-    private fun setDiscreteMapping(appConfig: AppHaloConfig){
-        View.inflate(context, R.layout.item_child_nominal_expandablecontrolpanel, this)
-
-        val visVarLayout = findViewById<LinearLayout>(R.id.vis_var_content_list).apply{
-            removeAllViews()
-        }
-        val notiPropLayout = findViewById<LinearLayout>(R.id.noti_prop_content_list).apply{
-            removeAllViews()
-        }
-
-        val independentVisParams = appConfig.independentVisualParameters[0]
-        val independentDataParams = appConfig.independentDataParameters[0]
-
-        //notiData Contents 가져오고
-        notiDataPropContents.clear()
-        notiDataPropContents.addAll(
-                when (notiDataProp) {
-                    null -> emptyList()
-                    NotiProperty.IMPORTANCE -> {
-                        independentDataParams.selectedImportanceRangeList
-                    }
-                    NotiProperty.LIFE_STAGE -> {
-                        independentDataParams.selectedLifeList
-                    }
-                    NotiProperty.CONTENT -> {
-                        independentDataParams.keywordGroupMap.toList()
-                    }
-                }
-        )
-
-        //visVar Contents 가져오고
-        visVarContents.clear()
-        visVarContents.addAll(
-                when (notiVisVar) {
-                    NuNotiVisVariable.MOTION -> {
-                        if(notiDataPropContents.size == 0){
-                            listOf(independentVisParams.selectedMotion)
-                        }
-                        else{
-                            independentVisParams.selectedMotionList.subList(0, notiDataPropContents.size)
-                        }
-                    }
-                    NuNotiVisVariable.SHAPE -> {
-                        if(notiDataPropContents.size == 0){
-                            listOf(independentVisParams.selectedShape)
-                        }
-                        else{
-                            independentVisParams.selectedShapeList.subList(0, notiDataPropContents.size)
-                        }
-
-                    }
-                    NuNotiVisVariable.COLOR -> {
-                        if(notiDataPropContents.size == 0){
-                            listOf(independentVisParams.selectedColor)
-                        }
-                        else{
-                            independentVisParams.selectedColorList.subList(0, notiDataPropContents.size)
-                        }
-                    }
-                    NuNotiVisVariable.SIZE -> {
-                        if(notiDataPropContents.size == 0)
-                        {
-                            listOf(independentVisParams.selectedSizeRange)
-                        }
-                        else{
-                            MapFunctionUtilities.bin(
-                                    independentVisParams.selectedSizeRange,
-                                    notiDataPropContents.size)
-
-                        }
-                    }
-                    NuNotiVisVariable.POSITION -> {
-                        if(notiDataPropContents.size == 0)
-                        {
-                            listOf(independentVisParams.selectedPosRange)
-                        }
-                        else{
-                            MapFunctionUtilities.bin(
-                                    independentVisParams.selectedPosRange,
-                                    notiDataPropContents.size)
-                        }
-                    }
-                }
-        )
-
-        visVarContents.forEachIndexed { index, content ->
-            val frame = FrameLayout(context)
-            setVisVarFrame(index, frame, content)
-            visVarLayout.addView(
-                    frame,
-                    LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT).apply{
-                        marginStart = Utilities.dpToPx(context, 10)
-                        marginEnd = Utilities.dpToPx(context, 10)
-                    }
-            )
-        }
-
-        when (notiDataProp) {
-            NotiProperty.CONTENT -> {
-                setKeywordFrameView(notiDataPropContents as MutableList<Pair<String, MutableList<String>>>, notiPropLayout, context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
-            }
-            NotiProperty.LIFE_STAGE -> {
-                val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{independentDataParams.givenLifeList.indexOf(it)}
-
-                setSpinnerView(givenLifeStageIndices, independentDataParams.givenLifeList, notiPropLayout)
-            }
-            NotiProperty.IMPORTANCE -> {
-                val givenImportanceList = MapFunctionUtilities.bin(independentDataParams.givenImportanceRange, 5)
-                val givenImportanceIndices = (notiDataPropContents as MutableList<Pair<Double, Double>>).map{givenImportanceList.indexOf(it)}
-
-                setSpinnerView(
-                        givenImportanceIndices,
-                        givenImportanceList,
-                        notiPropLayout)
-            }
-            null -> { }
-        }
-    }
-
     private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
         (inflater.inflate(R.layout.chip_view_layout, null) as Chip).let{ chipView ->
             chipView.chipText = keyword
@@ -462,51 +342,6 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setKeywordFrameView(
-            notiDataPropContents: MutableList<Pair<String, MutableList<String>>>,
-            notiPropLayout: LinearLayout,
-            inflater: LayoutInflater
-    ){
-        notiDataPropContents.forEachIndexed { index, keywordGroup ->
-            notiPropLayout.addView(
-                    FrameLayout(context).also { frame ->
-                        //frame.removeAllViews()
-                        //frame.layoutParams.width = Utilities.dpToPx(context, 170)
-                        val keywordFrame = inflater.inflate(R.layout.layout_keyword_mapping, null, false) as LinearLayout
-
-                        val flowLayout = keywordFrame.findViewById<FlowLayout>(R.id.mapping_keyword_flowLayout).apply{
-                            tag = keywordGroup.first
-                            keywordGroup.second.forEach{keyword ->  addKeywordToFlowLayout(this, keyword, inflater)}
-                        }
-
-                        keywordFrame.findViewById<ImageButton>(R.id.mapping_keyword_add_button).let{ addButton ->
-                            addButton.setOnClickListener {
-                                val mDialog = AlertDialog.Builder(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar).let { mBuilder ->
-                                    val editText = EditText(context)
-                                    mBuilder.setView(editText)
-                                    mBuilder.setPositiveButton("OK") { dialogInterface, i ->
-                                        val newKeyword = editText.text.toString()
-                                        if(newKeyword.isNotEmpty() && newKeyword !in keywordGroup.second){
-                                            keywordGroup.second.add(newKeyword)
-                                            addKeywordToFlowLayout(flowLayout, newKeyword, inflater)
-                                        }
-                                    }
-                                    mBuilder.setNegativeButton("Cancel") { _, _ -> }
-                                    mBuilder.create()
-                                }
-                                mDialog.show()
-                            }
-                        }
-                        frame.addView(keywordFrame)
-                    },
-                    LayoutParams(Utilities.dpToPx(context, 170), LayoutParams.WRAP_CONTENT).apply{
-                        marginStart = Utilities.dpToPx(context, 10)
-                        marginEnd = Utilities.dpToPx(context, 10)
-                    }
-            )
-        }
-    }
-
     private fun setNewSpinnerView(selectedPropContentsIndices: List<Int>, givenPropContents: List<Any>, notiPropLayout: TableLayout){
         val givenPropStringContents: List<String> =
                 when(notiDataProp){
@@ -551,58 +386,6 @@ class IndependentMappingChildLayout : LinearLayout {
                     TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
                         gravity = Gravity.CENTER
                         column = 0
-                    }
-            )
-        }
-    }
-
-    private fun setSpinnerView(selectedPropContentsIndices: List<Int>, givenPropContents: List<Any>, notiPropLayout: LinearLayout){
-        val givenPropStringContents: List<String> =
-                when(notiDataProp){
-                    NotiProperty.IMPORTANCE -> {givenPropContents.map{
-                        val propContent = it as Pair<Double, Double>
-                        "${"%.1f".format(propContent.first)}-${"%.1f".format(propContent.second)}"}
-                    }
-                    NotiProperty.LIFE_STAGE -> {givenPropContents.map{
-                        val propContent = it as EnhancedNotificationLife
-                        propContent.name }
-                    }
-                    else -> {
-                        emptyList()
-                    }
-                }
-
-
-
-        val spinnerAdapter = getArrayAdapter(givenPropStringContents.toMutableList().apply{
-            add(0, "None")
-        }.toList())
-        spinnerAdapter.setDropDownViewResource(R.layout.item_spinner)
-        selectedPropContentsIndices.forEachIndexed{ index, indexVal ->
-            notiPropLayout.addView(
-                    FrameLayout(context).also{ frame ->
-                        val spinner = Spinner(context)
-                        spinner.adapter = spinnerAdapter
-                        spinner.setSelection(indexVal + 1) //indexVal 번째 순서에 있는 givenPropContent
-                        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                                if(i == 0){
-                                    //TODO(mapping)
-                                    //notiDataPropContents[index] = selectedData
-                                } else{
-                                    val selectedData = givenPropContents[i - 1]
-                                    notiDataPropContents[index] = selectedData
-                                }
-                                updateAppConfig()
-                            }
-                            override fun onNothingSelected(adapterView: AdapterView<*>) {}
-                        }
-                        frame.addView(spinner)
-                    },
-                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
-                        //marginStart = Utilities.dpToPx(context, 10)
-                        //marginEnd = Utilities.dpToPx(context, 10)
-                        column = 1
                     }
             )
         }

@@ -1,11 +1,10 @@
-package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel
+package hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.settingfragments
 
 import androidx.lifecycle.ViewModelProviders
 import android.content.Context
 import android.os.Bundle
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import androidx.fragment.app.Fragment
 import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
-import com.alespero.expandablecardview.ExpandableCardView
 
 import com.nex3z.flowlayout.FlowLayout
 import com.robertlevonyan.views.chip.Chip
