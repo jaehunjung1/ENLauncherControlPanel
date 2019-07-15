@@ -119,9 +119,30 @@ public class ContToContUI extends ConstraintLayout {
         return new float[] {leftStart, rightStart, rightEnd, leftEnd};
     }
 
-
     public int dpToPx(Context context, int dp) {
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float)dp*density);
+    }
+
+    /* returns [left start, left end, right start, right end] */
+    public float[] getConfig() {
+        float[] result = new float[4];
+        if (!isLeftInverted) {
+            result[0] = leftSeekBar.getLeftSeekBar().getProgress();
+            result[1] = leftSeekBar.getRightSeekBar().getProgress();
+        } else {
+            result[0] = leftSeekBar.getRightSeekBar().getProgress();
+            result[1] = leftSeekBar.getLeftSeekBar().getProgress();
+        }
+
+        if (!isRightInverted) {
+            result[2] = rightSeekBar.getLeftSeekBar().getProgress();
+            result[3] = rightSeekBar.getRightSeekBar().getProgress();
+        } else {
+            result[2] = rightSeekBar.getRightSeekBar().getProgress();
+            result[3] = rightSeekBar.getLeftSeekBar().getProgress();
+        }
+
+        return result;
     }
 }

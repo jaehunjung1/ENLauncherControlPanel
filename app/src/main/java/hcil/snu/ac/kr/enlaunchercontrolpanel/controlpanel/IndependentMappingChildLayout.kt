@@ -29,6 +29,7 @@ import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
+import java.util.*
 
 class IndependentMappingChildLayout : LinearLayout {
     companion object{
@@ -681,10 +682,11 @@ class IndependentMappingChildLayout : LinearLayout {
             set.applyTo(constraintLayout)
         }
 
-
-
-
-
+        /*
+        * TODO set appconfig with range mapping
+        * mappingUI.config returns [left Start, left End, right Start, right End]
+        */
+        Log.i("Initial Mapping", Arrays.toString(mappingUI.config))
 
 
 
