@@ -1,55 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="wrap_content"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
     android:layout_marginStart="30dp"
     android:layout_marginEnd="10dp">
 
-    <Spinner
-        android:id="@+id/selected_aggr_op_spinner"
-        android:layout_width="0dp"
-        android:layout_weight="2"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:spinnerMode="dialog" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Spinner
+            android:id="@+id/selected_aggr_op_spinner"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:spinnerMode="dialog" />
 
-    <Spinner
-        android:id="@+id/selected_noti_prop_spinner"
-        android:layout_width="0dp"
-        android:layout_weight="3"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:spinnerMode="dialog" />
+        <Spinner
+            android:id="@+id/selected_noti_prop_spinner"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:spinnerMode="dialog" />
+    </LinearLayout>
 
-    <TextView
-        android:layout_width="0dp"
-        android:layout_weight="1"
-        android:layout_height="match_parent"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="to"
-        android:textColor="@color/theme"
-        android:textSize="14sp"
-        android:textIsSelectable="false" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="to"
+            android:textColor="@color/theme"
+            android:textSize="14sp"
+            android:textIsSelectable="false" />
 
-    <TextView
-        android:id="@+id/selected_vis_var_text_view"
-        style="@android:style/Widget.DeviceDefault.Light.TextView"
-        android:layout_width="0dp"
-        android:layout_weight="3"
-        android:layout_height="match_parent"
-        android:fontFamily="sans-serif-medium"
-        android:gravity="center_horizontal|center_vertical"
-        android:text="Motion"
-        android:textColor="@color/text"
-        android:textSize="14sp"
-        android:textStyle="italic"
-        android:textIsSelectable="false" />
+        <TextView
+            android:id="@+id/selected_vis_var_text_view"
+            style="@android:style/Widget.DeviceDefault.Light.TextView"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="center_horizontal|center_vertical"
+            android:text="Motion"
+            android:textColor="@color/text"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:textIsSelectable="false" />
+
+    </LinearLayout>
 
 </LinearLayout>

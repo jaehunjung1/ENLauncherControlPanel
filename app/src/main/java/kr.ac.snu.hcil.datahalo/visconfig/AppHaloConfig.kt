@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
+import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
 import kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisMappingRule
@@ -34,6 +35,7 @@ data class AppHaloConfig(val packageName: String){
     )
     var maxNumOfIndependentNotifications: Int = 3
 
+    var notificationEnhancementExamplePatternName:String = VisDataManager.exampleImportanceSaturationPatterns.keys.toList()[0]
     var notificationEnhancementParams: NotificationEnhacementParams = NotificationEnhacementParams()
 
     //AppHalo Layout & Visualization Methods

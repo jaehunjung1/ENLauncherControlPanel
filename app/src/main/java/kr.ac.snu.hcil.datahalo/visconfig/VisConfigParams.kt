@@ -92,6 +92,7 @@ data class AggregatedVisObjectVisParams(
 )
 data class AggregatedVisObjectDataParams(
         val binNums: Int = 5,
+        var countThreshold: Int = 10,
         var selectedImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
         var selectedImportanceRangeList: List<Pair<Double, Double>> =  MapFunctionUtilities.bin(selectedImportanceRange, binNums),
         var selectedLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING),

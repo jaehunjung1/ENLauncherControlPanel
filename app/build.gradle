@@ -6,7 +6,7 @@ android {
     compileSdkVersion 28
     buildToolsVersion "28.0.3"
     defaultConfig {
-        applicationId "hcil.snu.ac.kr.enlaunchercontrolpanel"
+        applicationId "kr.ac.snu.hcil.enlaunchercontrolpanel"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1

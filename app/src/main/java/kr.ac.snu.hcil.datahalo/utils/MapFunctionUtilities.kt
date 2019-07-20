@@ -17,6 +17,33 @@ class MapFunctionUtilities {
             }
         }
 
+        fun createMapFunc(threshold: Int, yRange: Pair<Double, Double>):(Any) -> (Double?){
+            return {x: Any ->
+                if (x is Int){
+                    val yRangeSize = yRange.second - yRange.first
+                    val slope = yRangeSize / threshold
+                    if(x >= threshold) {slope * threshold + yRange.first}
+                    else{slope * x + yRange.first}
+                }
+                else null
+            }
+        }
+
+        fun<T> createMapFunc(thresholds: List<Int>, valRange: List<T>, numOfBin: Int = valRange.size): (Any) -> (T?){
+            return {x:Any ->
+                if(x is Int){
+                    val index = thresholds.indexOfFirst {ref -> ref >= x }
+                    if(index > 0)
+                        valRange[index]
+                    else
+                        null
+                }
+                else{
+                    null
+                }
+            }
+        }
+
         fun<T> createMapFunc(keyRange: Pair<Double, Double>, valRange: List<T>, numOfBin: Int = valRange.size): (Any) -> (T?){
             val newKeyList = bin(keyRange, numOfBin)
 

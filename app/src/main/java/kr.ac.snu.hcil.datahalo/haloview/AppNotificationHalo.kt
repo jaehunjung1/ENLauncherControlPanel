@@ -6,6 +6,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
@@ -15,6 +16,7 @@ import kr.ac.snu.hcil.datahalo.visualEffects.AbstractIndependentVisEffect
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.visualEffects.AbstractAggregatedVisEffect
+import kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisObject
 
 class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
     : ConstraintLayout(context, attributeSet){
@@ -29,10 +31,13 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
     private val pivotViewID: Int
 
     private val currentIndependentNotificationIDs: MutableList<Int> = mutableListOf()
-    //private val currentAggregatedNotificationIDs : MutableList<Int> = mutableListOf()
+    private val currentAggregatedNotificationIDs : MutableList<Int> = mutableListOf()
+
     private val currentIndependentNotiVisLayoutInfos: MutableMap<Int, LayoutParams> = mutableMapOf()
     private val currentIndependentVisEffects: MutableMap<Int, AbstractIndependentVisEffect> = mutableMapOf()
+
     private var currentAggregatedVisEffect: AbstractAggregatedVisEffect? = null
+    private var currentAggregatedNotisVisLayoutInfo: LayoutParams? = null
 
     init{
         clipChildren = false
@@ -85,7 +90,8 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
         currentIndependentNotiVisLayoutInfos.forEach{
             //TODO()
         }
-        currentIndependentVisEffects.values.forEachIndexed{index, effect ->
+
+        currentIndependentVisEffects.values.forEach{effect ->
             effect.visualParameters = appHaloConfig.independentVisEffectVisParams
             effect.independentVisObjects.forEachIndexed{ index, visObj ->
                 visObj.setVisParams(appHaloConfig.independentVisualParameters[index])
@@ -94,12 +100,23 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
                 visObj.setVisMapping(appHaloConfig.independentVisualMappings[index])
             }
         }
-        currentAggregatedVisEffect
 
+        currentAggregatedVisEffect?.apply{
+            objVisualParameters = appHaloConfig.aggregatedVisualParameters
+            objDataParameters = appHaloConfig.aggregatedDataParameters
+            objAnimationParameters = appHaloConfig.aggregatedAnimationParameters
+            setVisMapping(appHaloConfig.aggregatedVisualMappings)
+        } ?: run{
+            currentAggregatedVisEffect = VisEffectManager.createNewAggregatedVisEffect(appHaloConfig.aggregatedVisEffectName, appHaloConfig).apply{
+                objVisualParameters = appHaloConfig.aggregatedVisualParameters
+                objDataParameters = appHaloConfig.aggregatedDataParameters
+                objAnimationParameters = appHaloConfig.aggregatedAnimationParameters
+                setVisMapping(appHaloConfig.aggregatedVisualMappings)
+            }
+        }
     }
 
     fun setAppHaloData(enhancedAppNotifications: EnhancedAppNotifications){
-        //관련 없는 app의 notiData면 끝
 
         if(enhancedAppNotifications.packageName != appPackageName)
             return
@@ -109,8 +126,6 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
             val independentNotis = result[NotificationType.INDEPENDENT]?: emptyList()
             val aggregatedNotis = result[NotificationType.AGGREGATED]?: emptyList()
 
-            //update, add, delete 필요함
-
             //0. Delete Phase
             currentIndependentNotificationIDs.filter{currentlyValidID -> currentlyValidID !in independentNotis.map{it.id}}.map{ expiredID ->
                 val visEffect = currentIndependentVisEffects[expiredID]!!
@@ -119,6 +134,10 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
                 currentIndependentNotificationIDs.remove(expiredID)
                 currentIndependentNotiVisLayoutInfos.remove(expiredID)
                 currentIndependentVisEffects.remove(expiredID)
+            }
+
+            currentAggregatedNotificationIDs.filter{currentlyValidID -> currentlyValidID !in aggregatedNotis.map{it.id}}.map{ expiredID ->
+                currentAggregatedNotificationIDs.remove(expiredID)
             }
 
             // 1. Data Update Phase
@@ -135,10 +154,22 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
             val addIndependent = independentNotis.filterNot{it.id in currentIndependentNotificationIDs}
             addIndependent.map{ enhancedNotification ->
                 val visEffect = VisEffectManager.createNewIndependentVisEffect(config.independentVisEffectName, config)
-
                 currentIndependentNotificationIDs.add(enhancedNotification.id)
                 currentIndependentVisEffects[enhancedNotification.id] = visEffect
                 visEffect.setEnhancedNotification(enhancedNotification)
+            }
+
+            val addAggregated = aggregatedNotis.filterNot{it.id in currentAggregatedNotificationIDs}
+            addAggregated.map{ enhancedNotification ->
+                currentAggregatedNotificationIDs.add(enhancedNotification.id)
+            }
+
+            currentAggregatedVisEffect?.apply{
+                setEnhancedNotification(aggregatedNotis)
+            } ?: run{
+                currentAggregatedVisEffect = VisEffectManager.createNewAggregatedVisEffect(config.aggregatedVisEffectName, config).apply{
+                    setEnhancedNotification(aggregatedNotis)
+                }
             }
 
             val (independentVisLayoutMap, aggregatedVisLayout) = AppHaloLayoutMethods
@@ -156,10 +187,8 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
                 }
             }
 
-            //TODO(aggregated effect)
-            currentAggregatedVisEffect.let{
-
-            }
+            currentAggregatedNotisVisLayoutInfo = aggregatedVisLayout
+            currentAggregatedVisEffect?.placeVisObjectsInLayout(this, aggregatedVisLayout)
         }
     }
 

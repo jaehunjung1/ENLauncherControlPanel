@@ -24,7 +24,7 @@
             android:textColor="@color/theme"
             android:textSize="14sp" />
 
-        <hcil.snu.ac.kr.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
+        <kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
             android:id = "@+id/exampleSelectionView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
