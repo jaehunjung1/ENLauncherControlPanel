@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping
 
 import android.animation.AnimatorSet
 import android.app.Activity

@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection
 
 import android.view.MotionEvent
 import androidx.recyclerview.selection.ItemDetailsLookup

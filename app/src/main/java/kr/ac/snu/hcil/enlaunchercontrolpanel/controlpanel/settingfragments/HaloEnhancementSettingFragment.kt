@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProviders
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
-import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews.ImportanceControlView
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.ImportanceControlView
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 
 class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {

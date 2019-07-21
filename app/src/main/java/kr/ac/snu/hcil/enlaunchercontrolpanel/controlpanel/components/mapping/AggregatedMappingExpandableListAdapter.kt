@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping
 
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +58,7 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel )
         } ?: AggregatedMappingParentLayout(context).apply{
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel )
-            setMappingChangedListener(object: AggregatedMappingParentLayout.GroupViewInteractionListener{
+            setMappingChangedListener(object: AggregatedMappingParentLayout.GroupViewInteractionListener {
                 override fun onMappingUpdate(visVar: NuNotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?) {
                     visVarsToAggregatedNotiProperty[visVarsToAggregatedNotiProperty.indexOfFirst{it.first == visVar}] = Pair(visVar, Pair(aggrOp, notiProp))
                     notifyDataSetChanged()

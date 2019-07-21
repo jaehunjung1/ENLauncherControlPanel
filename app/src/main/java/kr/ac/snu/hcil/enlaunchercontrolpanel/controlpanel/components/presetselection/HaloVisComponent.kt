@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection
 
 data class HaloVisComponent(var label: String? = null, var drawableId: Int = 0, val componentType: HaloVisComponentType){
     enum class HaloVisComponentType{

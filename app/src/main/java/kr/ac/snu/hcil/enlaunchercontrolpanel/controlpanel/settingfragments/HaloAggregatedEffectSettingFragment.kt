@@ -11,9 +11,9 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProviders
 
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
-import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews.AggregatedMappingExpandableListAdapter
-import kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
-import kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponent
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping.AggregatedMappingExpandableListAdapter
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.ComponentExampleSelectionView
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.HaloVisComponent
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 

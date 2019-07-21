@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping
 
 import android.content.Context
 import android.graphics.Color

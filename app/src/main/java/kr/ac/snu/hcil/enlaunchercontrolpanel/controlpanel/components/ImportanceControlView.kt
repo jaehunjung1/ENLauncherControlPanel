@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components
 
 import android.content.Context
 import android.graphics.Color
@@ -12,8 +12,8 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
-import kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
-import kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection.HaloVisComponent
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.ComponentExampleSelectionView
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.HaloVisComponent
 import kotlinx.android.synthetic.main.layout_importance_control_view.view.*
 import kotlinx.android.synthetic.main.layout_importance_saturation_control.view.*
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager

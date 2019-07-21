@@ -14,7 +14,7 @@
         android:textSize="16sp"
         />
 
-    <kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection.ComponentExampleSelectionView
+    <kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.ComponentExampleSelectionView
         android:id = "@+id/exampleSelectionView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

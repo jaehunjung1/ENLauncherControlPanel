@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping
 
 import android.view.View
 import android.view.ViewGroup
@@ -54,7 +54,7 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
             setProperties(visVar, notiProp, 0, viewModel)
         } ?: IndependentMappingParentLayout(context).apply{
             setProperties(visVar, notiProp, 0, viewModel)
-            setMappingChangedListener(object: IndependentMappingParentLayout.GroupViewInteractionListener{
+            setMappingChangedListener(object: IndependentMappingParentLayout.GroupViewInteractionListener {
                 override fun onMappingUpdate(visVar: NuNotiVisVariable, notiProp: NotiProperty?) {
                     visVartoNotiPropMappings[visVartoNotiPropMappings.indexOfFirst{it.first == visVar}] = Pair(visVar, notiProp)
                     notifyDataSetChanged()

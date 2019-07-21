@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.examplecomponentselection
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection
 
 import android.content.Context
 import androidx.recyclerview.widget.RecyclerView

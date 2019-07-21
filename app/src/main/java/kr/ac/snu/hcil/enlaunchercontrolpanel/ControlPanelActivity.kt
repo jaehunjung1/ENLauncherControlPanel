@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel
+package kr.ac.snu.hcil.enlaunchercontrolpanel
 
 import android.os.Bundle
 import android.util.Log
@@ -17,7 +17,6 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
-import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.settingfragments.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.activity_new_control_panel.*
@@ -31,7 +30,7 @@ import kr.ac.snu.hcil.datahalo.notificationdata.NotiContent
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 
-class NewControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object{
         private const val TAG = "HALO_SETTING_ACTIVITY"
         private val exampleNotifications = listOf(

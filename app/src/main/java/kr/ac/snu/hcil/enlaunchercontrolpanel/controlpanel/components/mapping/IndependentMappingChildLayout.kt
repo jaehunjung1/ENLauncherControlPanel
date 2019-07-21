@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews
+package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping
 
 import android.animation.AnimatorSet
 import android.app.Activity
@@ -28,7 +28,6 @@ import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
-import kr.ac.snu.hcil.enlaunchercontrolpanel.utilities.ContToContUI
 import java.util.*
 
 class IndependentMappingChildLayout : LinearLayout {
@@ -50,6 +49,7 @@ class IndependentMappingChildLayout : LinearLayout {
     private val visVarContents: MutableList<Any> = mutableListOf()
     private val notiDataPropContents: MutableList<Any> = mutableListOf()
 
+    private lateinit var mappingUI: ContToContUI
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -445,7 +445,7 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     private fun setRangeMapping(appConfig: AppHaloConfig){
-        lateinit var mappingUI: ContToContUI
+
 
         View.inflate(context, R.layout.item_child_new_range_mapping, this)
 
@@ -454,7 +454,9 @@ class IndependentMappingChildLayout : LinearLayout {
             mappingUI = this
             id = View.generateViewId()
             layoutParams = ConstraintLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            setViewModel(viewModel)
+            setMapping(notiVisVar, notiDataProp)
         })
         constraintLayout.getChildAt(0).apply {
             val set = ConstraintSet()
@@ -471,8 +473,6 @@ class IndependentMappingChildLayout : LinearLayout {
         * mappingUI.config returns [left Start, left End, right Start, right End]
         */
         Log.i("Initial Mapping", Arrays.toString(mappingUI.config))
-
-
 
     }
 

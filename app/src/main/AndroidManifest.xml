@@ -17,7 +17,7 @@
             android:label="@string/title_activity_tester"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.NewControlPanelActivity"
+            android:name="kr.ac.snu.hcil.enlaunchercontrolpanel.ControlPanelActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
