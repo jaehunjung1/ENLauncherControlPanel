@@ -10,6 +10,7 @@ import android.view.animation.LinearInterpolator
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.visconfig.*
+import kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisMappingRule
 import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
@@ -26,11 +27,13 @@ class AppHaloConfigViewModel: ViewModel() {
 
             haloLayoutMethodName = AppHaloLayoutMethods.availiableLayouts[0]
             independentVisEffectName = VisEffectManager.availableIndependentVisEffects[0]
+            aggregatedVisEffectName = VisEffectManager.availableAggregatedVisEffects[0]
 
             independentVisEffectVisParams = IndependentVisEffectVisParams(
                     radius = mutableListOf(0, 0, 0, 0, 0),
                     offsetAngle = 0f
             )
+
             independentVisualMappings.add(
                     mapOf(
                         NuNotiVisVariable.POSITION to null,
@@ -89,7 +92,60 @@ class AppHaloConfigViewModel: ViewModel() {
                     )
             )
 
+            aggregatedVisualMappings.add(
+                    AggregatedVisMappingRule(
+                            groupProperty = NotiProperty.LIFE_STAGE,
+                            visMapping = mapOf(
+                                    NuNotiVisVariable.POSITION to Pair(NotiAggregationType.COUNT, null),
+                                    NuNotiVisVariable.SIZE to Pair(NotiAggregationType.COUNT, null),
+                                    NuNotiVisVariable.SHAPE to Pair(NotiAggregationType.COUNT, null),
+                                    NuNotiVisVariable.MOTION to Pair(NotiAggregationType.COUNT, null),
+                                    NuNotiVisVariable.COLOR to Pair(NotiAggregationType.COUNT, null)
+                            )
+                    )
+            )
 
+            aggregatedVisualParameters.add(
+                    AggregatedVisObjectVisParams().also{
+                        it.selectedShapeList = listOf(
+                                VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
+                                VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
+                                VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
+                                VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
+                                VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape()))
+                        )
+                        it.selectedMotionList = listOf(
+                                AnimatorSet(),
+                                AnimatorSet(),
+                                AnimatorSet(),
+                                AnimatorSet(),
+                                AnimatorSet()
+                        )
+                        it.selectedColorList = listOf(
+                                Color.RED,
+                                Color.YELLOW,
+                                Color.GREEN,
+                                Color.BLUE,
+                                Color.DKGRAY
+                        )
+                    }
+            )
+
+            aggregatedDataParameters.add(
+                    AggregatedVisObjectDataParams().also{
+                        it.keywordGroupMap = mapOf(
+                                "업무" to mutableListOf(),
+                                "친구" to mutableListOf(),
+                                "가족" to mutableListOf(),
+                                "광고" to mutableListOf(),
+                                "기본" to mutableListOf()
+                        )
+                    }
+            )
+
+            aggregatedAnimationParameters.add(
+                    listOf()
+            )
         }
     }
 }

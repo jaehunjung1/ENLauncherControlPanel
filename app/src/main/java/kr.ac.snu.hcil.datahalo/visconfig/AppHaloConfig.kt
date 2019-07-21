@@ -5,77 +5,12 @@ import android.graphics.Color
 import android.view.View
 import android.view.animation.LinearInterpolator
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
+import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
+import kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisMappingRule
 
 data class AppHaloConfig(val packageName: String){
-    companion object {
-        /*
-        fun applyLayoutConfig(appHaloConfig: AppHaloConfig, name: String): AppHaloConfig{
-            return when(name){
-                "ClockwiseSortedLayout" -> {
-                    appHaloConfig.apply{
-                        haloLayoutMethodName = name
-                    }
-                }
-                else -> {appHaloConfig}
-            }
-        }
-
-        fun applyIndependentEffectConfig(appHaloConfig: AppHaloConfig, name: String): AppHaloConfig{
-            return when(name){
-                "SingleVisObjIndependentEffect" -> {
-                    appHaloConfig.apply{
-                        independentVisEffectName = name
-                        independentVisEffectVisParams = listOf(
-                                IndependentVisEffectVisParams(
-                                        radius = mutableListOf(0),
-                                        offsetAngle = 0f)
-                        )
-                        independentVisualMappings = listOf(
-                                mapOf(
-                                        NuNotiVisVariable.POSITION to NotiProperty.IMPORTANCE,
-                                        NuNotiVisVariable.SIZE to NotiProperty.IMPORTANCE,
-                                        NuNotiVisVariable.SHAPE to NotiProperty.LIFE_STAGE,
-                                        NuNotiVisVariable.MOTION to NotiProperty.LIFE_STAGE,
-                                        NuNotiVisVariable.COLOR to NotiProperty.CONTENT
-                                )
-                        )
-                        independentDataParameters = listOf(
-                                IndependentVisObjectDataParams()
-                        )
-                        independentVisualParameters = listOf(
-                                IndependentVisObjectVisParams()
-                        )
-                        independentAnimationParameters = listOf(
-                                listOf(
-                                        IndependentVisObjectAnimParams(
-                                                property = View.ALPHA,
-                                                values = arrayOf(.5f),
-                                                duration = 2 * 1000L,
-                                                interpolator = LinearInterpolator())
-                                )
-                        )
-                    }
-                }
-                else -> {appHaloConfig}
-            }
-
-        }
-
-        fun applyAggregatedEffectConfig(appHaloConfig: AppHaloConfig, name: String): AppHaloConfig{
-            return when(name){
-                "SimpleAggregatedEffect" -> {
-                    appHaloConfig.apply{
-                        aggregatedVisEffectName = name
-
-                    }
-                }
-                else -> {appHaloConfig}
-            }
-        }
-        */
-    }
 
     //Filter & Sample Methods Configs
     var filterImportanceConfig = mapOf(
@@ -100,6 +35,7 @@ data class AppHaloConfig(val packageName: String){
     )
     var maxNumOfIndependentNotifications: Int = 3
 
+    var notificationEnhancementExamplePatternName:String = VisDataManager.exampleImportanceSaturationPatterns.keys.toList()[0]
     var notificationEnhancementParams: NotificationEnhacementParams = NotificationEnhacementParams()
 
     //AppHalo Layout & Visualization Methods
@@ -113,5 +49,11 @@ data class AppHaloConfig(val packageName: String){
     val independentVisualParameters: MutableList<IndependentVisObjectVisParams> = mutableListOf()
     val independentDataParameters: MutableList<IndependentVisObjectDataParams> = mutableListOf()
     val independentAnimationParameters: MutableList<List<IndependentVisObjectAnimParams>> = mutableListOf()
+
+    val aggregatedVisualMappings: MutableList<AggregatedVisMappingRule> = mutableListOf()
+    var aggregatedVisEffectVisParams: AggregatedVisEffectVisParams = AggregatedVisEffectVisParams()
+    val aggregatedVisualParameters: MutableList<AggregatedVisObjectVisParams> = mutableListOf()
+    val aggregatedDataParameters: MutableList<AggregatedVisObjectDataParams> = mutableListOf()
+    val aggregatedAnimationParameters: MutableList<List<AggregatedVisObjectAnimParams>> = mutableListOf()
 
 }

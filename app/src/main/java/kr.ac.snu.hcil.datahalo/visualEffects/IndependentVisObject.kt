@@ -343,17 +343,25 @@ abstract class AbstractIndependentVisObject(
 
         input.forEach{ propertyToValue ->
             val notiProp: NotiProperty = propertyToValue.key
-            //TODO(매핑이 null일 때 문제 해결해야할 듯)
-
-            val temp = currMapping.filter{it.value == notiProp}.toList()
-            val visVar: NuNotiVisVariable? = if(temp.isEmpty()) null else temp[0].first
-
-
             val notiVal: Any = propertyToValue.value
-            when(visVar){
-                in boundConversions -> {
-                    val f = boundConversions[visVar]!!
-                    f(notiVal)?.let{ visVal ->
+
+            val visVars = currMapping.filter{it.value == notiProp}.map{ it.key }.toList()
+            visVars.forEach{ visVar ->
+                when(visVar){
+                    in boundConversions -> {
+                        val f = boundConversions[visVar]!!
+                        f(notiVal)?.let{ visVal ->
+                            when(visVar){
+                                NuNotiVisVariable.SIZE -> size = visVal as Double
+                                NuNotiVisVariable.MOTION -> motion = visVal as AnimatorSet
+                                NuNotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                                NuNotiVisVariable.POSITION -> pos = visVal as Double
+                                NuNotiVisVariable.COLOR -> color = visVal as Int
+                            }
+                        }
+                    }
+                    in userDefinedConversions -> {
+                        val visVal = userDefinedConversions[visVar]!!
                         when(visVar){
                             NuNotiVisVariable.SIZE -> size = visVal as Double
                             NuNotiVisVariable.MOTION -> motion = visVal as AnimatorSet
@@ -362,18 +370,10 @@ abstract class AbstractIndependentVisObject(
                             NuNotiVisVariable.COLOR -> color = visVal as Int
                         }
                     }
-                }
-                in userDefinedConversions -> {
-                    val visVal = userDefinedConversions[visVar]!!
-                    when(visVar){
-                        NuNotiVisVariable.SIZE -> size = visVal as Double
-                        NuNotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                        NuNotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
-                        NuNotiVisVariable.POSITION -> pos = visVal as Double
-                        NuNotiVisVariable.COLOR -> color = visVal as Int
+                    else -> {
+                        //여기 오면 문제 생김
                     }
                 }
-                else -> {}
             }
         }
         /*

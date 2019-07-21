@@ -4,15 +4,17 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.view.View
+import android.view.animation.GridLayoutAnimationController
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
-import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
 import kr.ac.snu.hcil.datahalo.utils.ANHComponentUIDGenerator
 import kr.ac.snu.hcil.datahalo.utils.CoordinateConverter
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visconfig.*
+import kotlin.math.roundToInt
 
 interface InterfaceAggregatedVisEffect{
 
@@ -22,15 +24,22 @@ interface InterfaceAggregatedVisEffect{
     fun getMappedNotificationID(): List<Int>
     fun getDrawables(): List<Drawable>
     fun getAnimatorSet(): AnimatorSet
+
+    fun setVisMapping(aggrMappingRules: List<AggregatedVisMappingRule>)
     fun setEnhancedNotification(enhancedNotifications: List<EnhancedNotification>)
+
     fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, pivotLayoutParams: ConstraintLayout.LayoutParams)
     fun deleteVisObjectsInLayout(constraintLayout: ConstraintLayout)
 }
 data class AggregatedVisMappingRule(val groupProperty: NotiProperty?, val visMapping: Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>)
+
 abstract class AbstractAggregatedVisEffect(
         final override val effectID: String,
-        var mappingRules: List<AggregatedVisMappingRule>
-): InterfaceAggregatedVisEffect
+        var mappingRules: List<AggregatedVisMappingRule>,
+        var effectParameters: AggregatedVisEffectVisParams,
+        var objVisualParameters: List<AggregatedVisObjectVisParams>,
+        var objDataParameters: List<AggregatedVisObjectDataParams>,
+        var objAnimationParameters: List<List<AggregatedVisObjectAnimParams>>): InterfaceAggregatedVisEffect
 {
     companion object{
         private fun exceptionInvalidAggregation(
@@ -41,33 +50,96 @@ abstract class AbstractAggregatedVisEffect(
         private fun exceptionInvalidGroupping(notiProperty: NotiProperty) = Exception("Invalid Groupping on $notiProperty")
     }
 
-    final override val localPivotID: Int = ANHComponentUIDGenerator.generateLocalPivotUID()
+    final override val localPivotID: Int = View.generateViewId()
     private val drawables: MutableList<Drawable> = mutableListOf()
     private var animatorSet: AnimatorSet = AnimatorSet()
     private var currentCenterPolar: Pair<Int, Float> = Pair(-1, 0f)
     private val mappedNotificationIDs: MutableList<Int> = mutableListOf()
 
-
-    val groupBoundVisObjects: MutableList<List<AbstractAggregatedVisObject>> = mutableListOf()
-    val normalVisObjects: MutableList<AbstractAggregatedVisObject> = mutableListOf()
+    private val groupBoundVisObjects: MutableList<List<AbstractAggregatedVisObject>> = mutableListOf()
+    private val normalVisObjects: MutableList<AbstractAggregatedVisObject> = mutableListOf()
 
     init{
-
-        mappingRules.forEach{mappingRule ->
+        mappingRules.forEachIndexed{ index, mappingRule ->
             if(mappingRule.groupProperty == null){
-                normalVisObjects
+                //no group property
+                normalVisObjects.add(
+                        AggregatedVisObject(
+                                mappingRule.visMapping,
+                                objVisualParameters[index],
+                                objDataParameters[index],
+                                objAnimationParameters[index]
+                        ).apply{
+                            setID(View.generateViewId())
+                        }
+                )
             }
-        }
+            else{
 
-        normalVisObjects.forEach{ abstractAggregatedVisObject ->
-            abstractAggregatedVisObject.setID(ANHComponentUIDGenerator.generateVisObjectUID())
-        }
-        groupBoundVisObjects.forEach{ unitAggregatedVisObjects ->
-            unitAggregatedVisObjects.map{it.setID(ANHComponentUIDGenerator.generateVisObjectUID())}
+                val size = when(mappingRule.groupProperty){
+                    NotiProperty.IMPORTANCE -> objDataParameters[index].binNums
+                    NotiProperty.CONTENT -> objDataParameters[index].keywordGroups.size
+                    NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().size }
 
+                groupBoundVisObjects.add(
+                        List(size){
+                            AggregatedVisObject(
+                                    mappingRule.visMapping,
+                                    objVisualParameters[index],
+                                    objDataParameters[index],
+                                    objAnimationParameters[index]).apply{
+
+                                setID(View.generateViewId())
+                                setNotiPropertyGroupedBy(mappingRule.groupProperty)
+                            }
+                        }
+                )
+            }
         }
     }
 
+    override fun setVisMapping(aggrMappingRules: List<AggregatedVisMappingRule>) {
+        mappingRules = aggrMappingRules
+        normalVisObjects.clear()
+        groupBoundVisObjects.clear()
+
+        mappingRules.forEachIndexed{ index, mappingRule ->
+            if(mappingRule.groupProperty == null){
+                //no group property
+                normalVisObjects.add(
+                        AggregatedVisObject(
+                                mappingRule.visMapping,
+                                objVisualParameters[index],
+                                objDataParameters[index],
+                                objAnimationParameters[index]
+                        ).apply{
+                            setID(View.generateViewId())
+                        }
+                )
+            }
+            else{
+
+                val size = when(mappingRule.groupProperty){
+                    NotiProperty.IMPORTANCE -> objDataParameters[index].binNums
+                    NotiProperty.CONTENT -> objDataParameters[index].keywordGroups.size
+                    NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().size }
+
+                groupBoundVisObjects.add(
+                        List(size){
+                            AggregatedVisObject(
+                                    mappingRule.visMapping,
+                                    objVisualParameters[index],
+                                    objDataParameters[index],
+                                    objAnimationParameters[index]).apply{
+
+                                setID(View.generateViewId())
+                                setNotiPropertyGroupedBy(mappingRule.groupProperty)
+                            }
+                        }
+                )
+            }
+        }
+    }
     final override fun getMappedNotificationID(): List<Int> = mappedNotificationIDs.toList()
     final override fun getDrawables(): List<Drawable> = drawables.toList()
     final override fun getAnimatorSet() = animatorSet
@@ -80,29 +152,34 @@ abstract class AbstractAggregatedVisEffect(
         val animatorCollection = mutableListOf<Animator>()
         groupBoundVisObjects.forEach{ visObjects ->
             val groupByProp = visObjects[0].getNotiPropertyGroupedBy()
-            val groupResult: Map<Any, List<EnhancedNotification>> = group(enhancedNotifications, groupByProp!!)
-
-            visObjects.forEachIndexed{ index, visObject ->
-                visObject.setGroupLabel(groupResult.keys.toList()[index])
-                val tempResult = visObject.getVisMapping().values.map{ aggregationTypeAndTargetProperty ->
-                    val aggrType = aggregationTypeAndTargetProperty.first
-                    val targetProp = aggregationTypeAndTargetProperty.second
-                    val aggregationResult = aggregate(groupResult.values.toList()[index], targetProp, aggrType)
-                    Pair(aggregationTypeAndTargetProperty, aggregationResult)
-                }.toMap()
-                val (drawable, animator) = visObject.getDrawableWithAnimator(tempResult)
-                drawables.add(drawable)
-                animatorCollection.addAll(
-                        animator.childAnimations.map{anim -> anim.also{it.setTarget(drawable)}}
-                )
+            val groupResult: Map<Any, List<EnhancedNotification>> = group(
+                    enhancedNotifications,
+                    groupByProp!!,
+                    visObjects[0].getDataParams())
+            if(groupResult.isNotEmpty()){
+                visObjects.forEachIndexed{ index, visObject ->
+                    visObject.setGroupLabel(groupResult.keys.toList()[index])
+                    val tempResult = visObject.getVisMapping().values.map{ aggregationTypeAndTargetProperty ->
+                        val aggrType = aggregationTypeAndTargetProperty.first
+                        val targetProp = aggregationTypeAndTargetProperty.second
+                        val aggregationResult = aggregate(groupResult.values.toList()[index], targetProp, aggrType, visObject.getDataParams())
+                        Pair(aggregationTypeAndTargetProperty, aggregationResult)
+                    }.toMap()
+                    val (drawable, animator) = visObject.getDrawableWithAnimator(tempResult)
+                    drawables.add(drawable)
+                    animatorCollection.addAll(
+                            animator.childAnimations.map{anim -> anim.also{it.setTarget(drawable)}}
+                    )
+                }
             }
+
         }
 
         normalVisObjects.forEach{ visObject ->
             val tempResult = visObject.getVisMapping().values.map{ aggregationTypeAndTargetProperty ->
                 val aggrType = aggregationTypeAndTargetProperty.first
                 val targetProp = aggregationTypeAndTargetProperty.second
-                val aggregationResult = aggregate(enhancedNotifications, targetProp, aggrType)
+                val aggregationResult = aggregate(enhancedNotifications, targetProp, aggrType, visObject.getDataParams())
                 Pair(aggregationTypeAndTargetProperty, aggregationResult)
             }.toMap()
             val (drawable, animator) = visObject.getDrawableWithAnimator(tempResult)
@@ -111,36 +188,31 @@ abstract class AbstractAggregatedVisEffect(
                     animator.childAnimations.map{anim -> anim.also{it.setTarget(drawable)}}
             )
         }
-
         animatorSet.playTogether(animatorCollection)
     }
-
 
     private fun group(
             enhancedNotifications: List<EnhancedNotification>,
             groupByProp: NotiProperty,
-            visEffectParams: AggregatedVisEffectParams = AggregatedVisEffectParams()
+            objectDataParams: AggregatedVisObjectDataParams
     ): Map<Any, List<EnhancedNotification>>{
         return enhancedNotifications.groupBy {
             when(groupByProp){
                 NotiProperty.LIFE_STAGE -> { it.lifeCycle }
                 NotiProperty.IMPORTANCE -> {
-                    val bins = MapFunctionUtilities.bin(Pair(0.0, 1.0), visEffectParams.groupNumber)
+                    val bins = MapFunctionUtilities.bin(Pair(0.0, 1.0), objectDataParams.binNums)
                     val ratio = it.currEnhancement
-                    bins.filter{range -> range.first <= ratio && ratio < range.second}.let{filterResult->
+                    bins.filter{range -> range.first <= ratio && ratio < range.second}.let{ filterResult->
                         if(filterResult.isEmpty()) exceptionInvalidGroupping(groupByProp) else filterResult.first()
                     }
                 }
                 NotiProperty.CONTENT-> {
-                    val keywordGroupMap = visEffectParams.contentGroupMap
+                    val keywordGroupMap = objectDataParams.keywordGroupMap
                     keywordGroupMap.mapValues{group ->
                         val groupName = group.key
                         val members = group.value
                         members.fold(0, {acc:Int, member:String -> if(it.notiContent.contains(member)) acc + 1 else acc})
                     }.maxBy{groupHitCount -> groupHitCount.value}.let{ result -> result?.key ?: "default" }
-                }
-                else -> {
-                    exceptionInvalidGroupping(groupByProp)
                 }
             }
         }
@@ -149,7 +221,8 @@ abstract class AbstractAggregatedVisEffect(
     private fun aggregate(
             groupedNotification: List<EnhancedNotification>,
             targetProp: NotiProperty?,
-            op: NotiAggregationType
+            op: NotiAggregationType,
+            dataParams: AggregatedVisObjectDataParams
     ): Any{
         when(op){
             NotiAggregationType.COUNT -> {
@@ -188,10 +261,10 @@ abstract class AbstractAggregatedVisEffect(
             NotiAggregationType.MOST_FREQUENT_NOMINAL -> {
                 return when(targetProp){
                     NotiProperty.LIFE_STAGE -> {
-                        group(groupedNotification, targetProp).toList().sortedBy { (_, value) -> value.size }.last().first as EnhancedNotificationLife
+                        group(groupedNotification, targetProp, dataParams).toList().sortedBy { (_, value) -> value.size }.last().first as EnhancedNotificationLife
                     }
                     NotiProperty.CONTENT -> {
-                        group(groupedNotification, targetProp).toList().sortedBy { (_, value) -> value.size }.last().first as String
+                        group(groupedNotification, targetProp, dataParams).toList().sortedBy { (_, value) -> value.size }.last().first as String
                     }
                     else -> {
                         exceptionInvalidAggregation(targetProp, op)
@@ -201,6 +274,7 @@ abstract class AbstractAggregatedVisEffect(
         }
     }
 
+    /*
     private fun doGroupAndAggregate(
             enhancedNotifications: List<EnhancedNotification>,
             aggregationRules: List<VisMappingManager.NotiPropertyAggregationRule>
@@ -235,15 +309,13 @@ abstract class AbstractAggregatedVisEffect(
                         groupedResult -> groupedResult.value.map{ it.second }
                     })
                  }.toMap()
-
-
-
-
-
-
     }
+    */
 
     final override fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, pivotLayoutParams: ConstraintLayout.LayoutParams) {
+
+        if(drawables.isEmpty()) return
+
         val localPivotView = constraintLayout.findViewById<ImageView>(localPivotID)
 
         if(localPivotView == null){
@@ -274,7 +346,7 @@ abstract class AbstractAggregatedVisEffect(
                         ConstraintLayout.LayoutParams.WRAP_CONTENT)
                         .also{
                             it.circleConstraint = localPivotID
-                            it.circleRadius = Math.round(r).toInt()
+                            it.circleRadius = r.roundToInt()
                             it.circleAngle = theta.toFloat()
                         }
                 if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){
@@ -317,7 +389,7 @@ abstract class AbstractAggregatedVisEffect(
                     ConstraintLayout.LayoutParams.WRAP_CONTENT)
                     .also{
                         it.circleConstraint = localPivotID
-                        it.circleRadius = Math.round(r).toInt()
+                        it.circleRadius = r.roundToInt()
                         it.circleAngle = theta.toFloat()
                     }
             if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){

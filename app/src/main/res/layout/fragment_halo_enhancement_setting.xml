@@ -12,7 +12,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <hcil.snu.ac.kr.enlaunchercontrolpanel.controlpanel.ImportanceControlView
+        <kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.componentviews.ImportanceControlView
             android:id="@+id/enhancement_control_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
