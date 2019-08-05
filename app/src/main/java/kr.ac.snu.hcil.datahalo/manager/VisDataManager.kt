@@ -9,7 +9,12 @@ import kr.ac.snu.hcil.datahalo.visconfig.*
 
 class VisDataManager {
     companion object{
+
+        const val DEFAULT_PATTERN = "_DEFAULT"
+        const val CUSTOM_PATTERN = "_CUSTOM"
+
         val exampleImportanceSaturationPatterns: Map<String, String> = mapOf(
+                DEFAULT_PATTERN to "No Importance Pattern",
                 "type1" to "Importance Increases Fast Just After It Triggers, and Slowly Fades Out",
                 "type2" to "Importance Decreases Fast Just After It Triggers, and Slowly",
                 "type3" to "Importance Decreases Fast Just After It Triggers, and Slowly",
@@ -17,11 +22,22 @@ class VisDataManager {
                 "type5" to "Importance Decreases Fast Just After It Triggers, and Slowly",
                 "type6" to "Importance Decreases Fast Just After It Triggers, and Slowly",
                 "type7" to "Importance Decreases Fast Just After It Triggers, and Slowly"
-
         )
+        fun availableImportanceSaturationPatterns() = exampleImportanceSaturationPatterns.keys.toList()
 
         fun getExampleSaturationPattern(key: String): NotificationEnhacementParams?{
             return when(key){
+                "default" -> {
+                    NotificationEnhacementParams(
+                            initialImportance = 0.0,
+                            lifespan = 1000L * 60 * 60 * 6,
+                            importanceRange = Pair(0.0, 1.0),
+                            firstPattern = EnhancementPattern.EQ,
+                            secondPattern = EnhancementPattern.EQ,
+                            firstSaturationTime = 1000L * 60 * 60 * 1,
+                            secondSaturationTime = 1000L * 60 * 60 * 3
+                    )
+                }
                 "type1" -> {
                     NotificationEnhacementParams(
                             initialImportance = 0.5,
@@ -103,6 +119,7 @@ class VisDataManager {
             }
         }
 
+
         fun convert(data: EnhancedAppNotifications, visConfig: AppHaloConfig): Map<NotificationType, List<EnhancedNotification>>{
             val optionFilters = constructFilters(visConfig)
             val sampleMax = visConfig.maxNumOfIndependentNotifications
@@ -140,7 +157,6 @@ class VisDataManager {
                     )
             )
         }
-
 
         private fun filterAndCategorizeEnhancedNotifications(
                 data: EnhancedAppNotifications,
@@ -226,7 +242,8 @@ class VisDataManager {
                 }
             }
 
-            val fromWhiteToGray = whiteAndGray.sortedWith(compareBy({it.whiteRank}, {it.currEnhancement}, {it.initTime}))
+            val fromWhiteToGray = whiteAndGray.sortedWith(compareBy({it.whiteRank}, {it.currEnhancement}, {it.initTime})).reversed()
+            //compareByDescending{it.whiteRank}.thenByDescending{it.currEnhancement}.thenByDescending{it.initTime}
             val sampleCount = if(fromWhiteToGray.size > sampleMax) sampleMax else fromWhiteToGray.size
             val independentNotis = if(fromWhiteToGray.isNotEmpty()) fromWhiteToGray.subList(0, sampleCount) else emptyList()
             val aggregatedNotis = if(fromWhiteToGray.size > sampleCount) fromWhiteToGray.subList(sampleCount, fromWhiteToGray.size - 1) else emptyList()

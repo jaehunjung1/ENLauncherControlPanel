@@ -1,12 +1,17 @@
 package kr.ac.snu.hcil.datahalo.notificationdata
 
+import kr.ac.snu.hcil.datahalo.manager.AppConfigManager
+import kr.ac.snu.hcil.datahalo.manager.DataHaloManager
+import kr.ac.snu.hcil.datahalo.manager.VisDataManager
+import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
+import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
 import kotlin.math.roundToLong
 
 abstract class AbstractEnhancedData{
     abstract val typeOfEnhancement: String
     abstract val initTime: Long
-    abstract val lifeSpan: Long
+    abstract var lifeSpan: Long
 }
 
 data class NotiHierarchy(val group:String, val channel:String){
@@ -18,12 +23,21 @@ data class NotiContent (val title:String, val content:String){
     fun contains(s: String):Boolean = title.contains(s) || content.contains(s)
 }
 
+//(TODO)notificationGenerator가 있어야 함. id, initTime, 등등 여러 정보 받고, appConfig 세팅 받아서 group 같은 것들도 만들어야됨
+/*
+*  notification key : cancel 하려면 필요함
+*   String title = sbm.getNotification().extras.getString("android.title");
+            String text = sbm.getNotification().extras.getString("android.text");
+* */
+
 data class EnhancedNotification(
         val id: Int,
         override val typeOfEnhancement: String,
         override val initTime: Long,
-        override val lifeSpan: Long
+        val notiContent: NotiContent = NotiContent("Not Assigned", "Not Assigned")
 ): AbstractEnhancedData() {
+
+    override var lifeSpan: Long = 0L
     var lifeCycle: EnhancedNotificationLife =
             EnhancedNotificationLife.JUST_TRIGGERED
     var firstPattern = EnhancementPattern.INC
@@ -44,7 +58,8 @@ data class EnhancedNotification(
     var interactionEnhancement = 0.0 // Enhancement Value at the interaction time
 
     //textInfo
-    var notiContent = NotiContent("Not Assigned", "Not Assigned")
+    var keywordGroup: String? = null
+
     var channelHiearchy = NotiHierarchy("Not Assigned", "Not Assigned")
 
     var whiteRank = 0
@@ -54,6 +69,26 @@ data class EnhancedNotification(
         if(lifeCycle == EnhancedNotificationLife.JUST_TRIGGERED){
             lifeCycle = EnhancedNotificationLife.JUST_INTERACTED
         }
+    }
+    
+    fun setAppHaloConfig(appHaloConfig: AppHaloConfig){
+        val group: String? = appHaloConfig.keywordGroupPatterns.assignGroupToNotification(notiContent.title, notiContent.content)
+        keywordGroup = group
+
+        val notificationEnhacementParams: NotificationEnhacementParams =
+                if(group == null) VisDataManager.getExampleSaturationPattern("default")!!
+                else appHaloConfig.keywordGroupPatterns.getEnhancementParamOfGroup(group)!!
+        lifeSpan = notificationEnhacementParams.lifespan
+
+        firstPattern = notificationEnhacementParams.firstPattern
+        secondPattern = notificationEnhacementParams.secondPattern
+        firstSaturationTime = notificationEnhacementParams.firstSaturationTime
+        secondSaturationTime = notificationEnhacementParams.secondSaturationTime
+        enhanceOffset = notificationEnhacementParams.initialImportance
+        currEnhancement = enhanceOffset
+        lowerBound = notificationEnhacementParams.importanceRange.first
+        upperBound = notificationEnhacementParams.importanceRange.second
+
     }
 
     fun getPropertyValue(property: NotiProperty): Any?{

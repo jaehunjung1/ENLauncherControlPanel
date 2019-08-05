@@ -9,11 +9,30 @@ class MapFunctionUtilities {
         }
 
         fun createMapFunc(xRange: Pair<Double, Double>, yRange: Pair<Double, Double>): (Any) -> (Double?){
-            val xRangeSize = xRange.second - xRange.first
-            val yRangeSize = yRange.second - yRange.first
-            val slope = yRangeSize / xRangeSize
             return {x: Any ->
-                if (x is Double) {slope * (x - xRange.first) + yRange.first} else {null}
+                if (x is Double) {
+                    val xRangeSize = xRange.second - xRange.first
+                    val yRangeSize = yRange.second - yRange.first
+
+                    if(xRangeSize == 0.0)
+                        null
+                    else{
+                        val input: Double =
+                                when{
+                                    xRangeSize > 0.0 -> when{
+                                        x < xRange.first -> xRange.first
+                                        x > xRange.second -> xRange.second
+                                        else -> x }
+                                    xRangeSize < 0.0 -> when{
+                                        x > xRange.first -> xRange.first
+                                        x < xRange.second -> xRange.second
+                                        else -> x }
+                                    else -> x
+                                }
+                        (yRangeSize / xRangeSize) * (input - xRange.first) + yRange.first
+                    }
+                }
+                else {null}
             }
         }
 

@@ -2,6 +2,7 @@ package kr.ac.snu.hcil.datahalo.utils
 
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
+import kr.ac.snu.hcil.datahalo.notificationdata.NotiContent
 import java.util.*
 
 class NotificationRandomGenerator{
@@ -14,7 +15,7 @@ class NotificationRandomGenerator{
                 id,
                 "default",
                 initTime,
-                naturalDecay
+                NotiContent("Hello", "World")
             ).apply{
                 when(firsttrend){
                     0 -> {

@@ -20,8 +20,13 @@ import java.util.ArrayList
 
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import io.apptik.widget.MultiSlider
+import kotlinx.android.synthetic.main.datafilter_card_view.*
+import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.ComponentExampleSelectionView
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.HaloVisComponent
+import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
 
@@ -30,14 +35,20 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
     // Data Parameters
     val maxTimeWindow: Long = 1000L * 60 * 60 * 24
 
-    var filterEnhancmentMin: Double = 0.0
-    var filterEnhancmentMax: Double = 9.0
+    val filterEnhancmentMin: Double = 0.0
+    val filterEnhancmentMax: Double = 9.0
+
     var filterObservationWindowMin: Long = 0L
     var filterObservationWindowMax: Long = maxTimeWindow
+
+    val observationTimeUnit: Long = 60 * 60 * 1000L
+    val observationTimeScales: List<Double> = listOf(0.0, 0.25, 0.5, 1.0, 2.0, 4.0, 6.0, 12.0, 24.0)
+
     var keywordBlackList = ArrayList<String>()
     var keywordWhiteList = ArrayList<String>()
 
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,96 +64,115 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
 
         val datafilteringCardView = parentLayout.findViewById<LinearLayout>(R.id.data_filtering_view)
 
-        // Enhancement Setting UI
-        val enhancementSeekbar = datafilteringCardView.findViewById<MultiSlider>(R.id.enhancementSeekbar)
-        enhancementSeekbar.getThumb(0).value = 2
-        enhancementSeekbar.getThumb(1).value = 7
-        enhancementSeekbar.setOnThumbValueChangeListener { _, _, thumbIndex, value ->
-            if (thumbIndex == 0) {
-                filterEnhancmentMin = (value.toDouble() / 9.0)
-            } else {
-                filterEnhancmentMax = (value.toDouble() / 9.0)
-            }
+        appConfigViewModel.appHaloConfigLiveData.value?.let{ appHaloConfig ->
 
-            appConfigViewModel.appHaloConfigLiveData.value?.let{
-                it.filterImportanceConfig = mapOf(
-                        WGBFilterVar.ACTIVE to true,
-                        WGBFilterVar.WHITE_COND to filterEnhancmentMax,
-                        WGBFilterVar.BLACK_COND to filterEnhancmentMin
-                )
-                appConfigViewModel.appHaloConfigLiveData.value = it
-            }
-        }
-
-        // Observation Setting UI
-        val observationWindowSeekbar = datafilteringCardView.findViewById<MultiSlider>(R.id.observationWindowSeekbar)
-        observationWindowSeekbar.getThumb(0).value = 2
-        observationWindowSeekbar.getThumb(1).value = 7
-        observationWindowSeekbar.setOnThumbValueChangeListener { _, _, thumbIndex, value ->
-
-            if (thumbIndex == 0) {
-                filterObservationWindowMin = (value.toDouble() * maxTimeWindow / 9.0).roundToLong()
-            } else {
-                filterObservationWindowMax = (value.toDouble() * maxTimeWindow / 9.0).roundToLong()
-            }
-
-            appConfigViewModel.appHaloConfigLiveData.value?.let{
-                it.filterObservationWindowConfig = mapOf(
-                        WGBFilterVar.ACTIVE to true,
-                        WGBFilterVar.WHITE_COND to filterObservationWindowMin,
-                        WGBFilterVar.BLACK_COND to filterObservationWindowMax
-                )
-                appConfigViewModel.appHaloConfigLiveData.value = it
-            }
-
-        }
-
-        // Keyword Setting UI
-        val imm = activity!!
-                .getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-
-        val whiteFlowLayout = datafilteringCardView.findViewById<FlowLayout>(R.id.whiteFlowLayout)
-        val whiteKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.white_keyword_text_input)
-        val whiteKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.white_keyword_editText)
-        whiteKeywordEditText.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_NEXT) {
-                imm.hideSoftInputFromWindow(whiteKeywordEditText.windowToken, 0)
-                addKeyword(whiteFlowLayout, whiteKeywordEditText.text!!.toString(), true)
-                whiteKeywordEditText.setText("")
-                whiteKeywordTextInput.clearFocus()
-
-                appConfigViewModel.appHaloConfigLiveData.value?.let{
-                    it.filterKeywordConfig = mapOf(
-                            WGBFilterVar.ACTIVE to true,
-                            WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
-                            WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
-                    )
-                    appConfigViewModel.appHaloConfigLiveData.value = it
+            datafilteringCardView.findViewById<MultiSlider>(R.id.maxIndependentNumSeekbar).also{ maxIndependentNotificationSeekBar ->
+                maxIndependentNotificationSeekBar.getThumb(0).value = appHaloConfig.maxNumOfIndependentNotifications
+                maxIndependentNotificationSeekBar.setOnThumbValueChangeListener{_, _, _, value ->
+                    appConfigViewModel.appHaloConfigLiveData.value = appHaloConfig.apply{maxNumOfIndependentNotifications = value}
                 }
             }
-            false
-        }
 
-        val blackFlowLayout = datafilteringCardView.findViewById<FlowLayout>(R.id.blackFlowLayout)
-        val blackKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.black_keyword_text_input)
-        val blackKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.black_keyword_editText)
-        blackKeywordEditText.setOnEditorActionListener { _, i, _ ->
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                imm.hideSoftInputFromWindow(blackKeywordEditText.windowToken, 0)
-                addKeyword(blackFlowLayout, blackKeywordEditText.text!!.toString(), false)
-                blackKeywordEditText.setText("")
-                blackKeywordTextInput.clearFocus()
-
-                appConfigViewModel.appHaloConfigLiveData.value?.let{
-                    it.filterKeywordConfig = mapOf(
-                            WGBFilterVar.ACTIVE to true,
-                            WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
-                            WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
-                    )
-                    appConfigViewModel.appHaloConfigLiveData.value = it
+            datafilteringCardView.findViewById<MultiSlider>(R.id.enhancementSeekbar).also{ enhancementSeekbar ->
+                enhancementSeekbar.getThumb(0).value = ((appHaloConfig.filterImportanceConfig[WGBFilterVar.BLACK_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
+                enhancementSeekbar.getThumb(1).value = ((appHaloConfig.filterImportanceConfig[WGBFilterVar.WHITE_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
+                enhancementSeekbar.setOnThumbValueChangeListener{ _, _, thumbIndex, value ->
+                    appConfigViewModel.appHaloConfigLiveData.value = appHaloConfig.apply{
+                        filterImportanceConfig = if (thumbIndex == 0) {
+                            mapOf(
+                                    WGBFilterVar.ACTIVE to true,
+                                    WGBFilterVar.WHITE_COND to enhancementSeekbar.getThumb(1).value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin),
+                                    WGBFilterVar.BLACK_COND to (value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin))
+                            )
+                        } else {
+                            mapOf(
+                                    WGBFilterVar.ACTIVE to true,
+                                    WGBFilterVar.WHITE_COND to (value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin)),
+                                    WGBFilterVar.BLACK_COND to enhancementSeekbar.getThumb(0).value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin)
+                            )
+                        }
+                    }
                 }
             }
-            false
+
+            datafilteringCardView.findViewById<MultiSlider>(R.id.observationWindowSeekbar).also{ observationWindowSeekbar ->
+                val filter = appHaloConfig.filterObservationWindowConfig
+                observationWindowSeekbar.getThumb(0).value = observationTimeScales.indexOf((filter[WGBFilterVar.WHITE_COND] as Long).toDouble() / observationTimeUnit)
+                observationWindowSeekbar.getThumb(1).value = observationTimeScales.indexOf((filter[WGBFilterVar.BLACK_COND] as Long).toDouble() / observationTimeUnit)
+                observationWindowSeekbar.setOnThumbValueChangeListener{_, _, thumbIndex, value ->
+                    appConfigViewModel.appHaloConfigLiveData.value = appHaloConfig.apply{
+                        filterObservationWindowConfig = if(thumbIndex == 0){
+                            mapOf(
+                                    WGBFilterVar.ACTIVE to true,
+                                    WGBFilterVar.WHITE_COND to (observationTimeScales[value] * observationTimeUnit).roundToLong(),
+                                    WGBFilterVar.BLACK_COND to (observationTimeScales[observationWindowSeekbar.getThumb(1).value] * observationTimeUnit).roundToLong()
+                            )
+                        } else{
+                            mapOf(
+                                    WGBFilterVar.ACTIVE to true,
+                                    WGBFilterVar.WHITE_COND to (observationTimeScales[observationWindowSeekbar.getThumb(0).value] * observationTimeUnit).roundToLong(),
+                                    WGBFilterVar.BLACK_COND to (observationTimeScales[value] * observationTimeUnit).roundToLong()
+                            )
+                        }
+                    }
+                }
+            }
+
+            val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+            val whiteFlowLayout = datafilteringCardView.findViewById<FlowLayout>(R.id.whiteFlowLayout)
+            val whiteKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.white_keyword_text_input)
+            val whiteKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.white_keyword_editText)
+
+            (appHaloConfig.filterKeywordConfig[WGBFilterVar.WHITE_COND] as Set<String>).forEach{whiteKeyword ->
+                addKeyword(whiteFlowLayout, whiteKeyword, true)
+            }
+
+            whiteKeywordEditText.setOnEditorActionListener { _, i, _ ->
+                if (i == EditorInfo.IME_ACTION_NEXT) {
+                    imm.hideSoftInputFromWindow(whiteKeywordEditText.windowToken, 0)
+                    addKeyword(whiteFlowLayout, whiteKeywordEditText.text!!.toString(), true)
+                    whiteKeywordEditText.setText("")
+                    whiteKeywordTextInput.clearFocus()
+
+                    appConfigViewModel.appHaloConfigLiveData.value?.let{
+                        it.filterKeywordConfig = mapOf(
+                                WGBFilterVar.ACTIVE to true,
+                                WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
+                                WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
+                        )
+                        appConfigViewModel.appHaloConfigLiveData.value = it
+                    }
+                }
+                false
+            }
+
+            val blackFlowLayout = datafilteringCardView.findViewById<FlowLayout>(R.id.blackFlowLayout)
+            val blackKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.black_keyword_text_input)
+            val blackKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.black_keyword_editText)
+
+            (appHaloConfig.filterKeywordConfig[WGBFilterVar.BLACK_COND] as Set<String>).forEach{blackKeyword ->
+                addKeyword(blackFlowLayout, blackKeyword, false)
+            }
+
+            blackKeywordEditText.setOnEditorActionListener { _, i, _ ->
+                if (i == EditorInfo.IME_ACTION_DONE) {
+                    imm.hideSoftInputFromWindow(blackKeywordEditText.windowToken, 0)
+                    addKeyword(blackFlowLayout, blackKeywordEditText.text!!.toString(), false)
+                    blackKeywordEditText.setText("")
+                    blackKeywordTextInput.clearFocus()
+
+                    appConfigViewModel.appHaloConfigLiveData.value?.let{
+                        it.filterKeywordConfig = mapOf(
+                                WGBFilterVar.ACTIVE to true,
+                                WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
+                                WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
+                        )
+                        appConfigViewModel.appHaloConfigLiveData.value = it
+                    }
+                }
+                false
+            }
         }
 
         return parentLayout

@@ -26,25 +26,6 @@ enum class NotiProperty(val value: String){
     CONTENT("notification_content")
 }
 
-enum class AggregatedNotiProperty(val value: String){
-    AGG_IMPORTANCE("importance"),
-    AGG_LIFE_STAGE("life_stage"),
-    AGG_NOTIFICATION_CHANNEL("notification_channel"),
-    AGG_ELAPSED_TIME("elapsed_time"),
-    AGG_CONTENT("notification_content"),
-    COUNT("notification_count")
-}
-
-enum class NotiVisVariable{
-    POSITION_X,
-    POSITION_Y,
-    SHAPE,
-    SIZE_X,
-    SIZE_Y,
-    COLOR,
-    MOTION
-}
-
 enum class NotiAggregationType{
     MEAN_NUMERIC,
     MAX_NUMERIC,
@@ -53,7 +34,7 @@ enum class NotiAggregationType{
     COUNT,
 }
 
-enum class NuNotiVisVariable{
+enum class NotiVisVariable{
     MOTION,
     SHAPE,
     COLOR,
@@ -78,13 +59,6 @@ enum class WGBFilterVar{
     BLACK_COND,
 }
 
-enum class BinQuartile(ratio: Double){
-    FIRST_QUARTILE(0.0),
-    SECOND_QUARTILE(0.25),
-    THIRD_QUARTILE(0.5),
-    FOURTH_QUARTILE(0.75),
-    OVER_FIFTH_QUARTILE(1.0)
-}
 
 
 

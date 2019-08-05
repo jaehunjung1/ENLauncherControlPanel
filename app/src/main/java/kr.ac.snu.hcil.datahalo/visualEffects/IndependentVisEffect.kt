@@ -68,7 +68,7 @@ abstract class AbstractIndependentVisEffect(
                     mapOf(
                             NotiProperty.IMPORTANCE to enhancedNotification.currEnhancement,
                             NotiProperty.LIFE_STAGE to enhancedNotification.lifeCycle,
-                            NotiProperty.CONTENT to enhancedNotification.notiContent
+                            NotiProperty.CONTENT to (enhancedNotification.keywordGroup?: "DEFAULT")
                     )
             )
 
@@ -118,21 +118,20 @@ abstract class AbstractIndependentVisEffect(
         setLocalStructure(localLayoutParams, visualParameters)
 
         independentVisObjects.forEachIndexed{ index, visObj ->
-            if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){
+            val objectView: ImageView? = constraintLayout.findViewById(visObj.getID())
+
+            objectView?.let{
+                it.setImageDrawable(drawables[index])
+                it.rotation = localLayoutParams[index].circleAngle
+                it.layoutParams = localLayoutParams[index]
+
+            }?: run{
                 val imageView = ImageView(constraintLayout.context).also{
                     it.id = visObj.getID()
                     it.setImageDrawable(drawables[index])
                     it.rotation = localLayoutParams[index].circleAngle
-                    //it.setBackgroundColor(Color.GREEN)
                 }
                 constraintLayout.addView(imageView, localLayoutParams[index])
-            }
-            else{
-                constraintLayout.findViewById<ImageView>(visObj.getID()).also{
-                    it.setImageDrawable(drawables[index])
-                    it.rotation = localLayoutParams[index].circleAngle
-                    it.layoutParams = localLayoutParams[index]
-                }
             }
         }
     }

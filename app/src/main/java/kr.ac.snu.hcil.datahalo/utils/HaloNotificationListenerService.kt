@@ -27,6 +27,8 @@ class HaloNotificationListenerService: NotificationListenerService() {
                         putExtra("IDs", activeNotis.map{it.id}.toIntArray())
                         putExtra("packageNames", activeNotis.map{it.packageName}.toTypedArray())
                         putExtra("postTimes", activeNotis.map{it.postTime}.toLongArray())
+                        putExtra("titles", activeNotis.map{it.notification.extras.getString("android.title")}.toTypedArray())
+                        putExtra("contents", activeNotis.map{it.notification.extras.getString("android.text")}.toTypedArray())
                     }
             )
         }
@@ -41,6 +43,8 @@ class HaloNotificationListenerService: NotificationListenerService() {
                     putExtra("ID", sbn?.id)
                     putExtra("packageName", sbn?.packageName)
                     putExtra("postTime", sbn?.postTime)
+                    putExtra("titles", sbn?.notification?.extras?.getString("android.title"))
+                    putExtra("titles", sbn?.notification?.extras?.getString("android.text"))
                 }
         )
     }

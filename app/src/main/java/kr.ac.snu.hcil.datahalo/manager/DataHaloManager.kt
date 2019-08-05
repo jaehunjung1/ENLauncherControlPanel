@@ -8,14 +8,17 @@ import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 class DataHaloManager {
     companion object{
 
-        //Application별로 어떻게 전환할 지에 대한 설명서
+        /* Application별로 어떻게 전환할 지에 대한 설명서
+         * DataHalo 매니저라는 것은 곧 Config 매니저라는 것을 의미함
+         */
+
         private fun exceptionRedundantAddition(packageName:String) = "Halo Already Exists For: $packageName"
         private fun exceptionNotExist(packageName: String) = "Halo Does Not Exist For: $packageName"
 
         private val appNotificationHalos: MutableMap<String, AppNotificationHalo> = mutableMapOf()
 
         fun createAppHalo(context: Context,
-                          config:AppHaloConfig)
+                          config: AppHaloConfig)
                 : AppNotificationHalo{
             if(config.packageName in appNotificationHalos.keys)
                 exceptionRedundantAddition(config.packageName)

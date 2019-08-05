@@ -10,12 +10,14 @@ class DoubleObjIndependentVisEffect(appHaloConfig: AppHaloConfig)
         independentVisObjects = listOf(
                 IndependentVisObject(
                         visualMapping = appHaloConfig.independentVisualMappings[0],
+                        importanceEnhancementPatterns = appHaloConfig.keywordGroupPatterns,
                         dataParameters = appHaloConfig.independentDataParameters[0],
                         visualParameters = appHaloConfig.independentVisualParameters[0],
                         animationParameters = appHaloConfig.independentAnimationParameters[0]
                 ),
                 IndependentVisObject(
                         visualMapping = appHaloConfig.independentVisualMappings[1],
+                        importanceEnhancementPatterns = appHaloConfig.keywordGroupPatterns,
                         dataParameters = appHaloConfig.independentDataParameters[1],
                         visualParameters = appHaloConfig.independentVisualParameters[1],
                         animationParameters = appHaloConfig.independentAnimationParameters[1]

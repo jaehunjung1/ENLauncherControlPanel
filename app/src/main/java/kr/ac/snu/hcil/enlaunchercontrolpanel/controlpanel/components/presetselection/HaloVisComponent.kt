@@ -5,6 +5,7 @@ data class HaloVisComponent(var label: String? = null, var drawableId: Int = 0, 
         IMPORTANCE_SATURATION,
         VISEFFECT_LAYOUT,
         INDEPENDENT_VISEFFECT,
-        AGGREGATED_VISEFFECT
+        AGGREGATED_VISEFFECT,
+        DATA_FILTERING,
     }
 }

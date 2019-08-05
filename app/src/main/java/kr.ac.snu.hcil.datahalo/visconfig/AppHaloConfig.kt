@@ -1,9 +1,5 @@
 package kr.ac.snu.hcil.datahalo.visconfig
 
-import android.animation.AnimatorSet
-import android.graphics.Color
-import android.view.View
-import android.view.animation.LinearInterpolator
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
@@ -20,7 +16,7 @@ data class AppHaloConfig(val packageName: String){
     )
     var filterObservationWindowConfig = mapOf(
             WGBFilterVar.ACTIVE to true,
-            WGBFilterVar.WHITE_COND to 60 * 60 * 1000L,
+            WGBFilterVar.WHITE_COND to 0 * 60 * 60 * 1000L,
             WGBFilterVar.BLACK_COND to 6 * 60 * 60 * 1000L
     )
     var filterChannelConfig = mapOf(
@@ -35,16 +31,18 @@ data class AppHaloConfig(val packageName: String){
     )
     var maxNumOfIndependentNotifications: Int = 3
 
-    var notificationEnhancementExamplePatternName:String = VisDataManager.exampleImportanceSaturationPatterns.keys.toList()[0]
+    val keywordGroupPatterns: KeywordGroupImportancePatterns = KeywordGroupImportancePatterns(mutableMapOf())
+
+    var notificationEnhancementExamplePatternName: String = VisDataManager.exampleImportanceSaturationPatterns.keys.toList()[0]
     var notificationEnhancementParams: NotificationEnhacementParams = NotificationEnhacementParams()
 
     //AppHalo Layout & Visualization Methods
-    var haloLayoutMethodName:String = AppHaloLayoutMethods.availiableLayouts[0]
+    var haloLayoutMethodName: String = AppHaloLayoutMethods.availiableLayouts[0]
     var independentVisEffectName: String = VisEffectManager.availableIndependentVisEffects[0]
     var aggregatedVisEffectName: String = VisEffectManager.availableAggregatedVisEffects[0]
 
     // 사용자 인풋으로 받고 아닌 경우에는 기본 설정으로 가야겠죠?
-    val independentVisualMappings: MutableList<Map<NuNotiVisVariable, NotiProperty?>> = mutableListOf()
+    val independentVisualMappings: MutableList<Map<NotiVisVariable, NotiProperty?>> = mutableListOf()
     var independentVisEffectVisParams: IndependentVisEffectVisParams = IndependentVisEffectVisParams()
     val independentVisualParameters: MutableList<IndependentVisObjectVisParams> = mutableListOf()
     val independentDataParameters: MutableList<IndependentVisObjectDataParams> = mutableListOf()

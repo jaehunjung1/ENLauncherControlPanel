@@ -9,17 +9,17 @@ class VisMappingManager{
 
 
     interface VisObjectMapping<T>{
-        val customizability: Map<NuNotiVisVariable, VisVarCustomizability>
-        val currentMap: MutableMap<NuNotiVisVariable, T>
+        val customizability: Map<NotiVisVariable, VisVarCustomizability>
+        val currentMap: MutableMap<NotiVisVariable, T>
     }
 
     data class IndependentVisObjectMapping(
-            override val customizability: Map<NuNotiVisVariable, VisVarCustomizability>,
-            override val currentMap: MutableMap<NuNotiVisVariable, NotiProperty>)
+            override val customizability: Map<NotiVisVariable, VisVarCustomizability>,
+            override val currentMap: MutableMap<NotiVisVariable, NotiProperty>)
         : VisObjectMapping<NotiProperty>
     data class AggregatedVisObjectMapping(
-            override val customizability: Map<NuNotiVisVariable, VisVarCustomizability>,
-            override val currentMap: MutableMap<NuNotiVisVariable, NotiPropertyAggregationRule>)
+            override val customizability: Map<NotiVisVariable, VisVarCustomizability>,
+            override val currentMap: MutableMap<NotiVisVariable, NotiPropertyAggregationRule>)
         : VisObjectMapping<NotiPropertyAggregationRule>
 
     interface VisMapping<T>

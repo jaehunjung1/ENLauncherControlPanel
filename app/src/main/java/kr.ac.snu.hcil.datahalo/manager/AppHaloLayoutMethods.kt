@@ -2,10 +2,10 @@ package kr.ac.snu.hcil.datahalo.manager
 
 import androidx.constraintlayout.widget.ConstraintLayout
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
-import kr.ac.snu.hcil.datahalo.utils.ANHComponentUIDGenerator
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visualEffects.AbstractAggregatedVisEffect
 import kr.ac.snu.hcil.datahalo.visualEffects.AbstractIndependentVisEffect
+import kotlin.math.roundToInt
 
 class AppHaloLayoutMethods {
     companion object{
@@ -36,7 +36,7 @@ interface InterfaceANHVisLayout{
                              independentVisEffects: Map<Int, AbstractIndependentVisEffect>,
                              aggregated: List<EnhancedNotification>,
                              aggregatedVisEffect: AbstractAggregatedVisEffect?)
-            : Pair<Map<Int, ConstraintLayout.LayoutParams>, ConstraintLayout.LayoutParams>
+            : Pair<Map<Int, ConstraintLayout.LayoutParams>, Pair<List<ConstraintLayout.LayoutParams>, List<ConstraintLayout.LayoutParams>>>
 }
 
 abstract class AbstractANHVisLayout(override val layoutID: String): InterfaceANHVisLayout{
@@ -54,30 +54,48 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
             independent: List<EnhancedNotification>,
             independentVisEffects: Map<Int, AbstractIndependentVisEffect>,
             aggregated: List<EnhancedNotification>,
-            aggregatedVisEffect: AbstractAggregatedVisEffect?): Pair<Map<Int, ConstraintLayout.LayoutParams>, ConstraintLayout.LayoutParams> {
+            aggregatedVisEffect: AbstractAggregatedVisEffect?)
+            : Pair<Map<Int, ConstraintLayout.LayoutParams>, Pair<List<ConstraintLayout.LayoutParams>, List<ConstraintLayout.LayoutParams>>> {
 
         val k = independent.size
         val eachAngle: Double = 360.0 / k
 
-        val independentLPs = independent.sortedWith(compareBy({ it.whiteRank}, {it.initTime})).mapIndexed{index, enhancedNotification ->
+        val independentLPs = independent.sortedWith(compareBy({ it.whiteRank }, { it.initTime })).mapIndexed{index, enhancedNotification ->
             val notiID = enhancedNotification.id
             val (wScale, hScale) = independentVisEffects[notiID]?.let{visEffect -> visEffect.independentVisObjects[0].getPosition()}
                     ?: throw EXCEPTION_VIS_EFFECT_NOT_EXIST(notiID)
-
-            val layoutparam = ConstraintLayout.LayoutParams(sizeOfIVE,sizeOfIVE).also{
+            val layoutParam = ConstraintLayout.LayoutParams(sizeOfIVE,sizeOfIVE).also{
                 it.circleConstraint = pivotViewID
-                it.circleRadius = Math.round(0.5 * Math.min(target.layoutParams.width, target.layoutParams.height) * Math.min(wScale, hScale) / 2).toInt()
+                it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
                 it.circleAngle = (index * eachAngle).toFloat()
             }
-            enhancedNotification.id to layoutparam
+            enhancedNotification.id to layoutParam
         }.toMap()
 
-        val aggregatedLP = ConstraintLayout.LayoutParams(20, 20).also{
-            it.circleConstraint = pivotViewID
-            it.circleRadius = Math.round(0.1 * target.height / 2).toInt()
-            it.circleAngle = 0f
-        }
+        var aggregatedLPs: Pair<List<ConstraintLayout.LayoutParams>, List<ConstraintLayout.LayoutParams>> = Pair(emptyList(), emptyList())
 
-        return Pair(independentLPs, aggregatedLP)
+        aggregatedVisEffect?.let{ aggrVisEffect ->
+            val groupVisObjs = aggrVisEffect.getGroupBoundVisObjects()
+            val (wScale, hScale) = groupVisObjs[0].getPosition()
+            val groupVisLPs = List<ConstraintLayout.LayoutParams>(groupVisObjs.size){ index ->
+                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                    it.circleConstraint = pivotViewID
+                    //it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                    //it.circleAngle = (index * eachAngle).toFloat()
+                }
+            }
+
+            val normalVisObjs = aggrVisEffect.getNormalVisObjects()
+            val normalVisLPs = List<ConstraintLayout.LayoutParams>(normalVisObjs.size){ index ->
+                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                    it.circleConstraint = pivotViewID
+                    //it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                    //it.circleAngle = (index * eachAngle).toFloat()
+                }
+            }
+
+            aggregatedLPs = Pair(groupVisLPs, normalVisLPs)
+        }
+        return Pair(independentLPs, aggregatedLPs)
     }
 }

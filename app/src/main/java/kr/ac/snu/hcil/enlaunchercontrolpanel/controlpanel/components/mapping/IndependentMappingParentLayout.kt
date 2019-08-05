@@ -9,7 +9,7 @@ import android.widget.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
-import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
+import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 
 class IndependentMappingParentLayout : LinearLayout {
     companion object{
@@ -17,10 +17,10 @@ class IndependentMappingParentLayout : LinearLayout {
     }
 
     interface GroupViewInteractionListener{
-        fun onMappingUpdate(visVar: NuNotiVisVariable, notiProp: NotiProperty?)
+        fun onMappingUpdate(visVar: NotiVisVariable, notiProp: NotiProperty?)
     }
 
-    private var notiVisVar: NuNotiVisVariable = NuNotiVisVariable.MOTION
+    private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
     private var notiDataProp: NotiProperty? = null
     private var objIndex: Int = -1
     private var viewModel: AppHaloConfigViewModel? = null
@@ -42,7 +42,7 @@ class IndependentMappingParentLayout : LinearLayout {
         init(attrs, defStyle)
     }
 
-    fun setProperties(visVar:NuNotiVisVariable, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
+    fun setProperties(visVar:NotiVisVariable, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
         notiVisVar = visVar
         notiDataProp = notiProp
         objIndex = index
@@ -101,7 +101,7 @@ class IndependentMappingParentLayout : LinearLayout {
 
     private fun invalidateObjAndViewModel(){
         viewModel?.appHaloConfigLiveData?.value?.let{ appConfig ->
-            val newMapping: Map<NuNotiVisVariable, NotiProperty?> = appConfig.independentVisualMappings[objIndex].mapValues{
+            val newMapping: Map<NotiVisVariable, NotiProperty?> = appConfig.independentVisualMappings[objIndex].mapValues{
                 if(it.key == notiVisVar) notiDataProp else it.value
             }
             appConfig.independentVisualMappings[objIndex] = newMapping

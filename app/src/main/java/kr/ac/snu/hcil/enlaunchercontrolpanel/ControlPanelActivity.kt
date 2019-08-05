@@ -1,5 +1,8 @@
 package kr.ac.snu.hcil.enlaunchercontrolpanel
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -17,6 +20,13 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.theartofdev.edmodo.cropper.CropImage
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.settingfragments.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.utilities.Utilities
 import kotlinx.android.synthetic.main.activity_new_control_panel.*
@@ -34,20 +44,29 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     companion object{
         private const val TAG = "HALO_SETTING_ACTIVITY"
         private val exampleNotifications = listOf(
-                EnhancedNotification(25123, "", System.currentTimeMillis(), 1000L * 60 * 60).also{
+                EnhancedNotification(25123, "", System.currentTimeMillis(), NotiContent("한구현", "집에 갑시다.1")).also{
                     it.currEnhancement = 0.3
                     it.lifeCycle = EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
-                    it.notiContent = NotiContent("한구현", "집에 갑시다.")
                 },
-                EnhancedNotification(34532, "", System.currentTimeMillis(), 1000L * 60 * 60).also{
+                EnhancedNotification(34532, "", System.currentTimeMillis(), NotiContent("정재훈", "집에 갑시다.2")).also{
                     it.currEnhancement = 0.8
                     it.lifeCycle = EnhancedNotificationLife.INTERACTED_NOT_DECAYING
-                    it.notiContent = NotiContent("정재훈", "집에 갑시다.")
                 },
-                EnhancedNotification(54634, "", System.currentTimeMillis(), 1000L * 60 * 60).also{
+                EnhancedNotification(54634, "", System.currentTimeMillis(), NotiContent("안단태", "집에 갑시다.3")).also{
                     it.currEnhancement = 0.2
                     it.lifeCycle = EnhancedNotificationLife.DECAYING
-                    it.notiContent = NotiContent("안단태", "집에 갑시다.")
+                },
+                EnhancedNotification(65124, "", System.currentTimeMillis(), NotiContent("한구현", "집에 갑시다.4")).also{
+                    it.currEnhancement = 0.5
+                    it.lifeCycle = EnhancedNotificationLife.INTERACTED_NOT_DECAYING
+                },
+                EnhancedNotification(66893, "", System.currentTimeMillis(), NotiContent("정재훈", "집에 갑시다.5")).also{
+                    it.currEnhancement = 0.8
+                    it.lifeCycle = EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
+                },
+                EnhancedNotification(70892, "", System.currentTimeMillis(), NotiContent("안단태", "집에 갑시다.6")).also{
+                    it.currEnhancement = 0.1
+                    it.lifeCycle = EnhancedNotificationLife.DECAYING
                 }
         )
     }
@@ -59,6 +78,7 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             "Predefined Components" to HaloExampleCollectionFragment.newInstance(),
             "Notification Filters" to HaloDataSettingFragment(),
             "Enhancement Patterns" to HaloEnhancementSettingFragment.newInstance(),
+            "Keyword Group Setting" to HaloKeywordGroupSettingFragment(),
             "Layout Methods" to HaloLayoutSettingFragment.newInstance(),
             "Independent Effects" to HaloIndependentEffectSettingFragment.newInstance(),
             "Aggregated Effects" to HaloAggregatedEffectSettingFragment.newInstance()
@@ -81,6 +101,17 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         return false
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            viewPagerAdapter?.getItem(view_pager.currentItem)?.onActivityResult(requestCode, resultCode, data )
+        }
+        else{
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+
+    }
+
     private fun setViewPager(adapter: ScreenSlidPagerAdapter, itemId: Int){
         adapter.apply{
             fragments.clear()
@@ -90,6 +121,7 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
                 }
                 R.id.data_manipulation -> {
                     fragments["Notification Filters"] = controlPanelFragments["Notification Filters"]!!
+                    fragments["Keyword Group Setting"] = controlPanelFragments["Keyword Group Setting"]!!
                     fragments["Enhancement Patterns"] = controlPanelFragments["Enhancement Patterns"]!!
                 }
                 R.id.visual_setting -> {
@@ -108,6 +140,19 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_control_panel)
+
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .withListener(
+                        DialogOnAnyDeniedMultiplePermissionsListener.Builder
+                                .withContext(this)
+                                .withTitle("Read and Write External Storage")
+                                .withMessage("These Permissions are Needed to Access Gallery and Create a Cropped Image Source")
+                                .withButtonText(android.R.string.ok)
+                                .withIcon(R.mipmap.ic_launcher).build()
+                ).check()
 
         previewHalo = AppNotificationHalo(this, null).apply{
             id = View.generateViewId()

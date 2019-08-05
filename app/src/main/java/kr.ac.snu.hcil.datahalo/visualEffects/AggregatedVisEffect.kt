@@ -5,12 +5,10 @@ import android.animation.AnimatorSet
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
-import android.view.animation.GridLayoutAnimationController
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
-import kr.ac.snu.hcil.datahalo.utils.ANHComponentUIDGenerator
 import kr.ac.snu.hcil.datahalo.utils.CoordinateConverter
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visconfig.*
@@ -28,10 +26,15 @@ interface InterfaceAggregatedVisEffect{
     fun setVisMapping(aggrMappingRules: List<AggregatedVisMappingRule>)
     fun setEnhancedNotification(enhancedNotifications: List<EnhancedNotification>)
 
-    fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, pivotLayoutParams: ConstraintLayout.LayoutParams)
+    fun getGroupBoundVisObjects(): List<AbstractAggregatedVisObject>
+    fun getNormalVisObjects(): List<AbstractAggregatedVisObject>
+    fun getSizeOfGroupBoundVisObjects(): Int
+    fun getSizeOfNormalVisObjects(): Int
+
+    fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, aggregatedPivotLayoutParams: Pair<List<ConstraintLayout.LayoutParams>, List<ConstraintLayout.LayoutParams>>)
     fun deleteVisObjectsInLayout(constraintLayout: ConstraintLayout)
 }
-data class AggregatedVisMappingRule(val groupProperty: NotiProperty?, val visMapping: Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>)
+data class AggregatedVisMappingRule(val groupProperty: NotiProperty?, val visMapping: Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>)
 
 abstract class AbstractAggregatedVisEffect(
         final override val effectID: String,
@@ -47,11 +50,15 @@ abstract class AbstractAggregatedVisEffect(
                 aggregatedOp: NotiAggregationType
         ) = Exception("$notiProperty Cannot Be Aggregated With $aggregatedOp")
 
-        private fun exceptionInvalidGroupping(notiProperty: NotiProperty) = Exception("Invalid Groupping on $notiProperty")
+        private fun exceptionInvalidGrouping(notiProperty: NotiProperty) = Exception("Invalid Grouping on $notiProperty")
     }
 
     final override val localPivotID: Int = View.generateViewId()
-    private val drawables: MutableList<Drawable> = mutableListOf()
+    private val groupedDrawables: MutableList<Drawable> = mutableListOf()
+    private val normalDrawables: MutableList<Drawable> = mutableListOf()
+
+    private val activatedGroupBoundVisObjectIndices: MutableList<Int> = mutableListOf()
+
     private var animatorSet: AnimatorSet = AnimatorSet()
     private var currentCenterPolar: Pair<Int, Float> = Pair(-1, 0f)
     private val mappedNotificationIDs: MutableList<Int> = mutableListOf()
@@ -98,7 +105,11 @@ abstract class AbstractAggregatedVisEffect(
         }
     }
 
-    override fun setVisMapping(aggrMappingRules: List<AggregatedVisMappingRule>) {
+    final override fun getGroupBoundVisObjects(): List<AbstractAggregatedVisObject> = if(groupBoundVisObjects.isEmpty()) emptyList() else groupBoundVisObjects[0]
+    final override fun getNormalVisObjects(): List<AbstractAggregatedVisObject> = normalVisObjects
+    final override fun getSizeOfGroupBoundVisObjects(): Int = if(groupBoundVisObjects.isEmpty()) 0 else groupBoundVisObjects[0].size
+    final override fun getSizeOfNormalVisObjects(): Int = normalVisObjects.size
+    final override fun setVisMapping(aggrMappingRules: List<AggregatedVisMappingRule>) {
         mappingRules = aggrMappingRules
         normalVisObjects.clear()
         groupBoundVisObjects.clear()
@@ -119,19 +130,21 @@ abstract class AbstractAggregatedVisEffect(
             }
             else{
 
-                val size = when(mappingRule.groupProperty){
-                    NotiProperty.IMPORTANCE -> objDataParameters[index].binNums
-                    NotiProperty.CONTENT -> objDataParameters[index].keywordGroups.size
-                    NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().size }
+                val labels:List<Any> = when(mappingRule.groupProperty){
+                    NotiProperty.IMPORTANCE -> MapFunctionUtilities.bin(objDataParameters[index].givenImportanceRange, objDataParameters[index].binNums)
+                    NotiProperty.CONTENT -> objDataParameters[index].keywordGroups
+                    NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().toList()
+                }
 
                 groupBoundVisObjects.add(
-                        List(size){
+                        List(labels.size){
                             AggregatedVisObject(
                                     mappingRule.visMapping,
                                     objVisualParameters[index],
                                     objDataParameters[index],
                                     objAnimationParameters[index]).apply{
 
+                                setGroupLabel(labels[it])
                                 setID(View.generateViewId())
                                 setNotiPropertyGroupedBy(mappingRule.groupProperty)
                             }
@@ -140,14 +153,17 @@ abstract class AbstractAggregatedVisEffect(
             }
         }
     }
+
     final override fun getMappedNotificationID(): List<Int> = mappedNotificationIDs.toList()
-    final override fun getDrawables(): List<Drawable> = drawables.toList()
+    final override fun getDrawables(): List<Drawable> = groupedDrawables.toList()
     final override fun getAnimatorSet() = animatorSet
     final override fun setEnhancedNotification(enhancedNotifications: List<EnhancedNotification>) {
 
         mappedNotificationIDs.clear()
         mappedNotificationIDs.addAll(enhancedNotifications.map{it.id})
-        drawables.clear()
+        groupedDrawables.clear()
+        normalDrawables.clear()
+        activatedGroupBoundVisObjectIndices.clear()
 
         val animatorCollection = mutableListOf<Animator>()
         groupBoundVisObjects.forEach{ visObjects ->
@@ -156,6 +172,29 @@ abstract class AbstractAggregatedVisEffect(
                     enhancedNotifications,
                     groupByProp!!,
                     visObjects[0].getDataParams())
+
+            visObjects.forEachIndexed{ index, visObject ->
+                if(visObject.getGroupLabel() !in groupResult.keys){
+                    // do nothing
+                }
+                else{
+                    val dataToAggregate = groupResult[visObject.getGroupLabel()]!!
+                    val tempResult = visObject.getVisMapping().values.map{ aggregationTypeAndTargetProperty ->
+                        val aggrType = aggregationTypeAndTargetProperty.first
+                        val targetProp = aggregationTypeAndTargetProperty.second
+                        val aggregationResult = aggregate(dataToAggregate, targetProp, aggrType, visObject.getDataParams())
+                        Pair(aggregationTypeAndTargetProperty, aggregationResult)
+                    }.toMap()
+                    val (drawable, animator) = visObject.getDrawableWithAnimator(tempResult)
+                    groupedDrawables.add(drawable)
+                    activatedGroupBoundVisObjectIndices.add(index)
+                    animatorCollection.addAll(
+                            animator.childAnimations.map{anim -> anim.also{it.setTarget(drawable)}}
+                    )
+                }
+            }
+
+            /*
             if(groupResult.isNotEmpty()){
                 visObjects.forEachIndexed{ index, visObject ->
                     visObject.setGroupLabel(groupResult.keys.toList()[index])
@@ -166,12 +205,13 @@ abstract class AbstractAggregatedVisEffect(
                         Pair(aggregationTypeAndTargetProperty, aggregationResult)
                     }.toMap()
                     val (drawable, animator) = visObject.getDrawableWithAnimator(tempResult)
-                    drawables.add(drawable)
+                    groupedDrawables.add(drawable)
                     animatorCollection.addAll(
                             animator.childAnimations.map{anim -> anim.also{it.setTarget(drawable)}}
                     )
                 }
             }
+            */
 
         }
 
@@ -183,7 +223,7 @@ abstract class AbstractAggregatedVisEffect(
                 Pair(aggregationTypeAndTargetProperty, aggregationResult)
             }.toMap()
             val (drawable, animator) = visObject.getDrawableWithAnimator(tempResult)
-            drawables.add(drawable)
+            normalDrawables.add(drawable)
             animatorCollection.addAll(
                     animator.childAnimations.map{anim -> anim.also{it.setTarget(drawable)}}
             )
@@ -203,7 +243,7 @@ abstract class AbstractAggregatedVisEffect(
                     val bins = MapFunctionUtilities.bin(Pair(0.0, 1.0), objectDataParams.binNums)
                     val ratio = it.currEnhancement
                     bins.filter{range -> range.first <= ratio && ratio < range.second}.let{ filterResult->
-                        if(filterResult.isEmpty()) exceptionInvalidGroupping(groupByProp) else filterResult.first()
+                        if(filterResult.isEmpty()) exceptionInvalidGrouping(groupByProp) else filterResult.first()
                     }
                 }
                 NotiProperty.CONTENT-> {
@@ -312,48 +352,25 @@ abstract class AbstractAggregatedVisEffect(
     }
     */
 
-    final override fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, pivotLayoutParams: ConstraintLayout.LayoutParams) {
+    final override fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, aggregatedPivotLayoutParams: Pair<List<ConstraintLayout.LayoutParams>, List<ConstraintLayout.LayoutParams>>) {
 
-        if(drawables.isEmpty()) return
-
-        val localPivotView = constraintLayout.findViewById<ImageView>(localPivotID)
-
-        if(localPivotView == null){
-            //r: global pivot -> local pivot 사이의 거리
-            //theta: 꼭대기 기준으로 r과 이루는 각도
-            currentCenterPolar = Pair(pivotLayoutParams.circleRadius, pivotLayoutParams.circleAngle)
-            val newLocalPivotView = ImageView(constraintLayout.context).also{
-                it.id = localPivotID
-                it.setBackgroundColor(Color.YELLOW)
-                it.layoutParams = pivotLayoutParams
-            }
-
-            constraintLayout.addView(newLocalPivotView)
-        }
-
-        if(currentCenterPolar.first != pivotLayoutParams.circleRadius || currentCenterPolar.second != pivotLayoutParams.circleAngle){
-            currentCenterPolar = Pair(pivotLayoutParams.circleRadius, pivotLayoutParams.circleAngle)
-            localPivotView.layoutParams = pivotLayoutParams
-        }
+        if(groupedDrawables.isEmpty() && normalDrawables.isEmpty())
+            return
 
         //local pivot 기준의 극좌표계 배치. 법선 방향이 꼭대기가 되도록 회전
-        groupBoundVisObjects.forEach{visObjs ->
+        groupBoundVisObjects[0].let{ visObjs ->
             visObjs.forEachIndexed{ index, visObj ->
-                val (x, y) = visObj.getPosition()
-                val (r, theta) = CoordinateConverter.centerBasedCartesianToPolarCoordinate(x, y)
-                val layoutParams = ConstraintLayout.LayoutParams(
-                        ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                        ConstraintLayout.LayoutParams.WRAP_CONTENT)
-                        .also{
-                            it.circleConstraint = localPivotID
-                            it.circleRadius = r.roundToInt()
-                            it.circleAngle = theta.toFloat()
-                        }
+                val layoutParams = aggregatedPivotLayoutParams.first[index]
                 if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){
                     val imageView = ImageView(constraintLayout.context).also{
                         it.id = visObj.getID()
-                        it.setImageDrawable(drawables[index])
+                        it.setImageDrawable(groupedDrawables[index])
+                        /*
+                        if(index in activatedGroupBoundVisObjectIndices)
+                            it.setImageDrawable(groupedDrawables[activatedGroupBoundVisObjectIndices.indexOf(index)])
+                        */
 
+                        /*
                         val (centerBasedX, centerBasedY) = CoordinateConverter.polarToCenterBasedCartesianCoordinate(
                                 currentCenterPolar.first.toDouble(),
                                 currentCenterPolar.second.toDouble()
@@ -368,35 +385,26 @@ abstract class AbstractAggregatedVisEffect(
                         it.pivotX = defaultX.toFloat()
                         it.pivotY = defaultY.toFloat()
                         it.rotation = theta.toFloat()
+                        */
                     }
                     constraintLayout.addView(imageView, layoutParams)
                 }
                 else{
                     constraintLayout.findViewById<ImageView>(visObj.getID()).also{
-                        it.setImageDrawable(drawables[index])
+                        it.setImageDrawable(groupedDrawables[index])
                         it.layoutParams = layoutParams
                     }
                 }
             }
-
         }
 
         normalVisObjects.forEachIndexed{ index, visObj ->
-            val (x, y) = visObj.getPosition()
-            val (r, theta) = CoordinateConverter.centerBasedCartesianToPolarCoordinate(x, y)
-            val layoutParams = ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT,
-                    ConstraintLayout.LayoutParams.WRAP_CONTENT)
-                    .also{
-                        it.circleConstraint = localPivotID
-                        it.circleRadius = r.roundToInt()
-                        it.circleAngle = theta.toFloat()
-                    }
+            val layoutParams = aggregatedPivotLayoutParams.second[index]
             if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){
                 val imageView = ImageView(constraintLayout.context).also{
                     it.id = visObj.getID()
-                    it.setImageDrawable(drawables[index])
-
+                    it.setImageDrawable(normalDrawables[index])
+                    /*
                     val (centerBasedX, centerBasedY) = CoordinateConverter.polarToCenterBasedCartesianCoordinate(
                             currentCenterPolar.first.toDouble(),
                             currentCenterPolar.second.toDouble()
@@ -411,12 +419,13 @@ abstract class AbstractAggregatedVisEffect(
                     it.pivotX = defaultX.toFloat()
                     it.pivotY = defaultY.toFloat()
                     it.rotation = theta.toFloat()
+                    */
                 }
                 constraintLayout.addView(imageView, layoutParams)
             }
             else{
                 constraintLayout.findViewById<ImageView>(visObj.getID()).also{
-                    it.setImageDrawable(drawables[index])
+                    it.setImageDrawable(normalDrawables[index])
                     it.layoutParams = layoutParams
                 }
             }

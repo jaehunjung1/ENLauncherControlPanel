@@ -15,9 +15,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.nex3z.flowlayout.FlowLayout
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
 import com.robertlevonyan.views.chip.Chip
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.utilities.Utilities
@@ -26,9 +29,8 @@ import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
-import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
+import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
-import java.util.*
 
 class IndependentMappingChildLayout : LinearLayout {
     companion object{
@@ -36,10 +38,10 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     interface ChildViewInteractionListener{
-        fun onMappingContentsUpdated()
+        fun onShapeMappingContentsUpdated(componentIndex: Int)
     }
 
-    private var notiVisVar: NuNotiVisVariable = NuNotiVisVariable.MOTION
+    private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
     private var notiDataProp: NotiProperty? = null
     private var viewModel: AppHaloConfigViewModel? = null
     private var objIndex: Int = -1
@@ -63,7 +65,7 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     fun setProperties(
-            visVar: NuNotiVisVariable,
+            visVar: NotiVisVariable,
             notiProp: NotiProperty?,
             visObjIndex: Int,
             appConfigViewModel: AppHaloConfigViewModel? = null
@@ -75,12 +77,11 @@ class IndependentMappingChildLayout : LinearLayout {
 
 
         appConfigViewModel?.appHaloConfigLiveData?.value?.let{ appHaloConfig ->
-            if((notiVisVar == NuNotiVisVariable.SIZE || notiVisVar == NuNotiVisVariable.POSITION) &&
+            if((notiVisVar == NotiVisVariable.SIZE || notiVisVar == NotiVisVariable.POSITION) &&
                     (notiDataProp == NotiProperty.IMPORTANCE)
             ) {
                 setRangeMapping(appHaloConfig)
             } else {
-                //setDiscreteMapping(appHaloConfig)
                 setNominalMapping(appHaloConfig)
             }
         }
@@ -94,19 +95,19 @@ class IndependentMappingChildLayout : LinearLayout {
         viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
 
             when(notiVisVar){
-                NuNotiVisVariable.MOTION -> {
+                NotiVisVariable.MOTION -> {
                     currentConfig.independentVisualParameters[objIndex].selectedMotionList = (visVarContents as MutableList<AnimatorSet>).toList()
                 }
-                NuNotiVisVariable.COLOR -> {
+                NotiVisVariable.COLOR -> {
                     currentConfig.independentVisualParameters[objIndex].selectedColorList = (visVarContents as MutableList<Int>).toList()
                 }
-                NuNotiVisVariable.SHAPE -> {
+                NotiVisVariable.SHAPE -> {
                     currentConfig.independentVisualParameters[objIndex].selectedShapeList = (visVarContents as MutableList<VisObjectShape>).toList()
                 }
-                NuNotiVisVariable.SIZE -> {
+                NotiVisVariable.SIZE -> {
                     currentConfig.independentVisualParameters[objIndex].selectedSizeRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
                 }
-                NuNotiVisVariable.POSITION -> {
+                NotiVisVariable.POSITION -> {
                     currentConfig.independentVisualParameters[objIndex].selectedPosRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
                 }
             }
@@ -119,13 +120,13 @@ class IndependentMappingChildLayout : LinearLayout {
                     currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
                 }
                 NotiProperty.CONTENT -> {
-                    currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
+                    //currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
+                    //이게 필요한가? 아닐듯
                 }
                 else -> {}
             }
 
             viewModel?.appHaloConfigLiveData?.value = currentConfig
-            mappingContentsChangedListener?.onMappingContentsUpdated()
         }
     }
 
@@ -138,6 +139,11 @@ class IndependentMappingChildLayout : LinearLayout {
 
         val independentVisParams = appConfig.independentVisualParameters[0]
         val independentDataParams = appConfig.independentDataParameters[0]
+        val orderedKeywordGroups = appConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatterns().map{
+            it.group to it.keywords.toMutableList()
+        }.toMutableList().apply{
+            add(Pair("DEFAULT", mutableListOf()))
+        }
 
         //notiData Contents 가져오고
         notiDataPropContents.clear()
@@ -151,7 +157,7 @@ class IndependentMappingChildLayout : LinearLayout {
                         independentDataParams.selectedLifeList
                     }
                     NotiProperty.CONTENT -> {
-                        independentDataParams.keywordGroupMap.toList()
+                        orderedKeywordGroups
                     }
                 }
         )
@@ -160,7 +166,7 @@ class IndependentMappingChildLayout : LinearLayout {
         visVarContents.clear()
         visVarContents.addAll(
                 when (notiVisVar) {
-                    NuNotiVisVariable.MOTION -> {
+                    NotiVisVariable.MOTION -> {
                         if(notiDataPropContents.size == 0){
                             listOf(independentVisParams.selectedMotion)
                         }
@@ -168,7 +174,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             independentVisParams.selectedMotionList.subList(0, notiDataPropContents.size)
                         }
                     }
-                    NuNotiVisVariable.SHAPE -> {
+                    NotiVisVariable.SHAPE -> {
                         if(notiDataPropContents.size == 0){
                             listOf(independentVisParams.selectedShape)
                         }
@@ -177,7 +183,7 @@ class IndependentMappingChildLayout : LinearLayout {
                         }
 
                     }
-                    NuNotiVisVariable.COLOR -> {
+                    NotiVisVariable.COLOR -> {
                         if(notiDataPropContents.size == 0){
                             listOf(independentVisParams.selectedColor)
                         }
@@ -185,7 +191,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             independentVisParams.selectedColorList.subList(0, notiDataPropContents.size)
                         }
                     }
-                    NuNotiVisVariable.SIZE -> {
+                    NotiVisVariable.SIZE -> {
                         if(notiDataPropContents.size == 0)
                         {
                             listOf(independentVisParams.selectedSizeRange)
@@ -197,7 +203,7 @@ class IndependentMappingChildLayout : LinearLayout {
 
                         }
                     }
-                    NuNotiVisVariable.POSITION -> {
+                    NotiVisVariable.POSITION -> {
                         if(notiDataPropContents.size == 0)
                         {
                             listOf(independentVisParams.selectedPosRange)
@@ -398,6 +404,7 @@ class IndependentMappingChildLayout : LinearLayout {
 
     private fun setVisVarFrame(index: Int, frame: FrameLayout, content: Any ){
         frame.background = ContextCompat.getDrawable(context, R.drawable.rounded_rectangle)
+        frame.tag = index
         frame.addView(
                 TextView(context).apply {
                     text = contentToString(notiVisVar, content)
@@ -405,10 +412,10 @@ class IndependentMappingChildLayout : LinearLayout {
                 }
         )
         when(notiVisVar){
-            NuNotiVisVariable.MOTION -> {
-                //TODO(Shape Selection View)
+            NotiVisVariable.MOTION -> {
+
             }
-            NuNotiVisVariable.COLOR -> {
+            NotiVisVariable.COLOR -> {
                 val origColor = content as Int
                 frame.setBackgroundColor(origColor)
                 frame.setOnClickListener {
@@ -426,21 +433,50 @@ class IndependentMappingChildLayout : LinearLayout {
                     }
                 }
             }
-            NuNotiVisVariable.SHAPE -> {
-                //TODO(Shape Selection View)
+            NotiVisVariable.SHAPE -> {
+                val shape = content as VisObjectShape
+                frame.addView(
+                        ImageView(context).apply{
+                            setImageDrawable(shape.drawable)
+                            setOnClickListener{
+                                CropImage.activity()
+                                        .setGuidelines(CropImageView.Guidelines.ON)
+                                        .setActivityTitle("Set Image")
+                                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                        .setAspectRatio(1, 1)
+                                        .setCropMenuCropButtonTitle("Done")
+                                        .setRequestedSize(150, 150)
+                                        .start(context as FragmentActivity)
+                                mappingContentsChangedListener?.onShapeMappingContentsUpdated(index)
+                            }
+                        },
+                        FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                )
+                /*
+                frame.setOnClickListener{
+                    CropImage.activity()
+                            .setGuidelines(CropImageView.Guidelines.ON)
+                            .setActivityTitle("My Crop")
+                            .setCropShape(CropImageView.CropShape.OVAL)
+                            .setCropMenuCropButtonTitle("Done")
+                            .setRequestedSize(50, 50)
+                            .start(context as FragmentActivity)
+                    mappingContentsChangedListener?.onShapeMappingContentsUpdated(index)
+                }
+                */
             }
-            NuNotiVisVariable.SIZE -> {}
-            NuNotiVisVariable.POSITION -> {}
+            NotiVisVariable.SIZE -> {}
+            NotiVisVariable.POSITION -> {}
         }
     }
 
-    private fun contentToString(notiVisVar: NuNotiVisVariable, content: Any): String{
+    private fun contentToString(notiVisVar: NotiVisVariable, content: Any): String{
         return when (notiVisVar){
-            NuNotiVisVariable.MOTION -> content.toString()
-            NuNotiVisVariable.SHAPE -> (content as VisObjectShape).type.name
-            NuNotiVisVariable.COLOR -> (content as Int).let{"R:${Color.red(it)}, G:${Color.green(it)}, B:${Color.blue(it)}"}
-            NuNotiVisVariable.SIZE -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
-            NuNotiVisVariable.POSITION -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
+            NotiVisVariable.MOTION -> content.toString()
+            NotiVisVariable.SHAPE -> (content as VisObjectShape).type.name
+            NotiVisVariable.COLOR -> (content as Int).let{"R:${Color.red(it)}, G:${Color.green(it)}, B:${Color.blue(it)}"}
+            NotiVisVariable.SIZE -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
+            NotiVisVariable.POSITION -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
         }
     }
 
@@ -456,7 +492,7 @@ class IndependentMappingChildLayout : LinearLayout {
             layoutParams = ConstraintLayout.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
             setViewModel(viewModel)
-            setMapping(notiVisVar, notiDataProp)
+            setMapping(notiVisVar, notiDataProp!!)
         })
         constraintLayout.getChildAt(0).apply {
             val set = ConstraintSet()
@@ -472,7 +508,7 @@ class IndependentMappingChildLayout : LinearLayout {
         * TODO set appconfig with range mapping
         * mappingUI.config returns [left Start, left End, right Start, right End]
         */
-        Log.i("Initial Mapping", Arrays.toString(mappingUI.config))
+        //Log.i("Initial Mapping", Arrays.toString(mappingUI.config))
 
     }
 

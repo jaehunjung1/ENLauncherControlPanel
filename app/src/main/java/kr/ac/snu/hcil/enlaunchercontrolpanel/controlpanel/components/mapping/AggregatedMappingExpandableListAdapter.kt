@@ -10,11 +10,11 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
 
     companion object{
         private const val TAG = "Expandable_Mapping_Adapter"
-        private fun exceptionVisVarDuplicated(visVar: NuNotiVisVariable) = Exception("$TAG: $visVar Duplicated")
+        private fun exceptionVisVarDuplicated(visVar: NotiVisVariable) = Exception("$TAG: $visVar Duplicated")
     }
 
     private var groupByNotiProp: NotiProperty? = null
-    private val visVarsToAggregatedNotiProperty: MutableList<Pair<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>> = mutableListOf()
+    private val visVarsToAggregatedNotiProperty: MutableList<Pair<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>> = mutableListOf()
     private var viewModel: AppHaloConfigViewModel? = null
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
@@ -46,7 +46,7 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
         return groupPosition.toLong()
     }
 
-    override fun getGroup(groupPosition: Int): Pair<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>> {
+    override fun getGroup(groupPosition: Int): Pair<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>> {
         return visVarsToAggregatedNotiProperty[groupPosition]
     }
 
@@ -59,7 +59,7 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
         } ?: AggregatedMappingParentLayout(context).apply{
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel )
             setMappingChangedListener(object: AggregatedMappingParentLayout.GroupViewInteractionListener {
-                override fun onMappingUpdate(visVar: NuNotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?) {
+                override fun onMappingUpdate(visVar: NotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?) {
                     visVarsToAggregatedNotiProperty[visVarsToAggregatedNotiProperty.indexOfFirst{it.first == visVar}] = Pair(visVar, Pair(aggrOp, notiProp))
                     notifyDataSetChanged()
                 }

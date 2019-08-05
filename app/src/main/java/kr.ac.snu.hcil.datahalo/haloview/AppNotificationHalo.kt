@@ -37,7 +37,7 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
     private val currentIndependentVisEffects: MutableMap<Int, AbstractIndependentVisEffect> = mutableMapOf()
 
     private var currentAggregatedVisEffect: AbstractAggregatedVisEffect? = null
-    private var currentAggregatedNotisVisLayoutInfo: LayoutParams? = null
+    private var currentAggregatedNotisVisLayoutInfo: Pair<List<LayoutParams>, List<LayoutParams>>? = null
 
     init{
         clipChildren = false
@@ -172,7 +172,7 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
                 }
             }
 
-            val (independentVisLayoutMap, aggregatedVisLayout) = AppHaloLayoutMethods
+            val (independentVisLayoutMap, aggregatedVisLayoutPair) = AppHaloLayoutMethods
                     .getLayout(config)
                     .generateLayoutParams(this, pivotViewID, independentNotis, currentIndependentVisEffects.toMap(), aggregatedNotis, currentAggregatedVisEffect)
 
@@ -187,8 +187,10 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
                 }
             }
 
-            currentAggregatedNotisVisLayoutInfo = aggregatedVisLayout
-            currentAggregatedVisEffect?.placeVisObjectsInLayout(this, aggregatedVisLayout)
+
+            currentAggregatedNotisVisLayoutInfo = aggregatedVisLayoutPair
+            currentAggregatedVisEffect?.placeVisObjectsInLayout(this, aggregatedVisLayoutPair)
+
         }
     }
 

@@ -24,7 +24,7 @@ import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
-import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
+import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 class AggregatedMappingChildLayout : LinearLayout{
@@ -37,7 +37,7 @@ class AggregatedMappingChildLayout : LinearLayout{
     }
 
     private var groupByNotiProp: NotiProperty? = null
-    private var notiVisVar: NuNotiVisVariable = NuNotiVisVariable.MOTION
+    private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
     private var notiAggrOp: NotiAggregationType = NotiAggregationType.COUNT
     private var notiDataProp: NotiProperty? = null
     private var viewModel: AppHaloConfigViewModel? = null
@@ -61,7 +61,7 @@ class AggregatedMappingChildLayout : LinearLayout{
 
     fun setProperties(
             groupByProp: NotiProperty?,
-            visVar: NuNotiVisVariable,
+            visVar: NotiVisVariable,
             aggrOp: NotiAggregationType,
             notiProp: NotiProperty?,
             visObjIndex: Int,
@@ -75,7 +75,7 @@ class AggregatedMappingChildLayout : LinearLayout{
         viewModel = appConfigViewModel
 
         appConfigViewModel?.appHaloConfigLiveData?.value?.let{ appHaloConfig ->
-            if((notiVisVar == NuNotiVisVariable.SIZE || notiVisVar == NuNotiVisVariable.POSITION) &&
+            if((notiVisVar == NotiVisVariable.SIZE || notiVisVar == NotiVisVariable.POSITION) &&
                     (notiDataProp == NotiProperty.IMPORTANCE)
             ) {
                 setRangeMapping(appHaloConfig)
@@ -117,7 +117,7 @@ class AggregatedMappingChildLayout : LinearLayout{
         visVarContents.clear()
         visVarContents.addAll(
                 when (notiVisVar) {
-                    NuNotiVisVariable.MOTION -> {
+                    NotiVisVariable.MOTION -> {
                         if(notiDataPropContents.size == 0){
                             listOf(aggregatedVisParams.selectedMotion)
                         }
@@ -125,7 +125,7 @@ class AggregatedMappingChildLayout : LinearLayout{
                             aggregatedVisParams.selectedMotionList.subList(0, notiDataPropContents.size)
                         }
                     }
-                    NuNotiVisVariable.SHAPE -> {
+                    NotiVisVariable.SHAPE -> {
                         if(notiDataPropContents.size == 0){
                             listOf(aggregatedVisParams.selectedShape)
                         }
@@ -134,7 +134,7 @@ class AggregatedMappingChildLayout : LinearLayout{
                         }
 
                     }
-                    NuNotiVisVariable.COLOR -> {
+                    NotiVisVariable.COLOR -> {
                         if(notiDataPropContents.size == 0){
                             listOf(aggregatedVisParams.selectedColor)
                         }
@@ -142,7 +142,7 @@ class AggregatedMappingChildLayout : LinearLayout{
                             aggregatedVisParams.selectedColorList.subList(0, notiDataPropContents.size)
                         }
                     }
-                    NuNotiVisVariable.SIZE -> {
+                    NotiVisVariable.SIZE -> {
                         if(notiDataPropContents.size == 0)
                         {
                             listOf(aggregatedVisParams.selectedSizeRange)
@@ -154,7 +154,7 @@ class AggregatedMappingChildLayout : LinearLayout{
 
                         }
                     }
-                    NuNotiVisVariable.POSITION -> {
+                    NotiVisVariable.POSITION -> {
                         if(notiDataPropContents.size == 0)
                         {
                             listOf(aggregatedVisParams.selectedPosRange)
@@ -363,10 +363,10 @@ class AggregatedMappingChildLayout : LinearLayout{
                 }
         )
         when(notiVisVar){
-            NuNotiVisVariable.MOTION -> {
+            NotiVisVariable.MOTION -> {
                 //TODO(Shape Selection View)
             }
-            NuNotiVisVariable.COLOR -> {
+            NotiVisVariable.COLOR -> {
                 val origColor = content as Int
                 frame.setBackgroundColor(origColor)
                 frame.setOnClickListener {
@@ -384,21 +384,21 @@ class AggregatedMappingChildLayout : LinearLayout{
                     }
                 }
             }
-            NuNotiVisVariable.SHAPE -> {
+            NotiVisVariable.SHAPE -> {
                 //TODO(Shape Selection View)
             }
-            NuNotiVisVariable.SIZE -> {}
-            NuNotiVisVariable.POSITION -> {}
+            NotiVisVariable.SIZE -> {}
+            NotiVisVariable.POSITION -> {}
         }
     }
 
-    private fun contentToString(notiVisVar: NuNotiVisVariable, content: Any): String{
+    private fun contentToString(notiVisVar: NotiVisVariable, content: Any): String{
         return when (notiVisVar){
-            NuNotiVisVariable.MOTION -> content.toString()
-            NuNotiVisVariable.SHAPE -> (content as VisObjectShape).type.name
-            NuNotiVisVariable.COLOR -> (content as Int).let{"R:${Color.red(it)}, G:${Color.green(it)}, B:${Color.blue(it)}"}
-            NuNotiVisVariable.SIZE -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
-            NuNotiVisVariable.POSITION -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
+            NotiVisVariable.MOTION -> content.toString()
+            NotiVisVariable.SHAPE -> (content as VisObjectShape).type.name
+            NotiVisVariable.COLOR -> (content as Int).let{"R:${Color.red(it)}, G:${Color.green(it)}, B:${Color.blue(it)}"}
+            NotiVisVariable.SIZE -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
+            NotiVisVariable.POSITION -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
         }
     }
 
@@ -409,19 +409,19 @@ class AggregatedMappingChildLayout : LinearLayout{
     private fun updateAppConfig(){
         viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
             when(notiVisVar){
-                NuNotiVisVariable.MOTION -> {
+                NotiVisVariable.MOTION -> {
                     currentConfig.aggregatedVisualParameters[objIndex].selectedMotionList = (visVarContents as MutableList<AnimatorSet>).toList()
                 }
-                NuNotiVisVariable.COLOR -> {
+                NotiVisVariable.COLOR -> {
                     currentConfig.aggregatedVisualParameters[objIndex].selectedColorList = (visVarContents as MutableList<Int>).toList()
                 }
-                NuNotiVisVariable.SHAPE -> {
+                NotiVisVariable.SHAPE -> {
                     currentConfig.aggregatedVisualParameters[objIndex].selectedShapeList = (visVarContents as MutableList<VisObjectShape>).toList()
                 }
-                NuNotiVisVariable.SIZE -> {
+                NotiVisVariable.SIZE -> {
                     currentConfig.aggregatedVisualParameters[objIndex].selectedSizeRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
                 }
-                NuNotiVisVariable.POSITION -> {
+                NotiVisVariable.POSITION -> {
                     currentConfig.aggregatedVisualParameters[objIndex].selectedPosRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
                 }
             }

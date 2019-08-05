@@ -10,7 +10,7 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
-import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
+import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 
 import kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisMappingRule
 
@@ -21,11 +21,11 @@ class AggregatedMappingParentLayout: LinearLayout {
     }
 
     interface GroupViewInteractionListener{
-        fun onMappingUpdate(visVar: NuNotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?)
+        fun onMappingUpdate(visVar: NotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?)
     }
 
     private var groupByNotiProp: NotiProperty? = null
-    private var notiVisVar: NuNotiVisVariable = NuNotiVisVariable.MOTION
+    private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
     private var notiDataProp: NotiProperty? = null
     private var aggregationOp: NotiAggregationType = NotiAggregationType.COUNT
     private var objIndex: Int = -1
@@ -40,7 +40,7 @@ class AggregatedMappingParentLayout: LinearLayout {
         mappingChangedListener = listener
     }
 
-    fun setProperties(groupNotiProp: NotiProperty?, visVar: NuNotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
+    fun setProperties(groupNotiProp: NotiProperty?, visVar: NotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
         groupByNotiProp = groupNotiProp
         notiVisVar = visVar
         notiDataProp = notiProp

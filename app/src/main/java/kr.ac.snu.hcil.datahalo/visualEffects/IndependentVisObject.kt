@@ -7,17 +7,13 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.RectShape
 import android.view.Gravity
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.utils.TextDrawable
-import kr.ac.snu.hcil.datahalo.visconfig.MappingState
-import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
-import kr.ac.snu.hcil.datahalo.visconfig.NuNotiVisVariable
-import kr.ac.snu.hcil.datahalo.visconfig.VisVarCustomizability
-import kr.ac.snu.hcil.datahalo.visconfig.IndependentVisObjectAnimParams
-import kr.ac.snu.hcil.datahalo.visconfig.IndependentVisObjectDataParams
-import kr.ac.snu.hcil.datahalo.visconfig.IndependentVisObjectVisParams
+import kr.ac.snu.hcil.datahalo.visconfig.*
+import kotlin.math.roundToInt
 
 interface InterfaceVisObject{
 
@@ -26,14 +22,17 @@ interface InterfaceVisObject{
 
     fun getPosition(): Pair<Double, Double>
 
-    fun getMappingState(visVar: NuNotiVisVariable): MappingState?
-    fun getVisVarsOf(mappingState: MappingState): List<NuNotiVisVariable>
+    fun getMappingState(visVar: NotiVisVariable): MappingState?
+    fun getVisVarsOf(mappingState: MappingState): List<NotiVisVariable>
 
-    fun getVisMapping(): Map<NuNotiVisVariable, NotiProperty?>
-    fun setVisMapping(mapping: Map<NuNotiVisVariable, NotiProperty?>)
+    fun getVisMapping(): Map<NotiVisVariable, NotiProperty?>
+    fun setVisMapping(mapping: Map<NotiVisVariable, NotiProperty?>)
 
     fun getDataParams(): IndependentVisObjectDataParams
     fun setDataParams(params: IndependentVisObjectDataParams)
+
+    fun getImportanceEnhancementPatterns(): KeywordGroupImportancePatterns
+    fun setImportanceEnhancementPatterns(keywordGroupImportancePatterns: KeywordGroupImportancePatterns)
 
     fun getAnimatorsByLifeStage(): Map<EnhancedNotificationLife, AnimatorSet>
     fun setAnimParams(vararg params: IndependentVisObjectAnimParams)
@@ -42,43 +41,46 @@ interface InterfaceVisObject{
     fun setVisParams(params: IndependentVisObjectVisParams)
 
 
-    fun conversionForPredefinedVisVar(predefinedVisVar: NuNotiVisVariable)
-    fun conversionForBoundVisVar(boundVisVar: NuNotiVisVariable, notiProp:NotiProperty): (Any) -> Any?
-    fun conversionForTransparentVisVar(transparentVisVar: NuNotiVisVariable): Any
+    fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable)
+    fun conversionForBoundVisVar(boundVisVar: NotiVisVariable, notiProp:NotiProperty): (Any) -> Any?
+    fun conversionForTransparentVisVar(transparentVisVar: NotiVisVariable): Any
 
     fun getDrawableWithAnimator(input:Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet>
 }
 
 class IndependentVisObject(
-        visualMapping: Map<NuNotiVisVariable, NotiProperty?>,
+        visualMapping: Map<NotiVisVariable, NotiProperty?>,
+        importanceEnhancementPatterns: KeywordGroupImportancePatterns,
         visualParameters: IndependentVisObjectVisParams,
         dataParameters: IndependentVisObjectDataParams,
         animationParameters: List<IndependentVisObjectAnimParams>)
     : AbstractIndependentVisObject(
         customizabilitySpec = mapOf(
-                NuNotiVisVariable.POSITION to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.COLOR to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.MOTION to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.SHAPE to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.SIZE to VisVarCustomizability.CUSTOMIZABLE
+                NotiVisVariable.POSITION to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.COLOR to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.MOTION to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.SHAPE to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.SIZE to VisVarCustomizability.CUSTOMIZABLE
         ),
         transformationRule = mapOf(
-                NuNotiVisVariable.POSITION to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
-                NuNotiVisVariable.COLOR to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
-                NuNotiVisVariable.MOTION to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
-                NuNotiVisVariable.SHAPE to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
-                NuNotiVisVariable.SIZE to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT)
+                NotiVisVariable.POSITION to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
+                NotiVisVariable.COLOR to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
+                NotiVisVariable.MOTION to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
+                NotiVisVariable.SHAPE to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT),
+                NotiVisVariable.SIZE to listOf(NotiProperty.IMPORTANCE, NotiProperty.LIFE_STAGE, NotiProperty.CONTENT)
         ),
         visualMapping = visualMapping,
+        importanceEnhancementPatterns = importanceEnhancementPatterns,
         visualParameters =  visualParameters,
         dataParameters =  dataParameters,
         animationParameters = animationParameters)
 
 
 abstract class AbstractIndependentVisObject(
-        val customizabilitySpec: Map<NuNotiVisVariable, VisVarCustomizability>,
-        val transformationRule: Map<NuNotiVisVariable, List<NotiProperty>>,
-        visualMapping: Map<NuNotiVisVariable, NotiProperty?>,
+        val customizabilitySpec: Map<NotiVisVariable, VisVarCustomizability>,
+        val transformationRule: Map<NotiVisVariable, List<NotiProperty>>,
+        visualMapping: Map<NotiVisVariable, NotiProperty?>,
+        importanceEnhancementPatterns: KeywordGroupImportancePatterns,
         visualParameters: IndependentVisObjectVisParams,
         dataParameters: IndependentVisObjectDataParams,
         animationParameters: List<IndependentVisObjectAnimParams>
@@ -87,17 +89,19 @@ abstract class AbstractIndependentVisObject(
         val exceptionInvalidCustomizability = Exception("CustomizabilitySpec May Lack Information.")
         val exceptionInvalidMappingInput = Exception("Input Mapping is Invalid")
         val exceptionNotInitialized = Exception("Object is Not Initialized. Set Mapping First.")
-        val exceptionVisVariable = {visVar:NuNotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
-        val exceptionNotSupportedTransformation = {visVar:NuNotiVisVariable, notiProp:NotiProperty -> Exception("$notiProp -> $visVar Mapping Does Not Exist.")}
+        val exceptionVisVariable = {visVar:NotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
+        val exceptionNotSupportedTransformation = { visVar:NotiVisVariable, notiProp:NotiProperty -> Exception("$notiProp -> $visVar Mapping Does Not Exist.")}
     }
 
     private var id: Int = -1
+
+    private var enhancementPatterns = importanceEnhancementPatterns
     private var visParams: IndependentVisObjectVisParams = visualParameters
     private var dataParams: IndependentVisObjectDataParams = dataParameters
 
-    private lateinit var currMapping: Map<NuNotiVisVariable, NotiProperty?>
-    lateinit var boundConversions: Map<NuNotiVisVariable, (Any) -> Any?>
-    lateinit var userDefinedConversions: Map<NuNotiVisVariable, Any>
+    private lateinit var currMapping: Map<NotiVisVariable, NotiProperty?>
+    private lateinit var boundConversions: Map<NotiVisVariable, (Any) -> Any?>
+    private lateinit var userDefinedConversions: Map<NotiVisVariable, Any>
     private var position: Pair<Double, Double> = Pair(0.0, 0.0)
     private lateinit var animationMap: Map<EnhancedNotificationLife, AnimatorSet>
 
@@ -138,6 +142,15 @@ abstract class AbstractIndependentVisObject(
 
     final override fun getPosition(): Pair<Double, Double> = position
 
+    final override fun getImportanceEnhancementPatterns(): KeywordGroupImportancePatterns = enhancementPatterns
+    final override fun setImportanceEnhancementPatterns(keywordGroupImportancePatterns: KeywordGroupImportancePatterns) {
+        enhancementPatterns = keywordGroupImportancePatterns
+        customizabilitySpec.filter{it.value == VisVarCustomizability.PREDEFINED}.keys.map{
+            conversionForPredefinedVisVar(it)
+        }
+    }
+
+
     final override fun getDataParams() = dataParams
     final override fun setDataParams(params: IndependentVisObjectDataParams){
         dataParams = params
@@ -154,7 +167,7 @@ abstract class AbstractIndependentVisObject(
         }
     }
 
-    final override fun getMappingState(visVar: NuNotiVisVariable): MappingState? {
+    final override fun getMappingState(visVar: NotiVisVariable): MappingState? {
         if (customizabilitySpec[visVar] == null)
             exceptionInvalidCustomizability
         return when (customizabilitySpec[visVar]){
@@ -164,7 +177,7 @@ abstract class AbstractIndependentVisObject(
         }
     }
 
-    final override fun getVisVarsOf(mappingState: MappingState): List<NuNotiVisVariable> {
+    final override fun getVisVarsOf(mappingState: MappingState): List<NotiVisVariable> {
         return when (mappingState){
             MappingState.PREDEFINED -> { customizabilitySpec.filter{ it.value == VisVarCustomizability.PREDEFINED}.keys.toList()}
             MappingState.BOUND -> {boundConversions.keys.toList()}
@@ -172,13 +185,13 @@ abstract class AbstractIndependentVisObject(
         }
     }
 
-    final override fun getVisMapping(): Map<NuNotiVisVariable, NotiProperty?> = currMapping
-    final override fun setVisMapping(mapping: Map<NuNotiVisVariable, NotiProperty?>){
+    final override fun getVisMapping(): Map<NotiVisVariable, NotiProperty?> = currMapping
+    final override fun setVisMapping(mapping: Map<NotiVisVariable, NotiProperty?>){
         currMapping = mapping
 
         //check if mapping is absurd
         val isValid = currMapping.keys.fold(true){
-            acc:Boolean, el:NuNotiVisVariable ->
+            acc:Boolean, el:NotiVisVariable ->
             val truth = el in customizabilitySpec.filter{it.value == VisVarCustomizability.CUSTOMIZABLE}.keys
             acc && truth
         }
@@ -202,12 +215,15 @@ abstract class AbstractIndependentVisObject(
         }.toMap()
     }
 
-    final override fun conversionForBoundVisVar(boundVisVar: NuNotiVisVariable, notiProp: NotiProperty): (Any) -> Any?{
+    final override fun conversionForBoundVisVar(boundVisVar: NotiVisVariable, notiProp: NotiProperty): (Any) -> Any?{
+        val keywordGroups = getImportanceEnhancementPatterns().getOrderedKeywordGroups().toMutableList().apply{
+            add("DEFAULT")
+        }.toList()
         val dataParams = getDataParams()
         val visualParams = getVisParams()
 
         when(boundVisVar){
-            NuNotiVisVariable.MOTION -> {
+            NotiVisVariable.MOTION -> {
                 val motions = visualParams.selectedMotionList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
@@ -219,16 +235,16 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, motions)
                     }
                     NotiProperty.CONTENT -> {
-                        if(motions.size != dataParams.keywordGroups.size)
+                        if(motions.size < keywordGroups.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, motions)
+                        return MapFunctionUtilities.createMapFunc(keywordGroups, motions)
                     }
                     else -> {
                         return {x -> motions[0]}
                     }
                 }
             }
-            NuNotiVisVariable.SHAPE -> {
+            NotiVisVariable.SHAPE -> {
                 val shape = visualParams.selectedShapeList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
@@ -241,16 +257,16 @@ abstract class AbstractIndependentVisObject(
 
                     }
                     NotiProperty.CONTENT -> {
-                        if(shape.size != dataParams.keywordGroups.size)
+                        if(shape.size < keywordGroups.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, shape)
+                        return MapFunctionUtilities.createMapFunc(keywordGroups, shape)
                     }
                     else -> {
                         return {x -> shape[0]}
                     }
                 }
             }
-            NuNotiVisVariable.POSITION -> {
+            NotiVisVariable.POSITION -> {
                 val posRange = visualParams.selectedPosRange// 이값은 어디선가 와야겠지?
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
@@ -260,14 +276,14 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, posRange)
                     }
                     NotiProperty.CONTENT -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, posRange)
+                        return MapFunctionUtilities.createMapFunc(keywordGroups, posRange)
                     }
                     else -> {
                         return {x -> (posRange.first + posRange.second) / 2}
                     }
                 }
             }
-            NuNotiVisVariable.COLOR -> {
+            NotiVisVariable.COLOR -> {
                 val colors = visualParams.selectedColorList
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
@@ -279,9 +295,9 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, colors)
                     }
                     NotiProperty.CONTENT -> {
-                        if(colors.size != dataParams.keywordGroups.size)
+                        if(colors.size < dataParams.keywordGroups.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, colors)
+                        return MapFunctionUtilities.createMapFunc(keywordGroups, colors)
                     }
                     else -> {
                         return {x -> colors[0]}
@@ -289,7 +305,7 @@ abstract class AbstractIndependentVisObject(
                 }
 
             }
-            NuNotiVisVariable.SIZE -> {
+            NotiVisVariable.SIZE -> {
                 val sizeRange = visualParams.selectedSizeRange
                 when(notiProp){
                     NotiProperty.IMPORTANCE -> {
@@ -299,7 +315,7 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, sizeRange)
                     }
                     NotiProperty.CONTENT -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.keywordGroups, sizeRange)
+                        return MapFunctionUtilities.createMapFunc(keywordGroups, sizeRange)
                     }
                     else -> {
                         return {x -> (sizeRange.first + sizeRange.second) / 2}
@@ -309,29 +325,29 @@ abstract class AbstractIndependentVisObject(
             }
         }
     }
-    final override fun conversionForTransparentVisVar(transparentVisVar: NuNotiVisVariable): Any {
+    final override fun conversionForTransparentVisVar(transparentVisVar: NotiVisVariable): Any {
         val visualParams = getVisParams()
 
         when (transparentVisVar){
-            NuNotiVisVariable.SIZE -> {
+            NotiVisVariable.SIZE -> {
                 return visualParams.selectedSize
             }
-            NuNotiVisVariable.COLOR -> {
+            NotiVisVariable.COLOR -> {
                 return visualParams.selectedColor
             }
-            NuNotiVisVariable.POSITION -> {
+            NotiVisVariable.POSITION -> {
                 return visualParams.selectedPos
             }
-            NuNotiVisVariable.SHAPE -> {
+            NotiVisVariable.SHAPE -> {
                 return visualParams.selectedShape
             }
-            NuNotiVisVariable.MOTION -> {
+            NotiVisVariable.MOTION -> {
                 return visualParams.selectedMotion
             }
         }
     }
 
-    final override fun conversionForPredefinedVisVar(predefinedVisVar: NuNotiVisVariable) {}
+    final override fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable) {}
     final override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
 
         val visualParams = getVisParams()
@@ -352,22 +368,22 @@ abstract class AbstractIndependentVisObject(
                         val f = boundConversions[visVar]!!
                         f(notiVal)?.let{ visVal ->
                             when(visVar){
-                                NuNotiVisVariable.SIZE -> size = visVal as Double
-                                NuNotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                                NuNotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
-                                NuNotiVisVariable.POSITION -> pos = visVal as Double
-                                NuNotiVisVariable.COLOR -> color = visVal as Int
+                                NotiVisVariable.SIZE -> size = visVal as Double
+                                NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
+                                NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                                NotiVisVariable.POSITION -> pos = visVal as Double
+                                NotiVisVariable.COLOR -> color = visVal as Int
                             }
                         }
                     }
                     in userDefinedConversions -> {
                         val visVal = userDefinedConversions[visVar]!!
                         when(visVar){
-                            NuNotiVisVariable.SIZE -> size = visVal as Double
-                            NuNotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                            NuNotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
-                            NuNotiVisVariable.POSITION -> pos = visVal as Double
-                            NuNotiVisVariable.COLOR -> color = visVal as Int
+                            NotiVisVariable.SIZE -> size = visVal as Double
+                            NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
+                            NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                            NotiVisVariable.POSITION -> pos = visVal as Double
+                            NotiVisVariable.COLOR -> color = visVal as Int
                         }
                     }
                     else -> {
@@ -387,11 +403,19 @@ abstract class AbstractIndependentVisObject(
         //val width: Double = visualParams.wRange.first + (visualParams.wRange.second - visualParams.wRange.first) * size
         //val height: Double = visualParams.hRange.first + (visualParams.hRange.second - visualParams.hRange.first) * size
 
-        val mySize = 60
+        val mySize = (150 * size).roundToInt()
 
-        val shapeDrawable = when(shape.type){
+        val shapeDrawable: Drawable = when(shape.type){
             NewVisShape.RECT -> {
+                /*
                 (shape.drawable as ShapeDrawable).also{
+                    it.paint.color = color
+                    it.intrinsicWidth = mySize
+                    it.intrinsicHeight = mySize
+                }
+                */
+                ShapeDrawable().also{
+                    it.shape = RectShape()
                     it.paint.color = color
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
@@ -421,10 +445,7 @@ abstract class AbstractIndependentVisObject(
                 }
             }
             NewVisShape.IMAGE -> {
-                ShapeDrawable().also{
-                    it.intrinsicWidth = mySize
-                    it.intrinsicHeight = mySize
-                }
+                ScaleDrawable(shape.drawable, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
             }
             NewVisShape.RAW -> {
                 (shape.drawable as TextDrawable).also{

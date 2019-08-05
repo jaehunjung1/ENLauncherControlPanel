@@ -9,10 +9,16 @@ import kr.ac.snu.hcil.datahalo.visconfig.*
 class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
     companion object{
         private const val TAG = "Expandable_Mapping_Adapter"
-        private fun exceptionVisVarDuplicated(visVar: NuNotiVisVariable) = Exception("$TAG: $visVar Duplicated")
+        private fun exceptionVisVarDuplicated(visVar: NotiVisVariable) = Exception("$TAG: $visVar Duplicated")
     }
 
-    private val visVartoNotiPropMappings: MutableList<Pair<NuNotiVisVariable, NotiProperty?>> = mutableListOf()
+    interface MappingParameterChangedListener{
+        fun onShapeParameterChanged(index: Int)
+    }
+
+    var shapeMappingParameterChangedLister: MappingParameterChangedListener? = null
+
+    private val visVartoNotiPropMappings: MutableList<Pair<NotiVisVariable, NotiProperty?>> = mutableListOf()
     private var viewModel: AppHaloConfigViewModel? = null
 
     fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
@@ -42,7 +48,7 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
         return groupPosition.toLong()
     }
 
-    override fun getGroup(groupPosition: Int): Pair<NuNotiVisVariable, NotiProperty?> {
+    override fun getGroup(groupPosition: Int): Pair<NotiVisVariable, NotiProperty?> {
         return visVartoNotiPropMappings[groupPosition]
     }
 
@@ -55,7 +61,7 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
         } ?: IndependentMappingParentLayout(context).apply{
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingChangedListener(object: IndependentMappingParentLayout.GroupViewInteractionListener {
-                override fun onMappingUpdate(visVar: NuNotiVisVariable, notiProp: NotiProperty?) {
+                override fun onMappingUpdate(visVar: NotiVisVariable, notiProp: NotiProperty?) {
                     visVartoNotiPropMappings[visVartoNotiPropMappings.indexOfFirst{it.first == visVar}] = Pair(visVar, notiProp)
                     notifyDataSetChanged()
                 }
@@ -80,10 +86,27 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val (visVar, notiProp) = getGroup(groupPosition)
         val context = parent!!.context
-
-        return IndependentMappingChildLayout(context).apply{
+        /*
+        return (convertView as IndependentMappingChildLayout?)?.apply{
             setProperties(visVar, notiProp, 0, viewModel)
+        } ?: IndependentMappingChildLayout(context).apply {
+            setProperties(visVar, notiProp, 0, viewModel)
+            setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
+                override fun onShapeMappingContentsUpdated(componentIndex: Int) {
+                    shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex)
+                }
+            })
+        }
+        }*/
 
+        return IndependentMappingChildLayout(context).apply {
+            setProperties(visVar, notiProp, 0, viewModel)
+            setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
+                override fun onShapeMappingContentsUpdated(componentIndex: Int) {
+                    //child의 몇 번째 component를 바꿔야 하느냐하고 관련되어 있는거고
+                    shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex)
+                }
+            })
         }
     }
 }

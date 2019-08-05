@@ -6,10 +6,13 @@ import android.animation.TimeInterpolator
 import android.graphics.Color
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.RectShape
 import android.util.Property
 import android.view.View
+import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
+import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
@@ -19,7 +22,7 @@ data class IndependentVisObjectVisParams(
         var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
         var selectedPosRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedPosRange, 5),
-        var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
+        var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape())),
         var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
         var selectedMotionList: List<AnimatorSet> = listOf(),
@@ -134,6 +137,169 @@ data class AggregatedVisEffectVisParams(
         var groupNumber: Int = 5,
         var contentGroupMap: Map<String, List<String>> = emptyMap()
 )
+
+data class NotificationFilteringParams(
+        var filterImportanceConfig: Map<WGBFilterVar, Any> = mapOf(
+                WGBFilterVar.ACTIVE to true,
+                WGBFilterVar.WHITE_COND to 0.5,
+                WGBFilterVar.BLACK_COND to 0.0
+        ),
+        var filterObservationWindowConfig: Map<WGBFilterVar, Any> = mapOf(
+                WGBFilterVar.ACTIVE to true,
+                WGBFilterVar.WHITE_COND to 60 * 60 * 1000L,
+                WGBFilterVar.BLACK_COND to 6 * 60 * 60 * 1000L
+        ),
+        var filterChannelConfig: Map<WGBFilterVar, Any> = mapOf(
+                WGBFilterVar.ACTIVE to false,
+                WGBFilterVar.WHITE_COND to setOf<NotiHierarchy>(),
+                WGBFilterVar.BLACK_COND to setOf<NotiHierarchy>()
+        ),
+        var filterKeywordConfig: Map<WGBFilterVar, Any> = mapOf(
+                WGBFilterVar.ACTIVE to true,
+                WGBFilterVar.WHITE_COND to setOf<String>(),
+                WGBFilterVar.BLACK_COND to setOf<String>()
+        ),
+        var maxNumOfIndependentNotifications: Int = 3
+
+)
+
+data class KeywordGroupImportance(
+        val group: String,
+        val keywords: MutableSet<String>,
+        var rank: Int = -1,
+        var type: String = VisDataManager.DEFAULT_PATTERN,
+        var enhancementParam: NotificationEnhacementParams
+){
+    companion object{
+        private var currentLastID: Long = 0L
+        private fun assignID(): Long =
+                if(currentLastID < Long.MAX_VALUE) { currentLastID++ }
+                else {
+                    currentLastID = 0
+                    currentLastID
+                }
+    }
+
+    val id: Long = assignID()
+}
+
+class KeywordGroupImportancePatterns(
+       keywordGroupPatterns: Map<String, Pair<Set<String>, String>>
+){
+    private val keywordGroupPatterns: MutableList<KeywordGroupImportance> = mutableListOf()
+
+    init{
+        keywordGroupPatterns.toList().forEachIndexed { index, pair ->
+            this.keywordGroupPatterns.add(
+                    KeywordGroupImportance(
+                            group = pair.first,
+                            rank = index,
+                            keywords = pair.second.first.toMutableSet(),
+                            type = pair.second.second,
+                            enhancementParam = VisDataManager.getExampleSaturationPattern(pair.second.second)!!
+                    )
+            )
+        }
+    }
+
+    fun getOrderedKeywordGroupImportancePatterns(): List<KeywordGroupImportance> = keywordGroupPatterns
+    fun getOrderedKeywordGroups(): List<String> = keywordGroupPatterns.map{it.group}
+
+    fun addKeywordGroup(
+            group: String,
+            keywords: Set<String> = emptySet(),
+            rank: Int = keywordGroupPatterns.size){
+        addKeywordGroup(group, keywords, rank, VisDataManager.DEFAULT_PATTERN, VisDataManager.getExampleSaturationPattern(VisDataManager.DEFAULT_PATTERN)!!)
+    }
+
+    fun addKeywordGroup(
+            group: String,
+            keywords: Set<String> = emptySet(),
+            rank: Int = keywordGroupPatterns.size,
+            type: String){
+        addKeywordGroup(group, keywords, rank, type, VisDataManager.getExampleSaturationPattern(type)!!)
+    }
+
+    fun addKeywordGroup(
+            group: String,
+            keywords: Set<String> = emptySet(),
+            rank: Int = keywordGroupPatterns.size,
+            type: String,
+            enhancementParam: NotificationEnhacementParams) {
+
+        if(group !in keywordGroupPatterns.map{it.group}){
+            keywordGroupPatterns.add(
+                    KeywordGroupImportance(
+                            group = group,
+                            rank = rank,
+                            keywords = keywords.toMutableSet(),
+                            type = type,
+                            enhancementParam = enhancementParam
+                    )
+            )
+            keywordGroupPatterns.sortBy{it.rank}
+        }
+    }
+
+    fun deleteKeywordGroup(group: String){
+        keywordGroupPatterns.find{it.group == group}?.let{ item ->
+            keywordGroupPatterns.remove(item)
+        }
+    }
+
+    fun changeRankOfGroup(group: String, changedRank: Int){
+        keywordGroupPatterns.find{it.group == group}?.let{ itemToChangeRank ->
+            val prevRank = itemToChangeRank.rank
+
+            if(changedRank > prevRank){
+                //prev -> changed rank가 내려감 prevRank 1, changedRank 3이면 ->  0 1 2 3 4 5 -> 0 2 3 1 4 5
+                keywordGroupPatterns.filter{it.rank in (prevRank + 1)..changedRank}.forEach{it.rank--}
+            }
+            else if(changedRank < prevRank){
+                //prevRank 3, changedRank 1이면 ->  0 1 2 3 4 5 -> 0 3 1 2 4 5
+                keywordGroupPatterns.filter{it.rank in changedRank until prevRank}.forEach{it.rank++}
+            }
+            else{}
+            itemToChangeRank.rank = changedRank
+            keywordGroupPatterns.sortBy{it.rank}
+        }
+    }
+
+    fun getGroupOfRank(rank: Int): KeywordGroupImportance? = keywordGroupPatterns.find{it.rank == rank}
+
+    fun getKeywordsOfGroup(group: String): Set<String>? = keywordGroupPatterns.find{it.group == group}?.keywords
+    fun addKeywordToGroup(group: String, keyword: String){
+        keywordGroupPatterns.find{it.group == group}?.keywords?.add(keyword)
+    }
+    fun deleteKeywordInGroup(group: String, keyword: String){
+        keywordGroupPatterns.find{it.group == group}?.keywords?.remove(keyword)
+    }
+
+    fun getEnhancementParamOfGroup(group: String): NotificationEnhacementParams? = keywordGroupPatterns.find{it.group == group}?.enhancementParam
+
+    fun setEnhancementParamOfGroup(group: String, params: NotificationEnhacementParams){
+        keywordGroupPatterns.find{it.group == group}?.let{
+            it.type = VisDataManager.CUSTOM_PATTERN
+            it.enhancementParam = params
+        }
+    }
+    fun setEnhancementParamOfGroup(group: String, type: String){
+        keywordGroupPatterns.find{it.group == group}?.let{
+            it.type = type
+            it.enhancementParam = VisDataManager.getExampleSaturationPattern(type)!!
+        }
+    }
+
+    fun assignGroupToNotification(title: String, content: String): String?{
+        //rank가 위일 수록 먼저 할당될 가능성이 있음
+        keywordGroupPatterns.forEach{ item ->
+            item.keywords.forEach{ keyword ->
+                if(title.contains(keyword) || content.contains(keyword)){return item.group}
+            }
+        }
+        return null
+    }
+}
 
 data class NotificationEnhacementParams(
         var initialImportance: Double = 0.5,

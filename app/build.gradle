@@ -50,9 +50,14 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 
     implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+    implementation "com.zhihu.android:matisse:0.5.2-beta5"
+    api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.karumi:dexter:5.0.0'
+    implementation 'com.mikhaellopez:circularimageview:4.0.1'
 
 }
 repositories {
     mavenCentral()
+    jcenter()
     maven { url 'https://jitpack.io' }
 }

@@ -11,6 +11,7 @@ class SingleObjIndependentVisEffect(appHaloConfig: AppHaloConfig)
         independentVisObjects = listOf(
                 IndependentVisObject(
                         visualMapping = appHaloConfig.independentVisualMappings[0],
+                        importanceEnhancementPatterns = appHaloConfig.keywordGroupPatterns,
                         dataParameters = appHaloConfig.independentDataParameters[0],
                         visualParameters = appHaloConfig.independentVisualParameters[0],
                         animationParameters = appHaloConfig.independentAnimationParameters[0]

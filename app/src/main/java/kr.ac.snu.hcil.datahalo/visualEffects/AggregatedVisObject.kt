@@ -12,6 +12,7 @@ import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.utils.TextDrawable
 import kr.ac.snu.hcil.datahalo.visconfig.*
+import kotlin.math.roundToInt
 
 interface InterfaceAggregatedVisObject{
     fun setID(id: Int)
@@ -19,8 +20,8 @@ interface InterfaceAggregatedVisObject{
 
     fun getPosition(): Pair<Double, Double>
 
-    fun getMappingState(visVar: NuNotiVisVariable): MappingState?
-    fun getVisVarsOf(mappingState: MappingState): List<NuNotiVisVariable>
+    fun getMappingState(visVar: NotiVisVariable): MappingState?
+    fun getVisVarsOf(mappingState: MappingState): List<NotiVisVariable>
 
     fun getNotiPropertyGroupedBy(): NotiProperty?
     fun setNotiPropertyGroupedBy(groupNotiProp: NotiProperty?)
@@ -28,8 +29,8 @@ interface InterfaceAggregatedVisObject{
     fun getGroupLabel(): Any?
     fun setGroupLabel(label: Any?)
 
-    fun getVisMapping(): Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>
-    fun setVisMapping(mapping: Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>)
+    fun getVisMapping(): Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>
+    fun setVisMapping(mapping: Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>)
 
     fun getVisParams(): AggregatedVisObjectVisParams
     fun setVisParams(params: AggregatedVisObjectVisParams)
@@ -40,24 +41,24 @@ interface InterfaceAggregatedVisObject{
     fun getAnimatorsByLifeStage(): Map<EnhancedNotificationLife, AnimatorSet>
     fun setAnimParams(vararg params: AggregatedVisObjectAnimParams)
 
-    fun conversionForPredefinedVisVar(predefinedVisVar: NuNotiVisVariable)
-    fun conversionForBoundVisVar(boundVisVar: NuNotiVisVariable, aggrNotiProp: Pair<NotiAggregationType, NotiProperty?>): (Any) -> Any?
-    fun conversionForTransparentVisVar(transparentVisVar: NuNotiVisVariable): Any
+    fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable)
+    fun conversionForBoundVisVar(boundVisVar: NotiVisVariable, aggrNotiProp: Pair<NotiAggregationType, NotiProperty?>): (Any) -> Any?
+    fun conversionForTransparentVisVar(transparentVisVar: NotiVisVariable): Any
     fun getDrawableWithAnimator(input:Map<Pair<NotiAggregationType, NotiProperty?>, Any>): Pair<Drawable, AnimatorSet>
 }
 
 class AggregatedVisObject(
-        visualMapping: Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>,
+        visualMapping: Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>,
         visualParameters: AggregatedVisObjectVisParams,
         dataParameters: AggregatedVisObjectDataParams,
         animationParameters: List<AggregatedVisObjectAnimParams>)
     :AbstractAggregatedVisObject(
         customizabilitySpec = mapOf(
-                NuNotiVisVariable.POSITION to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.COLOR to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.MOTION to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.SHAPE to VisVarCustomizability.CUSTOMIZABLE,
-                NuNotiVisVariable.SIZE to VisVarCustomizability.CUSTOMIZABLE
+                NotiVisVariable.POSITION to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.COLOR to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.MOTION to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.SHAPE to VisVarCustomizability.CUSTOMIZABLE,
+                NotiVisVariable.SIZE to VisVarCustomizability.CUSTOMIZABLE
         ),
         visualMapping = visualMapping,
         visualParameters =  visualParameters,
@@ -66,8 +67,8 @@ class AggregatedVisObject(
 )
 
 abstract class AbstractAggregatedVisObject(
-        val customizabilitySpec: Map<NuNotiVisVariable, VisVarCustomizability>,
-        visualMapping: Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>,
+        val customizabilitySpec: Map<NotiVisVariable, VisVarCustomizability>,
+        visualMapping: Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>,
         visualParameters: AggregatedVisObjectVisParams,
         dataParameters: AggregatedVisObjectDataParams,
         animationParameters: List<AggregatedVisObjectAnimParams>)
@@ -77,8 +78,7 @@ abstract class AbstractAggregatedVisObject(
         val exceptionInvalidCustomizability = Exception("CustomizabilitySpec May Lack Information.")
         val exceptionInvalidMappingInput = Exception("Input Mapping is Invalid")
         val exceptionNotInitialized = Exception("Object is Not Initialized. Set Mapping First.")
-        val exceptionVisVariable = {visVar:NuNotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
-        val exceptionNotSupportedTransformation = {visVar:NuNotiVisVariable, notiProp: AggregatedNotiProperty -> Exception("$notiProp -> $visVar Mapping Does Not Exist.")}
+        val exceptionVisVariable = {visVar:NotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
     }
 
     private var id: Int = -1
@@ -86,9 +86,9 @@ abstract class AbstractAggregatedVisObject(
     private var dataParams: AggregatedVisObjectDataParams = dataParameters
     private var notiPropGroupedBy: NotiProperty? = null
     private var groupLabel: Any? = null
-    private lateinit var currMapping: Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>
-    lateinit var boundConversions: Map<NuNotiVisVariable, (Any) -> Any?>
-    lateinit var userDefinedConversions: Map<NuNotiVisVariable, Any>
+    private lateinit var currMapping: Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>
+    lateinit var boundConversions: Map<NotiVisVariable, (Any) -> Any?>
+    lateinit var userDefinedConversions: Map<NotiVisVariable, Any>
     private var position: Pair<Double, Double> = Pair(0.0, 0.0)
     private lateinit var animationMap: Map<EnhancedNotificationLife, AnimatorSet>
 
@@ -152,7 +152,7 @@ abstract class AbstractAggregatedVisObject(
     }
 
 
-    final override fun getMappingState(visVar: NuNotiVisVariable): MappingState? {
+    final override fun getMappingState(visVar: NotiVisVariable): MappingState? {
         if (customizabilitySpec[visVar] == null)
             exceptionInvalidCustomizability
         return when (customizabilitySpec[visVar]){
@@ -162,7 +162,7 @@ abstract class AbstractAggregatedVisObject(
         }
     }
 
-    final override fun getVisVarsOf(mappingState: MappingState): List<NuNotiVisVariable> {
+    final override fun getVisVarsOf(mappingState: MappingState): List<NotiVisVariable> {
         return when (mappingState){
             MappingState.PREDEFINED -> { customizabilitySpec.filter{ it.value == VisVarCustomizability.PREDEFINED}.keys.toList()}
             MappingState.BOUND -> {boundConversions.keys.toList()}
@@ -170,13 +170,13 @@ abstract class AbstractAggregatedVisObject(
         }
     }
 
-    final override fun getVisMapping(): Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>> = currMapping
-    final override fun setVisMapping(mapping: Map<NuNotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>){
+    final override fun getVisMapping(): Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>> = currMapping
+    final override fun setVisMapping(mapping: Map<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>){
         currMapping = mapping
 
         //check if mapping is absurd
         val isValid = currMapping.keys.fold(true){
-            acc:Boolean, el:NuNotiVisVariable ->
+            acc:Boolean, el:NotiVisVariable ->
             val truth = el in customizabilitySpec.filter{it.value == VisVarCustomizability.CUSTOMIZABLE}.keys
             acc && truth
         }
@@ -204,12 +204,12 @@ abstract class AbstractAggregatedVisObject(
         }.toMap()
     }
 
-    final override fun conversionForBoundVisVar(boundVisVar: NuNotiVisVariable, aggrNotiProp: Pair<NotiAggregationType, NotiProperty?>): (Any) -> Any? {
+    final override fun conversionForBoundVisVar(boundVisVar: NotiVisVariable, aggrNotiProp: Pair<NotiAggregationType, NotiProperty?>): (Any) -> Any? {
         val dataParams = getDataParams()
         val visualParams = getVisParams()
 
         when(boundVisVar){
-            NuNotiVisVariable.MOTION -> {
+            NotiVisVariable.MOTION -> {
                 val motions = visualParams.selectedMotionList
 
                 when(aggrNotiProp.second){
@@ -231,7 +231,7 @@ abstract class AbstractAggregatedVisObject(
                     }
                 }
             }
-            NuNotiVisVariable.SHAPE -> {
+            NotiVisVariable.SHAPE -> {
                 val shape = visualParams.selectedShapeList
                 when(aggrNotiProp.second){
                     NotiProperty.IMPORTANCE -> {
@@ -253,7 +253,7 @@ abstract class AbstractAggregatedVisObject(
                     }
                 }
             }
-            NuNotiVisVariable.POSITION -> {
+            NotiVisVariable.POSITION -> {
                 val posRange = visualParams.selectedPosRange// 이값은 어디선가 와야겠지?
                 when(aggrNotiProp.second){
                     NotiProperty.IMPORTANCE -> {
@@ -270,7 +270,7 @@ abstract class AbstractAggregatedVisObject(
                     }
                 }
             }
-            NuNotiVisVariable.COLOR -> {
+            NotiVisVariable.COLOR -> {
                 val colors = visualParams.selectedColorList
                 when(aggrNotiProp.second){
                     NotiProperty.IMPORTANCE -> {
@@ -292,7 +292,7 @@ abstract class AbstractAggregatedVisObject(
                 }
 
             }
-            NuNotiVisVariable.SIZE -> {
+            NotiVisVariable.SIZE -> {
                 val sizeRange = visualParams.selectedSizeRange
                 when(aggrNotiProp.second){
                     NotiProperty.IMPORTANCE -> {
@@ -312,28 +312,28 @@ abstract class AbstractAggregatedVisObject(
         }
     }
 
-    final override fun conversionForTransparentVisVar(transparentVisVar: NuNotiVisVariable): Any {
+    final override fun conversionForTransparentVisVar(transparentVisVar: NotiVisVariable): Any {
         val visualParams = getVisParams()
         when (transparentVisVar){
-            NuNotiVisVariable.SIZE -> {
+            NotiVisVariable.SIZE -> {
                 return visualParams.selectedSize
             }
-            NuNotiVisVariable.COLOR -> {
+            NotiVisVariable.COLOR -> {
                 return visualParams.selectedColor
             }
-            NuNotiVisVariable.POSITION -> {
+            NotiVisVariable.POSITION -> {
                 return visualParams.selectedPos
             }
-            NuNotiVisVariable.SHAPE -> {
+            NotiVisVariable.SHAPE -> {
                 return visualParams.selectedShape
             }
-            NuNotiVisVariable.MOTION -> {
+            NotiVisVariable.MOTION -> {
                 return visualParams.selectedMotion
             }
         }
     }
 
-    final override fun conversionForPredefinedVisVar(predefinedVisVar: NuNotiVisVariable) {}
+    final override fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable) {}
 
     final override fun getDrawableWithAnimator(input: Map<Pair<NotiAggregationType, NotiProperty?>, Any>): Pair<Drawable, AnimatorSet> {
         val visualParams = getVisParams()
@@ -354,22 +354,22 @@ abstract class AbstractAggregatedVisObject(
                         val f = boundConversions[visVar]!!
                         f(notiVal)?.let { visVal ->
                             when (visVar) {
-                                NuNotiVisVariable.SIZE -> size = visVal as Double
-                                NuNotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                                NuNotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
-                                NuNotiVisVariable.POSITION -> pos = visVal as Double
-                                NuNotiVisVariable.COLOR -> color = visVal as Int
+                                NotiVisVariable.SIZE -> size = visVal as Double
+                                NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
+                                NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                                NotiVisVariable.POSITION -> pos = visVal as Double
+                                NotiVisVariable.COLOR -> color = visVal as Int
                             }
                         }
                     }
                     in userDefinedConversions -> {
                         val visVal = userDefinedConversions[visVar]!!
                         when (visVar) {
-                            NuNotiVisVariable.SIZE -> size = visVal as Double
-                            NuNotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                            NuNotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
-                            NuNotiVisVariable.POSITION -> pos = visVal as Double
-                            NuNotiVisVariable.COLOR -> color = visVal as Int
+                            NotiVisVariable.SIZE -> size = visVal as Double
+                            NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
+                            NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                            NotiVisVariable.POSITION -> pos = visVal as Double
+                            NotiVisVariable.COLOR -> color = visVal as Int
                         }
                     }
                     else -> {
@@ -431,7 +431,7 @@ abstract class AbstractAggregatedVisObject(
                 1.0f,
                 1.0f
         ).also{
-            it.level = Math.round(10000 * size).toInt()
+            it.level = (10000 * size).roundToInt()
         }
 
         return Pair(shapeDrawable, motion.also{it.setTarget(resultDrawable)})
