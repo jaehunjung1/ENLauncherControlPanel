@@ -8,6 +8,7 @@ import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance
 import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportancePatterns
 import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
+import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
 
 class KeywordGroupExpandableListAdapter(
         private var viewModel: AppHaloConfigViewModel
@@ -16,13 +17,13 @@ class KeywordGroupExpandableListAdapter(
         private const val TAG = "Expandable_Keyword_Adapter"
     }
 
-    //여기서 원하는 건
-    //Parent Level에서는  그룹, Child Level에서는 pattern의 세부설정과 매핑해야 함
     private lateinit var orderedKeywordGroupImportancePatterns: KeywordGroupImportancePatterns
+    private lateinit var observationWindowFilter: Map<WGBFilterVar, Any>
 
     init{
         viewModel.appHaloConfigLiveData.value?.let{ config ->
             orderedKeywordGroupImportancePatterns = config.keywordGroupPatterns
+            observationWindowFilter = config.filterObservationWindowConfig
         }
     }
 
@@ -48,7 +49,6 @@ class KeywordGroupExpandableListAdapter(
 
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
         val groupData = getGroup(groupPosition)
-
         val context = parent!!.context
 
         return (convertView as KeywordGroupParentView?)?.apply{
@@ -89,7 +89,23 @@ class KeywordGroupExpandableListAdapter(
     }
 
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val groupData = getGroup(groupPosition)
+        val context = parent!!.context
+
+        return (convertView as KeywordGroupChildView?)?.apply{
+            setProperties(observationWindowFilter, groupData) //이거 뭔가 이상
+        } ?: KeywordGroupChildView(context).apply{
+            setProperties(observationWindowFilter, groupData)
+            keywordGroupChildInteractionListener = object: KeywordGroupChildView.KeywordGroupChildInteractionListener{
+                override fun onEnhancementParamUpdated(pattern: NotificationEnhacementParams) {
+                    orderedKeywordGroupImportancePatterns.setEnhancementParamOfGroup(groupData.group, pattern)
+                    viewModel.appHaloConfigLiveData.value?.let{ config ->
+                        config.keywordGroupPatterns.setEnhancementParamOfGroup(groupData.group, pattern)
+                        viewModel.appHaloConfigLiveData.value = config
+                    }
+                }
+            }
+        }
 
     }
 

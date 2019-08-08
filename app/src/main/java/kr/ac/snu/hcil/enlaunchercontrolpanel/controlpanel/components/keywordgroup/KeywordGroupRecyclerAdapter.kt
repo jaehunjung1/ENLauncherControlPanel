@@ -1,12 +1,18 @@
 package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.DragStartHelper
+import androidx.core.view.MotionEventCompat
 import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
@@ -15,17 +21,44 @@ import com.nex3z.flowlayout.FlowLayout
 import com.robertlevonyan.views.chip.Chip
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
+import java.util.*
 
-class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel): RecyclerView.Adapter<KeywordGroupRecyclerAdapter.KeywordGroupViewHolder>() {
-    private var keywordGroupData: MutableMap<String, MutableList<String>> = mutableMapOf()
+class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
+    : RecyclerView.Adapter<KeywordGroupRecyclerAdapter.KeywordGroupViewHolder>(), KeywordGroupItemTouchHelperAdapter{
+    private val keywordGroupData: MutableList<Pair<String, MutableSet<String>>> = mutableListOf()
     private var layoutInflater: LayoutInflater? = null
+    var startDragListener: OnStartDragListener? = null
+
+
     var tracker: SelectionTracker<Long>? = null
+
 
     init{
         setHasStableIds(true)
         viewModel.appHaloConfigLiveData.value?.let{ appConfig ->
-            keywordGroupData = appConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatterns().map{it.group to it.keywords.toMutableList()}.toMap().toMutableMap()
+            keywordGroupData.addAll(appConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatterns().map{Pair(it.group,  it.keywords)})
         }
+    }
+
+    override fun onItemDismiss(pos: Int) {
+        val source = keywordGroupData[pos]
+        keywordGroupData.removeAt(pos)
+        notifyItemRemoved(pos)
+        viewModel.appHaloConfigLiveData.value?.let{ appConfig ->
+            appConfig.keywordGroupPatterns.deleteKeywordGroup(source.first)
+            viewModel.appHaloConfigLiveData.value = appConfig
+        }
+    }
+
+    override fun onItemMove(from: Int, to: Int): Boolean {
+        val source = keywordGroupData[from]
+        Collections.swap(keywordGroupData, from, to)
+        notifyItemMoved(from, to)
+        viewModel.appHaloConfigLiveData.value?.let{ appConfig ->
+            appConfig.keywordGroupPatterns.changeRankOfGroup(source.first, to)
+            viewModel.appHaloConfigLiveData.value = appConfig
+        }
+        return true
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordGroupViewHolder {
@@ -35,7 +68,7 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
 
     override fun onBindViewHolder(holder: KeywordGroupViewHolder, position: Int) {
         tracker?.let{
-            holder.bind(keywordGroupData.toList()[position], it.isSelected(position.toLong()))
+            holder.bind(keywordGroupData[position], it.isSelected(position.toLong()))
         }
     }
 
@@ -46,9 +79,10 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
     override fun getItemId(position: Int): Long = position.toLong()
 
     private fun isKeywordInsertable(keyword: String): Boolean{
-        return keywordGroupData.filter{keyword in it.value}.isEmpty()
+        return keywordGroupData.filter{keyword in it.second}.isEmpty()
     }
 
+    /*
     fun addKeywordGroup(group: String){
         if (group !in keywordGroupData){
             keywordGroupData[group] = mutableListOf()
@@ -59,20 +93,11 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
             notifyItemInserted(itemCount)
         }
     }
+    */
 
-    fun removeKeywordGroup(group: String){
-        if (group in keywordGroupData){
-            val index = keywordGroupData.keys.toList().indexOf(group)
-            keywordGroupData.remove(group)
-            viewModel.appHaloConfigLiveData.value?.let{ appConfig ->
-                //appConfig.independentDataParameters[0].keywordGroupMap = keywordGroupData.toMap()
-                viewModel.appHaloConfigLiveData.value = appConfig
-            }
-            notifyItemRemoved(index)
-        }
-    }
-
-    inner class KeywordGroupViewHolder(itemView: View): RecyclerView.ViewHolder(itemView){
+    inner class KeywordGroupViewHolder(itemView: View)
+        : RecyclerView.ViewHolder(itemView), KeywordGroupItemTouchHeleprViewHolder{
+        private val handle: ImageView = itemView.findViewById(R.id.handle)
         private var groupText: TextView = itemView.findViewById(R.id.flow_layout_text)
         private var flowLayout: FlowLayout = itemView.findViewById(R.id.flow_layout)
         private var button: Button = itemView.findViewById(R.id.flow_layout_button)
@@ -86,7 +111,7 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
                     val gName: String = it.tag as String
                     val kName: String = (it as Chip).chipText
                     it.visibility = View.GONE
-                    keywordGroupData[keyword]?.remove(keyword)
+                    keywordGroupData.find{pair -> pair.first == gName}!!.second.remove(kName)
                     flowLayout.removeView(it)
                     viewModel.appHaloConfigLiveData.value?.let{appHaloConfig ->
                         appHaloConfig.keywordGroupPatterns.deleteKeywordInGroup(gName, kName)
@@ -103,8 +128,16 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
             }
         }
 
-        fun bind(value: Pair<String, List<String>>, activated: Boolean = false){
+        fun bind(value: Pair<String, MutableSet<String>>, activated: Boolean = false){
             groupText.text = value.first
+
+            handle.setOnTouchListener { _, event ->
+                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                    startDragListener?.onStartDrag(this)
+                }
+                false
+            }
+
 
             value.second.forEach{ keyword ->
                 addKeywordChipView(value.first, keyword)
@@ -112,13 +145,13 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
 
             button.setOnClickListener {
                 val context = layoutInflater!!.context
-                val mDialog = AlertDialog.Builder(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar).let { mBuilder ->
+                val mDialog = AlertDialog.Builder(context).let { mBuilder ->
                     val editText = EditText(context)
                     mBuilder.setView(editText)
                     mBuilder.setPositiveButton("OK") { dialogInterface, i ->
                         val newKeyword = editText.text.toString()
                         if(newKeyword.isNotEmpty() && isKeywordInsertable(newKeyword)){
-                            keywordGroupData[value.first]!!.add(newKeyword)
+                            keywordGroupData.find{it.first == value.first}!!.second.add(newKeyword)
                             addKeywordChipView(value.first, newKeyword, true)
                         }
                     }
@@ -129,6 +162,14 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
             }
 
             itemView.isActivated  = activated
+        }
+
+        override fun onItemClear() {
+           itemView.setBackgroundColor(Color.LTGRAY)
+        }
+
+        override fun onItemSelected() {
+            itemView.setBackgroundColor(0)
         }
 
         fun getItemDetails(): ItemDetailsLookup.ItemDetails<Long> = object: ItemDetailsLookup.ItemDetails<Long>(){

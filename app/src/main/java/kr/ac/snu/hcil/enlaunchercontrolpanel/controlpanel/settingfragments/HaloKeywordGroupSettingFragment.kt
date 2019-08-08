@@ -5,24 +5,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.core.view.DragStartHelper
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StableIdKeyProvider
 import androidx.recyclerview.selection.StorageStrategy
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.KeywordGroupDetailsLookup
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.KeywordGroupItemTouchHelperCallback
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.KeywordGroupRecyclerAdapter
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.OnStartDragListener
 
-class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment() {
+class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment(), OnStartDragListener{
 
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewAdapter: KeywordGroupRecyclerAdapter
+    private lateinit var keywordGroupItemTouchHelper: ItemTouchHelper
     private var tracker: SelectionTracker<Long>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +47,11 @@ class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment() {
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             }
 
+            keywordGroupItemTouchHelper = ItemTouchHelper(KeywordGroupItemTouchHelperCallback(recyclerViewAdapter))
+            keywordGroupItemTouchHelper.attachToRecyclerView(recyclerView)
+
+
+
             tracker = SelectionTracker.Builder<Long>(
                     "keywordGroupSelection",
                     recyclerView,
@@ -56,8 +66,14 @@ class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment() {
 
             recyclerViewAdapter.tracker = tracker
 
+
         }
     }
+
+    override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
+        keywordGroupItemTouchHelper.startDrag(viewHolder)
+    }
+
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)

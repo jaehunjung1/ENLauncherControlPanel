@@ -2,6 +2,7 @@ package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgro
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -68,6 +69,8 @@ class KeywordGroupParentView: LinearLayout {
             val adapter = getArrayAdapter(spinnerValues)
             adapter.setDropDownViewResource(R.layout.item_with_explanation_spinner)
 
+            spinner.isFocusable = false
+            spinner.isFocusableInTouchMode = false
             spinner.adapter = adapter
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
@@ -84,19 +87,39 @@ class KeywordGroupParentView: LinearLayout {
 
     }
     private fun getArrayAdapter(contentList: List<Pair<String, String>>): ArrayAdapter<Pair<String,String>> {
+
         return object : ArrayAdapter<Pair<String, String>>(context, R.layout.item_with_explanation_spinner, contentList) {
             override fun isEnabled(position: Int): Boolean {
                 return true
             }
 
-            override fun getDropDownView(position: Int, convertView: View?,
-                                         parent: ViewGroup): View {
-                return (super.getDropDownView(position, convertView, parent) as LinearLayout).also{ itemLayout ->
-                    val (title, content) = getItem(position) as Pair<String, String>
-                    itemLayout.findViewById<TextView>(R.id.item_title).text = title
-                    itemLayout.findViewById<TextView>(R.id.item_content).text = content
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val (title, content) = getItem(position) as Pair<String, String>
+
+                return (convertView as LinearLayout?)?.apply{
+                    findViewById<TextView>(R.id.item_title).text = title
+                    findViewById<TextView>(R.id.item_content).text = content
+
+                }?: (LayoutInflater.from(parent.context!!).inflate(R.layout.item_with_explanation_spinner, null) as LinearLayout).apply{
+                    findViewById<TextView>(R.id.item_title).text = title
+                    findViewById<TextView>(R.id.item_content).text = content
                 }
             }
+
+            override fun getDropDownView(position: Int, convertView: View?,
+                                         parent: ViewGroup): View {
+                val (title, content) = getItem(position) as Pair<String, String>
+
+                return (convertView as LinearLayout?)?.apply{
+                    findViewById<TextView>(R.id.item_title).text = title
+                    findViewById<TextView>(R.id.item_content).text = content
+
+                }?: (LayoutInflater.from(parent.context!!).inflate(R.layout.item_with_explanation_spinner, null) as LinearLayout).apply{
+                    findViewById<TextView>(R.id.item_title).text = title
+                    findViewById<TextView>(R.id.item_content).text = content
+                }
+            }
+
         }
     }
 

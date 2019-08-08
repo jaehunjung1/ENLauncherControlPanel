@@ -27,7 +27,7 @@ class VisDataManager {
 
         fun getExampleSaturationPattern(key: String): NotificationEnhacementParams?{
             return when(key){
-                "default" -> {
+                DEFAULT_PATTERN -> {
                     NotificationEnhacementParams(
                             initialImportance = 0.0,
                             lifespan = 1000L * 60 * 60 * 6,

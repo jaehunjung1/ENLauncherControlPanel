@@ -23,11 +23,10 @@ class AppConfigManager {
                         WGBFilterVar.BLACK_COND to setOf("한구현")
                 )
 
-
                 keywordGroupPatterns.apply{
-                    addKeywordGroup("G1", setOf("연구실 공지", "서진욱 교수님"), 0, VisDataManager.getExampleSaturationPattern(VisDataManager.availableImportanceSaturationPatterns()[0])!!)
-                    addKeywordGroup("G2", setOf("택배", "발송"), 1, VisDataManager.getExampleSaturationPattern(VisDataManager.availableImportanceSaturationPatterns()[0])!!)
-                    addKeywordGroup("G3", setOf("광고"), 2, VisDataManager.getExampleSaturationPattern(VisDataManager.availableImportanceSaturationPatterns()[0])!!)
+                    addKeywordGroup("G1", setOf("연구실 공지", "서진욱 교수님"), 0, VisDataManager.DEFAULT_PATTERN, VisDataManager.getExampleSaturationPattern(VisDataManager.DEFAULT_PATTERN)!!)
+                    addKeywordGroup("G2", setOf("택배", "발송"), 1, VisDataManager.DEFAULT_PATTERN, VisDataManager.getExampleSaturationPattern(VisDataManager.DEFAULT_PATTERN)!!)
+                    addKeywordGroup("G3", setOf("광고"), 2, VisDataManager.DEFAULT_PATTERN, VisDataManager.getExampleSaturationPattern(VisDataManager.DEFAULT_PATTERN)!!)
                 }
 
                 haloLayoutMethodName = AppHaloLayoutMethods.availiableLayouts[0]

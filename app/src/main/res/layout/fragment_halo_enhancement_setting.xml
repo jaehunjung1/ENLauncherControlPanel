@@ -5,17 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <ExpandableListView
+        android:id="@+id/expandable_importance_pattern_mapping"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.ImportanceControlView
-            android:id="@+id/enhancement_control_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </ScrollView>
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

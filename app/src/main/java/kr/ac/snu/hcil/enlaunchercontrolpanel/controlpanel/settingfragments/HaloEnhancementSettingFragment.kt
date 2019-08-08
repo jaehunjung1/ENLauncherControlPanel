@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ExpandableListView
 import androidx.lifecycle.ViewModelProviders
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.ImportanceControlView
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.KeywordGroupExpandableListAdapter
 
 class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {
     companion object {
@@ -16,7 +18,7 @@ class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {
     }
 
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
-    private var controlView: ImportanceControlView? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,17 +28,13 @@ class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {
         } ?: throw Exception("Invalid Activity")
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        controlView?.save(outState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_halo_enhancement_setting, container, false).also{ view ->
-
-            controlView = view.findViewById<ImportanceControlView>(R.id.enhancement_control_view).apply{
-                setViewModel(appConfigViewModel)
-                load(savedInstanceState)
+            view.findViewById<ExpandableListView>(R.id.expandable_importance_pattern_mapping).apply{
+                setAdapter(
+                        KeywordGroupExpandableListAdapter(appConfigViewModel)
+                )
             }
         }
     }
