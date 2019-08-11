@@ -1,30 +1,34 @@
 package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup
 
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
-import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance
-import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportancePatterns
-import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
-import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
+import kr.ac.snu.hcil.datahalo.visconfig.*
 
 class KeywordGroupExpandableListAdapter(
         private var viewModel: AppHaloConfigViewModel
 ): BaseExpandableListAdapter() {
     companion object {
-        private const val TAG = "Expandable_Keyword_Adapter"
+        private const val TAG = "ExpandKeywordAdapter"
     }
 
-    private lateinit var orderedKeywordGroupImportancePatterns: KeywordGroupImportancePatterns
+    private lateinit var keywordGroupImportancePatterns: KeywordGroupImportancePatterns
     private lateinit var observationWindowFilter: Map<WGBFilterVar, Any>
 
     init{
         viewModel.appHaloConfigLiveData.value?.let{ config ->
-            orderedKeywordGroupImportancePatterns = config.keywordGroupPatterns
+            keywordGroupImportancePatterns = config.keywordGroupPatterns
             observationWindowFilter = config.filterObservationWindowConfig
         }
+    }
+
+    fun setAppConfig(appHaloConfig: AppHaloConfig){
+        keywordGroupImportancePatterns = appHaloConfig.keywordGroupPatterns
+        observationWindowFilter = appHaloConfig.filterObservationWindowConfig
+        notifyDataSetInvalidated()
     }
 
     override fun hasStableIds(): Boolean {
@@ -36,15 +40,61 @@ class KeywordGroupExpandableListAdapter(
     }
 
     override fun getGroupCount(): Int{
-        return orderedKeywordGroupImportancePatterns.getOrderedKeywordGroups().size
+        return (keywordGroupImportancePatterns.getOrderedKeywordGroupImportancePatternsWithRemainder().size)
     }
 
     override fun getGroupId(groupPosition: Int): Long {
-        return orderedKeywordGroupImportancePatterns.getGroupOfRank(groupPosition)!!.id
+        return if(groupPosition == groupCount - 1) keywordGroupImportancePatterns.getRemainderKeywordGroupPattern().id
+        else keywordGroupImportancePatterns.getGroupOfRank(groupPosition)!!.id
     }
 
     override fun getGroup(groupPosition: Int): KeywordGroupImportance {
-        return orderedKeywordGroupImportancePatterns.getGroupOfRank(groupPosition)!!
+        return if(groupPosition == groupCount - 1) {
+            keywordGroupImportancePatterns.getRemainderKeywordGroupPattern()
+        }
+        else {
+            Log.i(TAG, "groupPosition: $groupPosition, $groupCount")
+            keywordGroupImportancePatterns.getGroupOfRank(groupPosition)!!
+        }
+    }
+
+    private fun createGroupViewListener(groupPosition: Int, groupData: KeywordGroupImportance): KeywordGroupParentView.KeywordGroupParentInteractionListener{
+        return object: KeywordGroupParentView.KeywordGroupParentInteractionListener{
+            override fun onMappingUpdate(patternName: String) {
+                if(patternName != VisDataManager.CUSTOM_PATTERN){
+                    //Predefined Pattern으로의 변경
+                    if(groupPosition == groupCount - 1)
+                        keywordGroupImportancePatterns.setRemainderKeywordGroupEnhancementParams(patternName)
+                    else
+                        keywordGroupImportancePatterns.setEnhancementParamOfGroup(groupData.group, patternName)
+
+                    viewModel.appHaloConfigLiveData.value?.let{ config ->
+                        if(groupPosition == groupCount - 1)
+                            config.keywordGroupPatterns.setRemainderKeywordGroupEnhancementParams(patternName)
+                        else
+                            config.keywordGroupPatterns.setEnhancementParamOfGroup(groupData.group, patternName)
+                        viewModel.appHaloConfigLiveData.value = config
+                    }
+                }
+                else{
+                    //Custom Pattern으로의 변경
+                    if(groupPosition == groupCount - 1)
+                        keywordGroupImportancePatterns.setRemainderKeywordGroupEnhancementParams(groupData.enhancementParam)
+                    else
+                        keywordGroupImportancePatterns.setEnhancementParamOfGroup(groupData.group, groupData.enhancementParam)
+
+                    viewModel.appHaloConfigLiveData.value?.let{ config ->
+                        if(groupPosition == groupCount - 1)
+                            config.keywordGroupPatterns.setRemainderKeywordGroupEnhancementParams(groupData.enhancementParam)
+                        else
+                            config.keywordGroupPatterns.setEnhancementParamOfGroup(groupData.group, groupData.enhancementParam)
+                        viewModel.appHaloConfigLiveData.value = config
+
+                    }
+                }
+                notifyDataSetChanged()
+            }
+        }
     }
 
     override fun getGroupView(groupPosition: Int, isExpanded: Boolean, convertView: View?, parent: ViewGroup?): View {
@@ -52,27 +102,11 @@ class KeywordGroupExpandableListAdapter(
         val context = parent!!.context
 
         return (convertView as KeywordGroupParentView?)?.apply{
-            setProperties(groupData) //이거 뭔가 이상
+            setProperties(groupData)
+            notificationEnhancementParamChangedListener = createGroupViewListener(groupPosition, groupData)
         } ?: KeywordGroupParentView(context).apply{
             setProperties(groupData)
-            notificationEnhacementParamChangedListener = object: KeywordGroupParentView.KeywordGroupParentInteractionListener{
-                override fun onMappingUpdate(patternName: String) {
-                    if(patternName != VisDataManager.CUSTOM_PATTERN){
-                        orderedKeywordGroupImportancePatterns.setEnhancementParamOfGroup(groupData.group, patternName)
-                        viewModel.appHaloConfigLiveData.value?.let{ config ->
-                            config.keywordGroupPatterns.setEnhancementParamOfGroup(groupData.group, patternName)
-                            viewModel.appHaloConfigLiveData.value = config
-                        }
-                    }
-                    else{
-                        orderedKeywordGroupImportancePatterns.setEnhancementParamOfGroup(groupData.group, groupData.enhancementParam)
-                        viewModel.appHaloConfigLiveData.value?.let{ config ->
-                            config.keywordGroupPatterns.setEnhancementParamOfGroup(groupData.group, groupData.enhancementParam)
-                            viewModel.appHaloConfigLiveData.value = config
-                        }
-                    }
-                }
-            }
+            notificationEnhancementParamChangedListener = createGroupViewListener(groupPosition, groupData)
         }
     }
 
@@ -88,23 +122,37 @@ class KeywordGroupExpandableListAdapter(
         return getGroup(groupPosition)?.let{ Pair(it.keywords, it.enhancementParam) }
     }
 
+    private fun createChildViewListener(groupPosition: Int, groupData:KeywordGroupImportance): KeywordGroupChildView.KeywordGroupChildInteractionListener {
+        return object: KeywordGroupChildView.KeywordGroupChildInteractionListener{
+            override fun onEnhancementParamUpdated(pattern: NotificationEnhacementParams) {
+                if(groupPosition == groupCount - 1)
+                    keywordGroupImportancePatterns.setRemainderKeywordGroupEnhancementParams(pattern)
+                else
+                    keywordGroupImportancePatterns.setEnhancementParamOfGroup(groupData.group, pattern)
+                viewModel.appHaloConfigLiveData.value?.let{ config ->
+
+                    if(groupPosition == groupCount - 1)
+                        config.keywordGroupPatterns.setRemainderKeywordGroupEnhancementParams(pattern)
+                    else
+                        config.keywordGroupPatterns.setEnhancementParamOfGroup(groupData.group, pattern)
+                    viewModel.appHaloConfigLiveData.value = config
+                    notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val groupData = getGroup(groupPosition)
         val context = parent!!.context
 
         return (convertView as KeywordGroupChildView?)?.apply{
-            setProperties(observationWindowFilter, groupData) //이거 뭔가 이상
+           setProperties(observationWindowFilter, groupData)
+            keywordGroupChildInteractionListener = createChildViewListener(groupPosition, groupData)
+
         } ?: KeywordGroupChildView(context).apply{
             setProperties(observationWindowFilter, groupData)
-            keywordGroupChildInteractionListener = object: KeywordGroupChildView.KeywordGroupChildInteractionListener{
-                override fun onEnhancementParamUpdated(pattern: NotificationEnhacementParams) {
-                    orderedKeywordGroupImportancePatterns.setEnhancementParamOfGroup(groupData.group, pattern)
-                    viewModel.appHaloConfigLiveData.value?.let{ config ->
-                        config.keywordGroupPatterns.setEnhancementParamOfGroup(groupData.group, pattern)
-                        viewModel.appHaloConfigLiveData.value = config
-                    }
-                }
-            }
+            keywordGroupChildInteractionListener = createChildViewListener(groupPosition, groupData)
         }
 
     }

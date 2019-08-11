@@ -19,8 +19,9 @@ class KeywordGroupParentView: LinearLayout {
         fun onMappingUpdate(patternName: String)
     }
 
-    var notificationEnhacementParamChangedListener: KeywordGroupParentInteractionListener? = null
+    var notificationEnhancementParamChangedListener: KeywordGroupParentInteractionListener? = null
     private var keywordGroup: KeywordGroupImportance? = null
+    private var invalidateFlag: Boolean = true
 
     constructor(context: Context): super(context){
         init(null, 0)
@@ -36,8 +37,10 @@ class KeywordGroupParentView: LinearLayout {
     fun setProperties(keywordGroupImportance: KeywordGroupImportance){
         keywordGroup = keywordGroupImportance
         //set UIs
+
         findViewById<TextView>(R.id.keyword_group_name).text = keywordGroupImportance.group
         findViewById<Spinner>(R.id.enhancement_param_spinner).let{ spinner ->
+            invalidateFlag = false
             when(keywordGroupImportance.type){
                 VisDataManager.CUSTOM_PATTERN -> {
                     spinner.setSelection(
@@ -50,7 +53,9 @@ class KeywordGroupParentView: LinearLayout {
                     )
                 }
             }
+            invalidateFlag = true
         }
+
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int){
@@ -74,13 +79,14 @@ class KeywordGroupParentView: LinearLayout {
             spinner.adapter = adapter
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                    val selectedPattern = (parent.getItemAtPosition(position) as Pair<String, String>).first
-                    if(selectedPattern != "CUSTOM")
-                        notificationEnhacementParamChangedListener?.onMappingUpdate(selectedPattern)
-                    else
-                        notificationEnhacementParamChangedListener?.onMappingUpdate(VisDataManager.CUSTOM_PATTERN)
+                    if(invalidateFlag){
+                        val selectedPattern = (parent.getItemAtPosition(position) as Pair<String, String>).first
+                        if(selectedPattern != "CUSTOM")
+                            notificationEnhancementParamChangedListener?.onMappingUpdate(selectedPattern)
+                        else
+                            notificationEnhancementParamChangedListener?.onMappingUpdate(VisDataManager.CUSTOM_PATTERN)
+                    }
                 }
-
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }

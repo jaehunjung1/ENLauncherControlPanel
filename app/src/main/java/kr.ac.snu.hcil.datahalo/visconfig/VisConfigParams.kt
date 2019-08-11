@@ -184,9 +184,17 @@ data class KeywordGroupImportance(
 }
 
 class KeywordGroupImportancePatterns(
-       keywordGroupPatterns: Map<String, Pair<Set<String>, String>>
+       keywordGroupPatterns: Map<String, Pair<Set<String>, String>>,
+       elseKeywordGroupPattern: String = VisDataManager.DEFAULT_PATTERN
 ){
     private val keywordGroupPatterns: MutableList<KeywordGroupImportance> = mutableListOf()
+    private var elsePattern: KeywordGroupImportance = KeywordGroupImportance(
+            group = "Remainder",
+            rank = Int.MAX_VALUE,
+            keywords = mutableSetOf(),
+            type = elseKeywordGroupPattern,
+            enhancementParam = VisDataManager.getExampleSaturationPattern(elseKeywordGroupPattern)!!
+    )
 
     init{
         keywordGroupPatterns.toList().forEachIndexed { index, pair ->
@@ -203,7 +211,21 @@ class KeywordGroupImportancePatterns(
     }
 
     fun getOrderedKeywordGroupImportancePatterns(): List<KeywordGroupImportance> = keywordGroupPatterns
+    fun getOrderedKeywordGroupImportancePatternsWithRemainder(): List<KeywordGroupImportance> = List(keywordGroupPatterns.size + 1){
+        if(it == keywordGroupPatterns.size) elsePattern else keywordGroupPatterns[it]
+    }
+
     fun getOrderedKeywordGroups(): List<String> = keywordGroupPatterns.map{it.group}
+
+    fun getRemainderKeywordGroupPattern(): KeywordGroupImportance = elsePattern
+    fun setRemainderKeywordGroupEnhancementParams(param: NotificationEnhacementParams) {
+        elsePattern.type = VisDataManager.CUSTOM_PATTERN
+        elsePattern.enhancementParam = param
+    }
+    fun setRemainderKeywordGroupEnhancementParams(type: String) {
+        elsePattern.type = type
+        elsePattern.enhancementParam = VisDataManager.getExampleSaturationPattern(type)!!
+    }
 
     fun addKeywordGroup(
             group: String,

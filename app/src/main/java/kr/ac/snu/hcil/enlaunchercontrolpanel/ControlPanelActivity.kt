@@ -1,7 +1,6 @@
 package kr.ac.snu.hcil.enlaunchercontrolpanel
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -21,11 +20,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.navigation.NavigationView
 import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.DialogOnAnyDeniedMultiplePermissionsListener
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.theartofdev.edmodo.cropper.CropImage
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.settingfragments.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.utilities.Utilities
@@ -102,14 +97,12 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             viewPagerAdapter?.getItem(view_pager.currentItem)?.onActivityResult(requestCode, resultCode, data )
         }
         else{
             super.onActivityResult(requestCode, resultCode, data)
         }
-
     }
 
     private fun setViewPager(adapter: ScreenSlidPagerAdapter, itemId: Int){
@@ -134,7 +127,6 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         }
         view_pager.adapter = adapter
         tabs.setupWithViewPager(view_pager, true)
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -158,7 +150,11 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             id = View.generateViewId()
         }
 
-        preview_layout.addView(previewHalo, FrameLayout.LayoutParams(Utilities.dpToPx(this, 200), Utilities.dpToPx(this, 200), Gravity.CENTER))
+        preview_layout.addView(
+                previewHalo,
+                FrameLayout.LayoutParams(Utilities.dpToPx(this, 200), Utilities.dpToPx(this, 200), Gravity.CENTER)
+        )
+
         preview_layout.addView(
                 ImageView(this).apply{
                     id = View.generateViewId()

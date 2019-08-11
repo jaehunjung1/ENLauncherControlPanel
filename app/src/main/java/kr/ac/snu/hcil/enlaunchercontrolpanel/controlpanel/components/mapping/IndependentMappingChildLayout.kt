@@ -139,11 +139,9 @@ class IndependentMappingChildLayout : LinearLayout {
 
         val independentVisParams = appConfig.independentVisualParameters[0]
         val independentDataParams = appConfig.independentDataParameters[0]
-        val orderedKeywordGroups = appConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatterns().map{
-            it.group to it.keywords.toMutableList()
-        }.toMutableList().apply{
-            add(Pair("DEFAULT", mutableListOf()))
-        }
+        val orderedKeywordGroups = appConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatternsWithRemainder().map{
+            it.group to it.keywords.toList()
+        }.toList()
 
         //notiData Contents 가져오고
         notiDataPropContents.clear()
@@ -223,7 +221,7 @@ class IndependentMappingChildLayout : LinearLayout {
 
         when (notiDataProp) {
             NotiProperty.CONTENT -> {
-                setNewKeywordFrameView(notiDataPropContents as MutableList<Pair<String, MutableList<String>>>, tableLayout, context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
+                setNewKeywordFrameView(notiDataPropContents as List<Pair<String, List<String>>>, tableLayout, context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
             }
             NotiProperty.LIFE_STAGE -> {
                 val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{independentDataParams.givenLifeList.indexOf(it)}
@@ -291,20 +289,13 @@ class IndependentMappingChildLayout : LinearLayout {
     private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
         (inflater.inflate(R.layout.chip_view_layout, null) as Chip).let{ chipView ->
             chipView.chipText = keyword
-            chipView.setOnCloseClickListener {
-                chipView.visibility = View.GONE
-                (chipView.parent as ViewGroup).removeView(chipView)
-                (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>)
-                        .find{keywordGroups -> keywordGroups.first == (flowLayout.tag as String) }
-                        ?.let{ keywordGroup -> keywordGroup.second.remove(keyword) }
-                updateAppConfig()
-            }
+            chipView.isClosable = false
             flowLayout.addView(chipView)
         }
     }
 
     private fun setNewKeywordFrameView(
-            notiDataPropContents: MutableList<Pair<String, MutableList<String>>>,
+            notiDataPropContents: List<Pair<String, List<String>>>,
             notiPropLayout: TableLayout,
             inflater: LayoutInflater
     ){
@@ -319,24 +310,6 @@ class IndependentMappingChildLayout : LinearLayout {
                             keywordGroup.second.forEach{keyword ->  addKeywordToFlowLayout(this, keyword, inflater)}
                         }
 
-                        keywordFrame.findViewById<ImageButton>(R.id.mapping_keyword_add_button).let{ addButton ->
-                            addButton.setOnClickListener {
-                                val mDialog = AlertDialog.Builder(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar).let { mBuilder ->
-                                    val editText = EditText(context)
-                                    mBuilder.setView(editText)
-                                    mBuilder.setPositiveButton("OK") { dialogInterface, i ->
-                                        val newKeyword = editText.text.toString()
-                                        if(newKeyword.isNotEmpty() && newKeyword !in keywordGroup.second){
-                                            keywordGroup.second.add(newKeyword)
-                                            addKeywordToFlowLayout(flowLayout, newKeyword, inflater)
-                                        }
-                                    }
-                                    mBuilder.setNegativeButton("Cancel") { _, _ -> }
-                                    mBuilder.create()
-                                }
-                                mDialog.show()
-                            }
-                        }
                         frame.addView(
                                 keywordFrame,
                                 FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply{

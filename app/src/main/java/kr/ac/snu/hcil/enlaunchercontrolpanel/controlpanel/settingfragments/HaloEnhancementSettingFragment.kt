@@ -5,10 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import kotlinx.android.synthetic.main.fragment_halo_enhancement_setting.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.ImportanceControlView
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.KeywordGroupExpandableListAdapter
 
 class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {
@@ -26,6 +29,13 @@ class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {
         appConfigViewModel = activity?.run{
             ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
+
+
+        val appConfigObserver = Observer<AppHaloConfig> { newConfig ->
+            (expandable_importance_pattern_mapping.expandableListAdapter as KeywordGroupExpandableListAdapter).setAppConfig(newConfig)
+        }
+        appConfigViewModel.appHaloConfigLiveData.observe(this, appConfigObserver)
+
     }
 
 

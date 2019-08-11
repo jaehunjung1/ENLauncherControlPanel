@@ -11,6 +11,7 @@ import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StableIdKeyProvider
 import androidx.recyclerview.selection.StorageStrategy
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -37,21 +38,40 @@ class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment(), OnStart
             ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
+        /*
+        * val appConfigObserver = Observer<AppHaloConfig>{ newConfig ->
+            Log.d(TAG, "Model Updated")
+            newConfig?.let{
+                previewHalo.setVisConfig(it)
+                previewHalo.setAppHaloData(EnhancedAppNotifications(AppHaloConfigViewModel.SAMPLE_PACKAGE_NAME).also{ notifications ->
+                    notifications.notificationData = exampleNotifications.toMutableList()
+                })
+                preview_layout.invalidate()
+            }
+        }
+        appConfigViewModel.appHaloConfigLiveData.observe(this, appConfigObserver)
+        * */
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return (inflater.inflate(R.layout.fragment_halo_keyword_group_setting, container, false) as LinearLayout).also{ view ->
-            recyclerViewAdapter = KeywordGroupRecyclerAdapter(appConfigViewModel)
+            recyclerViewAdapter = KeywordGroupRecyclerAdapter(appConfigViewModel).also{
+                it.startDragListener = this
+            }
             recyclerView = view.findViewById<RecyclerView>(R.id.keyword_group_recycler_view).apply{
                 adapter = recyclerViewAdapter
                 layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+                addItemDecoration(
+                        DividerItemDecoration(this.context, RecyclerView.VERTICAL)
+                )
             }
+
 
             keywordGroupItemTouchHelper = ItemTouchHelper(KeywordGroupItemTouchHelperCallback(recyclerViewAdapter))
             keywordGroupItemTouchHelper.attachToRecyclerView(recyclerView)
 
-
-
+            /*
             tracker = SelectionTracker.Builder<Long>(
                     "keywordGroupSelection",
                     recyclerView,
@@ -65,8 +85,7 @@ class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment(), OnStart
             tracker?.addObserver(object: SelectionTracker.SelectionObserver<Long>(){})
 
             recyclerViewAdapter.tracker = tracker
-
-
+            */
         }
     }
 

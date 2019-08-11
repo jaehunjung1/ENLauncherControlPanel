@@ -9,14 +9,13 @@ import kotlin.math.absoluteValue
 
 
 interface KeywordGroupItemTouchHelperAdapter{
-
     //RecyclerView.Adapter#notifyItemMoved(int, int)
     fun onItemMove(from: Int, to: Int): Boolean
     //RecyclerView.Adapter#notifyItemRemoved(int)
     fun onItemDismiss(pos: Int)
 }
 
-interface KeywordGroupItemTouchHeleprViewHolder{
+interface KeywordGroupItemTouchHelperViewHolder{
     fun onItemSelected()
     fun onItemClear()
 }
@@ -81,9 +80,9 @@ class KeywordGroupItemTouchHelperCallback(private val adapter: KeywordGroupItemT
     override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
         // We only want the active item to change
         if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
-            if (viewHolder is KeywordGroupItemTouchHeleprViewHolder) {
+            if (viewHolder is KeywordGroupItemTouchHelperViewHolder) {
                 // Let the view holder know that this item is being moved or dragged
-                val itemViewHolder = viewHolder as KeywordGroupItemTouchHeleprViewHolder?
+                val itemViewHolder = viewHolder as KeywordGroupItemTouchHelperViewHolder?
                 itemViewHolder!!.onItemSelected()
             }
         }
@@ -96,9 +95,9 @@ class KeywordGroupItemTouchHelperCallback(private val adapter: KeywordGroupItemT
 
         viewHolder.itemView.alpha = 1.0f
 
-        if (viewHolder is KeywordGroupItemTouchHeleprViewHolder) {
+        if (viewHolder is KeywordGroupItemTouchHelperViewHolder) {
             // Tell the view holder it's time to restore the idle state
-            val itemViewHolder = viewHolder as KeywordGroupItemTouchHeleprViewHolder
+            val itemViewHolder = viewHolder as KeywordGroupItemTouchHelperViewHolder
             itemViewHolder.onItemClear()
         }
     }
