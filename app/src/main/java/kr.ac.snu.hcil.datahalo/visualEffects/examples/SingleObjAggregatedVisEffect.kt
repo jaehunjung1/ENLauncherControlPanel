@@ -10,4 +10,6 @@ class SingleObjAggregatedVisEffect(appHaloConfig: AppHaloConfig)
         effectParameters = appHaloConfig.aggregatedVisEffectVisParams,
         objVisualParameters = appHaloConfig.aggregatedVisualParameters,
         objDataParameters = appHaloConfig.aggregatedDataParameters,
-        objAnimationParameters = appHaloConfig.aggregatedAnimationParameters)
+        objAnimationParameters = appHaloConfig.aggregatedAnimationParameters,
+        keywordGroupImportancePatterns = appHaloConfig.keywordGroupPatterns
+)

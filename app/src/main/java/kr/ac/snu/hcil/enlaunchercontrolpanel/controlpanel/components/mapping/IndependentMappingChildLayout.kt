@@ -75,6 +75,7 @@ class IndependentMappingChildLayout : LinearLayout {
         objIndex = visObjIndex
         viewModel = appConfigViewModel
 
+        this.removeAllViews()
 
         appConfigViewModel?.appHaloConfigLiveData?.value?.let{ appHaloConfig ->
             if((notiVisVar == NotiVisVariable.SIZE || notiVisVar == NotiVisVariable.POSITION) &&
@@ -94,30 +95,81 @@ class IndependentMappingChildLayout : LinearLayout {
     private fun updateAppConfig(){
         viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
 
+            val listSize = when(notiDataProp){
+                NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().size
+                NotiProperty.IMPORTANCE -> currentConfig.independentDataParameters[objIndex].binNums
+                NotiProperty.CONTENT -> currentConfig.keywordGroupPatterns.getOrderedKeywordGroups().size + 1
+                else -> 5
+            }
+
             when(notiVisVar){
                 NotiVisVariable.MOTION -> {
-                    currentConfig.independentVisualParameters[objIndex].selectedMotionList = (visVarContents as MutableList<AnimatorSet>).toList()
+                    val currentList = currentConfig.independentVisualParameters[objIndex].selectedMotionList
+
+                    currentConfig.independentVisualParameters[objIndex].selectedMotionList = List(listSize){index ->
+                        if(index >= visVarContents.size)
+                            currentList[index]
+                        else
+                            (visVarContents as MutableList<AnimatorSet>)[index]
+                    }
                 }
                 NotiVisVariable.COLOR -> {
-                    currentConfig.independentVisualParameters[objIndex].selectedColorList = (visVarContents as MutableList<Int>).toList()
+                    val currentList = currentConfig.independentVisualParameters[objIndex].selectedColorList
+
+                    currentConfig.independentVisualParameters[objIndex].selectedColorList = List(listSize){index ->
+                        if(index >= visVarContents.size)
+                            currentList[index]
+                        else
+                            (visVarContents as MutableList<Int>)[index]
+                    }
                 }
                 NotiVisVariable.SHAPE -> {
-                    currentConfig.independentVisualParameters[objIndex].selectedShapeList = (visVarContents as MutableList<VisObjectShape>).toList()
+                    val currentList = currentConfig.independentVisualParameters[objIndex].selectedShapeList
+
+                    currentConfig.independentVisualParameters[objIndex].selectedShapeList = List(listSize){index ->
+                        if(index >= visVarContents.size)
+                            currentList[index]
+                        else
+                            (visVarContents as MutableList<VisObjectShape>)[index]
+                    }
                 }
                 NotiVisVariable.SIZE -> {
-                    currentConfig.independentVisualParameters[objIndex].selectedSizeRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
+                    val currentList = currentConfig.independentVisualParameters[objIndex].getSelectedSizeRangeList(
+                            listSize
+                    )
+
+                    currentConfig.independentVisualParameters[objIndex].setSelectedSizeRangeList(
+                            List(listSize){index ->
+                                if(index >= visVarContents.size)
+                                    currentList[index]
+                                else
+                                    (visVarContents as MutableList<Pair<Double, Double>>)[index]
+                            }
+                    )
                 }
                 NotiVisVariable.POSITION -> {
-                    currentConfig.independentVisualParameters[objIndex].selectedPosRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
+                    val currentList = currentConfig.independentVisualParameters[objIndex].getSelectedPosRangeList(
+                            listSize
+                    )
+
+                    currentConfig.independentVisualParameters[objIndex].setSelectedPosRangeList(
+                            List(listSize){index ->
+                                if(index >= visVarContents.size)
+                                    currentList[index]
+                                else
+                                    (visVarContents as MutableList<Pair<Double, Double>>)[index]
+                            }
+                    )
                 }
             }
 
             when(notiDataProp){
                 NotiProperty.LIFE_STAGE -> {
-                    currentConfig.independentDataParameters[objIndex].selectedLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
+                    //currentConfig.independentDataParameters[objIndex].selectedLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
                 }
                 NotiProperty.IMPORTANCE -> {
-                    currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
+                    //currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
+                    currentConfig.independentDataParameters[objIndex].binNums = findViewById<NumberPicker>(R.id.bin_number_picker).value
                 }
                 NotiProperty.CONTENT -> {
                     //currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
@@ -130,9 +182,7 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setNominalMapping(appConfig: AppHaloConfig){
-        View.inflate(context, R.layout.item_child_new_nominal_mapping, this)
-
+    private fun setNominalTableMapping(appConfig: AppHaloConfig){
         val tableLayout = findViewById<TableLayout>(R.id.nominal_mapping_table).apply{
             removeAllViews()
         }
@@ -221,18 +271,19 @@ class IndependentMappingChildLayout : LinearLayout {
 
         when (notiDataProp) {
             NotiProperty.CONTENT -> {
-                setNewKeywordFrameView(notiDataPropContents as List<Pair<String, List<String>>>, tableLayout, context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
+                val contents = (notiDataPropContents as List<Pair<String, List<String>>>).map{it.first}
+                setNominalNotiPropViews(contents, tableLayout, LayoutInflater.from(context))
             }
             NotiProperty.LIFE_STAGE -> {
-                val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{independentDataParams.givenLifeList.indexOf(it)}
-
-                setNewSpinnerView(givenLifeStageIndices, independentDataParams.givenLifeList, tableLayout)
+                //val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{independentDataParams.givenLifeList.indexOf(it)}
+                //setNewSpinnerView(givenLifeStageIndices, independentDataParams.givenLifeList, tableLayout)
+                setNominalNotiPropViews(independentDataParams.givenLifeList, tableLayout, LayoutInflater.from(context))
             }
             NotiProperty.IMPORTANCE -> {
-                val givenImportanceList = MapFunctionUtilities.bin(independentDataParams.givenImportanceRange, 5)
-                val givenImportanceIndices = (notiDataPropContents as MutableList<Pair<Double, Double>>).map{givenImportanceList.indexOf(it)}
-
-                setNewSpinnerView(givenImportanceIndices, givenImportanceList, tableLayout)
+                val givenImportanceList = MapFunctionUtilities.bin(independentDataParams.givenImportanceRange, independentDataParams.binNums)
+                //val givenImportanceIndices = (notiDataPropContents as MutableList<Pair<Double, Double>>).map{givenImportanceList.indexOf(it)}
+                //setNewSpinnerView(givenImportanceIndices, givenImportanceList, tableLayout)
+                setNominalNotiPropViews(givenImportanceList, tableLayout, LayoutInflater.from(context))
             }
             null -> { }
         }
@@ -283,7 +334,33 @@ class IndependentMappingChildLayout : LinearLayout {
                     }
             )
         }
+    }
 
+    private fun setNominalMapping(appConfig: AppHaloConfig){
+        View.inflate(context, R.layout.item_child_new_nominal_mapping, this)
+
+        findViewById<LinearLayout>(R.id.bin_layout).let{binLayout ->
+            binLayout.findViewById<NumberPicker>(R.id.bin_number_picker).apply{
+                when(notiDataProp){
+                    NotiProperty.IMPORTANCE -> {
+                        minValue = 2
+                        maxValue = 5
+                        value = appConfig.independentDataParameters[objIndex].binNums
+                        setOnValueChangedListener { _, oldVal, newVal ->
+                            if(oldVal != newVal){
+                                //table layout을 다시 그려줘야 될 것 같음
+                                updateAppConfig()
+                                viewModel?.appHaloConfigLiveData?.value?.let{
+                                    setNominalTableMapping(it)
+                                }
+                            }
+                        }
+                    }
+                    else ->{binLayout.visibility = View.GONE}
+                }
+            }
+        }
+        setNominalTableMapping(appConfig)
     }
 
     private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
@@ -294,21 +371,31 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setNewKeywordFrameView(
-            notiDataPropContents: List<Pair<String, List<String>>>,
-            notiPropLayout: TableLayout,
-            inflater: LayoutInflater
-    ){
-        notiDataPropContents.forEachIndexed { index, keywordGroup ->
+    private fun setNominalNotiPropViews(givenPropContents: List<Any>, notiPropLayout: TableLayout, inflater: LayoutInflater){
+        val givenPropStringContents: List<String> =
+                when(notiDataProp){
+                    NotiProperty.IMPORTANCE -> {givenPropContents.map{
+                        val propContent = it as Pair<Double, Double>
+                        "${"%.1f".format(propContent.first)}-${"%.1f".format(propContent.second)}"}
+                    }
+                    NotiProperty.LIFE_STAGE -> {givenPropContents.map{
+                        val propContent = it as EnhancedNotificationLife
+                        propContent.name }
+                    }
+                    NotiProperty.CONTENT -> {
+                        givenPropContents as List<String>
+                    }
+                    else -> {
+                        emptyList()
+                    }
+                }
+        givenPropStringContents.forEachIndexed{ index, strContent ->
             val tr = notiPropLayout.getChildAt(index) as TableRow
             tr.addView(
                     FrameLayout(context).also { frame ->
-                        val keywordFrame = inflater.inflate(R.layout.layout_keyword_mapping, null, false) as LinearLayout
+                        val keywordFrame = inflater.inflate(R.layout.layout_new_keyword_mapping, null, false) as LinearLayout
 
-                        val flowLayout = keywordFrame.findViewById<FlowLayout>(R.id.mapping_keyword_flowLayout).apply{
-                            tag = keywordGroup.first
-                            keywordGroup.second.forEach{keyword ->  addKeywordToFlowLayout(this, keyword, inflater)}
-                        }
+                        keywordFrame.findViewById<TextView>(R.id.group_name_text).text = strContent
 
                         frame.addView(
                                 keywordFrame,
@@ -454,7 +541,6 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     private fun setRangeMapping(appConfig: AppHaloConfig){
-
 
         View.inflate(context, R.layout.item_child_new_range_mapping, this)
 

@@ -216,9 +216,7 @@ abstract class AbstractIndependentVisObject(
     }
 
     final override fun conversionForBoundVisVar(boundVisVar: NotiVisVariable, notiProp: NotiProperty): (Any) -> Any?{
-        val keywordGroups = getImportanceEnhancementPatterns().getOrderedKeywordGroups().toMutableList().apply{
-            add("DEFAULT")
-        }.toList()
+        val keywordGroups = getImportanceEnhancementPatterns().getOrderedKeywordGroupImportancePatternsWithRemainder().map{it.group}
         val dataParams = getDataParams()
         val visualParams = getVisParams()
 
@@ -230,7 +228,7 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createBinnedNumericRangeMapFunc(dataParams.selectedImportanceRangeList, motions)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(motions.size != dataParams.selectedLifeList.size)
+                        if(motions.size < dataParams.selectedLifeList.size)
                             throw exceptionVisVariable(boundVisVar)
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, motions)
                     }
@@ -295,7 +293,7 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, colors)
                     }
                     NotiProperty.CONTENT -> {
-                        if(colors.size < dataParams.keywordGroups.size)
+                        if(colors.size < keywordGroups.size)
                             throw exceptionVisVariable(boundVisVar)
                         return MapFunctionUtilities.createMapFunc(keywordGroups, colors)
                     }
@@ -460,7 +458,7 @@ abstract class AbstractIndependentVisObject(
                 1.0f,
                 1.0f
         ).also{
-            it.level = Math.round(10000 * size).toInt()
+            it.level = (10000 * size).roundToInt()
         }
 
         return Pair(shapeDrawable, motion.also{it.setTarget(resultDrawable)})

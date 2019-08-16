@@ -91,7 +91,6 @@ class IndependentMappingParentLayout : LinearLayout {
                 }
                 override fun onNothingSelected(adapterView: AdapterView<*>) {}
             }
-            mappingChangedListener = null
         }
     }
 
@@ -110,25 +109,8 @@ class IndependentMappingParentLayout : LinearLayout {
         }
     }
 
-    private fun getArrayAdapter(stringList: List<String>): ArrayAdapter<String> {
-        return object : ArrayAdapter<String>(context, R.layout.item_spinner, stringList) {
-            override fun isEnabled(position: Int): Boolean {
-                return true
-            }
-
-            override fun getDropDownView(position: Int, convertView: View?,
-                                         parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val tv = view as TextView
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY)
-                } else {
-                    tv.setTextColor(Color.BLACK)
-                }
-                return view
-            }
-        }
+    private fun getArrayAdapter(stringList: List<String>): AccessibilityControllableStringAdapter{
+        return AccessibilityControllableStringAdapter(context, stringList)
     }
 
 

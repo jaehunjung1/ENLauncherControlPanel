@@ -21,7 +21,6 @@ import kotlin.math.roundToLong
 data class IndependentVisObjectVisParams(
         var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedPosRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedPosRange, 5),
         var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape())),
         var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
@@ -30,21 +29,41 @@ data class IndependentVisObjectVisParams(
         var selectedColorList: List<Int> = listOf(),
         var selectedSize: Double = 1.0,
         var selectedSizeRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedSizeRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedSizeRange, 5),
         var additional: Map<String, Any> = emptyMap()
-)
+){
+    private var _selectedPosRangeList: MutableList<Pair<Double, Double>> = mutableListOf()
+    private var _selectedSizeRangeList: MutableList<Pair<Double, Double>> = mutableListOf()
+
+    fun getSelectedPosRangeList(binNum: Int): List<Pair<Double, Double>> {
+        return if(binNum != _selectedPosRangeList.size){ MapFunctionUtilities.bin(selectedPosRange, binNum)
+        } else{ _selectedPosRangeList }
+    }
+
+    fun setSelectedPosRangeList(rangeList: List<Pair<Double, Double>>){
+        _selectedPosRangeList.clear()
+        _selectedPosRangeList.addAll(rangeList)
+    }
+
+    fun getSelectedSizeRangeList(binNum: Int): List<Pair<Double, Double>>{
+        return if(binNum != _selectedSizeRangeList.size){ MapFunctionUtilities.bin(selectedSizeRange, binNum)
+        } else{ _selectedSizeRangeList }
+    }
+
+    fun setSelectedSizeRangeList(rangeList: List<Pair<Double, Double>>){
+        _selectedSizeRangeList.clear()
+        _selectedSizeRangeList.addAll(rangeList)
+    }
+}
 
 data class IndependentVisObjectDataParams(
-        val binNums: Int = 5,
+        var binNums: Int = 5,
         var selectedImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedImportanceRangeList: List<Pair<Double, Double>> =  MapFunctionUtilities.bin(selectedImportanceRange, binNums),
         var selectedLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING),
-        var keywordGroupMap: Map<String, MutableList<String>> = emptyMap(),
         var tSaturation: Long = -1L, //3hrs
         var additional: Map<String, Any> = emptyMap()
 ){
-    val keywordGroups: List<String>
-        get() = keywordGroupMap.keys.toList()
+    val selectedImportanceRangeList: List<Pair<Double, Double>>
+        get() = MapFunctionUtilities.bin(selectedImportanceRange, binNums)
     val givenImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0)
     val givenLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING)
 }
@@ -81,7 +100,6 @@ data class IndependentVisEffectVisParams(
 data class AggregatedVisObjectVisParams(
         var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedPosRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedPosRange, 5),
         var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
         var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
@@ -90,14 +108,36 @@ data class AggregatedVisObjectVisParams(
         var selectedColorList: List<Int> = listOf(),
         var selectedSize: Double = 1.0,
         var selectedSizeRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedSizeRangeList: List<Pair<Double, Double>> = MapFunctionUtilities.bin(selectedSizeRange, 5),
         var additional: Map<String, Any> = emptyMap()
-)
+){
+    private var _selectedPosRangeList: MutableList<Pair<Double, Double>> = mutableListOf()
+    private var _selectedSizeRangeList: MutableList<Pair<Double, Double>> = mutableListOf()
+
+    fun getSelectedPosRangeList(binNum: Int): List<Pair<Double, Double>> {
+        return if(binNum != _selectedPosRangeList.size){ MapFunctionUtilities.bin(selectedPosRange, binNum)
+        } else{ _selectedPosRangeList }
+    }
+
+    fun setSelectedPosRangeList(rangeList: List<Pair<Double, Double>>){
+        _selectedPosRangeList.clear()
+        _selectedPosRangeList.addAll(rangeList)
+    }
+
+    fun getSelectedSizeRangeList(binNum: Int): List<Pair<Double, Double>>{
+        return if(binNum != _selectedSizeRangeList.size){ MapFunctionUtilities.bin(selectedSizeRange, binNum)
+        } else{ _selectedSizeRangeList }
+    }
+
+    fun setSelectedSizeRangeList(rangeList: List<Pair<Double, Double>>) {
+        _selectedSizeRangeList.clear()
+        _selectedSizeRangeList.addAll(rangeList)
+    }
+}
+
 data class AggregatedVisObjectDataParams(
-        val binNums: Int = 5,
+        var binNums: Int = 5,
         var countThreshold: Int = 10,
         var selectedImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedImportanceRangeList: List<Pair<Double, Double>> =  MapFunctionUtilities.bin(selectedImportanceRange, binNums),
         var selectedLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING),
         var keywordGroupMap: Map<String, MutableList<String>> = emptyMap(),
         var tSaturation: Long = -1L, //3hrs
@@ -106,6 +146,8 @@ data class AggregatedVisObjectDataParams(
     val keywordGroups: List<String>
         get() = keywordGroupMap.keys.toList()
     val givenImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0)
+    val selectedImportanceRangeList: List<Pair<Double, Double>>
+        get() = MapFunctionUtilities.bin(selectedImportanceRange, binNums)
     val givenLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING)
 
 }
@@ -187,9 +229,13 @@ class KeywordGroupImportancePatterns(
        keywordGroupPatterns: Map<String, Pair<Set<String>, String>>,
        elseKeywordGroupPattern: String = VisDataManager.DEFAULT_PATTERN
 ){
+    companion object{
+        const val ELSE_KEYWORD_GROUP = "Remainder"
+    }
+
     private val keywordGroupPatterns: MutableList<KeywordGroupImportance> = mutableListOf()
     private var elsePattern: KeywordGroupImportance = KeywordGroupImportance(
-            group = "Remainder",
+            group = ELSE_KEYWORD_GROUP,
             rank = Int.MAX_VALUE,
             keywords = mutableSetOf(),
             type = elseKeywordGroupPattern,
@@ -312,14 +358,14 @@ class KeywordGroupImportancePatterns(
         }
     }
 
-    fun assignGroupToNotification(title: String, content: String): String?{
+    fun assignGroupToNotification(title: String, content: String): String{
         //rank가 위일 수록 먼저 할당될 가능성이 있음
         keywordGroupPatterns.forEach{ item ->
             item.keywords.forEach{ keyword ->
                 if(title.contains(keyword) || content.contains(keyword)){return item.group}
             }
         }
-        return null
+        return ELSE_KEYWORD_GROUP
     }
 }
 

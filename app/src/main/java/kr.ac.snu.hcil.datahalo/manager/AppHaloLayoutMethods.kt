@@ -76,21 +76,22 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
 
         aggregatedVisEffect?.let{ aggrVisEffect ->
             val groupVisObjs = aggrVisEffect.getGroupBoundVisObjects()
-            val (wScale, hScale) = groupVisObjs[0].getPosition()
-            val groupVisLPs = List<ConstraintLayout.LayoutParams>(groupVisObjs.size){ index ->
+            val groupVisLPs = List(groupVisObjs.size){ index ->
+                val (wScale, hScale) = groupVisObjs[index].getPosition()
                 ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
                     it.circleConstraint = pivotViewID
-                    //it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
-                    //it.circleAngle = (index * eachAngle).toFloat()
+                    it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                    it.circleAngle = (index * eachAngle).toFloat()
                 }
             }
 
             val normalVisObjs = aggrVisEffect.getNormalVisObjects()
-            val normalVisLPs = List<ConstraintLayout.LayoutParams>(normalVisObjs.size){ index ->
+            val normalVisLPs = List(normalVisObjs.size){ index ->
+                val (wScale, hScale) = normalVisObjs[index].getPosition()
                 ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
                     it.circleConstraint = pivotViewID
-                    //it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
-                    //it.circleAngle = (index * eachAngle).toFloat()
+                    it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                    it.circleAngle = (index * eachAngle).toFloat()
                 }
             }
 

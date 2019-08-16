@@ -33,17 +33,64 @@
             android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"/>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginEnd="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="Group By"
+                android:textColor="@color/theme"
+                android:textSize="14sp"
+                android:layout_gravity="center_vertical"
+                />
+
+            <Spinner
+                android:id="@+id/group_property_spinner"
+                android:layout_width="0dp"
+                android:layout_weight="2"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:spinnerMode="dialog"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:text="Bin"
+                android:textColor="@color/theme"
+                android:textSize="14sp"
+                />
+
+            <NumberPicker
+                android:id="@+id/bin_number_picker"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="50dp"/>
+
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Mapping"
+            android:layout_marginTop="10dp"
             android:textColor="@color/theme"
             android:textSize="14sp" />
 
         <ExpandableListView
             android:id="@+id/expandable_mapping_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp" />
 
     </LinearLayout>
 

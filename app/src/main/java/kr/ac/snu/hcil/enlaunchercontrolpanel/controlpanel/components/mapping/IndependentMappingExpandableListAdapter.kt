@@ -58,6 +58,12 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
 
         return (convertView as IndependentMappingParentLayout?)?.apply{
             setProperties(visVar, notiProp, 0, viewModel)
+            setMappingChangedListener(object: IndependentMappingParentLayout.GroupViewInteractionListener {
+                override fun onMappingUpdate(visVar: NotiVisVariable, notiProp: NotiProperty?) {
+                    visVartoNotiPropMappings[visVartoNotiPropMappings.indexOfFirst{it.first == visVar}] = Pair(visVar, notiProp)
+                    notifyDataSetChanged()
+                }
+            })
         } ?: IndependentMappingParentLayout(context).apply{
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingChangedListener(object: IndependentMappingParentLayout.GroupViewInteractionListener {
@@ -86,20 +92,16 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
     override fun getChildView(groupPosition: Int, childPosition: Int, isLastChild: Boolean, convertView: View?, parent: ViewGroup?): View {
         val (visVar, notiProp) = getGroup(groupPosition)
         val context = parent!!.context
-        /*
+
         return (convertView as IndependentMappingChildLayout?)?.apply{
-            setProperties(visVar, notiProp, 0, viewModel)
-        } ?: IndependentMappingChildLayout(context).apply {
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
                 override fun onShapeMappingContentsUpdated(componentIndex: Int) {
+                    //child의 몇 번째 component를 바꿔야 하느냐하고 관련되어 있는거고
                     shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex)
                 }
             })
-        }
-        }*/
-
-        return IndependentMappingChildLayout(context).apply {
+        }?:IndependentMappingChildLayout(context).apply {
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
                 override fun onShapeMappingContentsUpdated(componentIndex: Int) {

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <Spinner
-            android:id="@+id/selected_aggr_op_spinner"
+            android:id="@+id/selected_noti_prop_spinner"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"
@@ -21,9 +21,8 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:spinnerMode="dialog" />
-
         <Spinner
-            android:id="@+id/selected_noti_prop_spinner"
+            android:id="@+id/selected_aggr_op_spinner"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent"

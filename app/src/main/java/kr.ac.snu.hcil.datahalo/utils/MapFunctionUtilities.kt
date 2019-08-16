@@ -84,7 +84,7 @@ class MapFunctionUtilities {
         }
 
         fun<T> createBinnedNumericRangeMapFunc(keyRangeList: List<Pair<Double, Double>>, valRange: List<T>): (Any) -> (T?){
-            return {x:Any ->
+            return { x: Any ->
                 if(x is Double)
                 {
                     val index = keyRangeList.indexOfFirst{

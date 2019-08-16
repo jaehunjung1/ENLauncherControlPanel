@@ -12,10 +12,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import com.nex3z.flowlayout.FlowLayout
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
 import com.robertlevonyan.views.chip.Chip
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.utilities.Utilities
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
@@ -26,6 +31,7 @@ import kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
+import kotlin.math.max
 
 class AggregatedMappingChildLayout : LinearLayout{
     companion object{
@@ -33,7 +39,7 @@ class AggregatedMappingChildLayout : LinearLayout{
     }
 
     interface ChildViewInteractionListener{
-        fun onMappingContentsUpdated()
+        fun onShapeMappingContentsUpdated(componentIndex: Int)
     }
 
     private var groupByNotiProp: NotiProperty? = null
@@ -47,6 +53,8 @@ class AggregatedMappingChildLayout : LinearLayout{
 
     private val visVarContents: MutableList<Any> = mutableListOf()
     private val notiDataPropContents: MutableList<Any> = mutableListOf()
+
+    private lateinit var mappingUI: ContToContUI
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -74,27 +82,29 @@ class AggregatedMappingChildLayout : LinearLayout{
         objIndex = visObjIndex
         viewModel = appConfigViewModel
 
+        this.removeAllViews()
+
         appConfigViewModel?.appHaloConfigLiveData?.value?.let{ appHaloConfig ->
             if((notiVisVar == NotiVisVariable.SIZE || notiVisVar == NotiVisVariable.POSITION) &&
                     (notiDataProp == NotiProperty.IMPORTANCE)
             ) {
                 setRangeMapping(appHaloConfig)
             } else {
-                //setDiscreteMapping(appHaloConfig)
                 setNominalMapping(appHaloConfig)
             }
         }
     }
 
-    private fun setNominalMapping(appConfig: AppHaloConfig){
-        View.inflate(context, R.layout.item_child_new_nominal_mapping, this)
-
+    private fun setNominalTableMapping(appConfig: AppHaloConfig){
         val tableLayout = findViewById<TableLayout>(R.id.nominal_mapping_table).apply{
             removeAllViews()
         }
 
         val aggregatedVisParams = appConfig.aggregatedVisualParameters[0]
         val aggregatedDataParams = appConfig.aggregatedDataParameters[0]
+        val orderedKeywordGroups = appConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatternsWithRemainder().map{
+            it.group to it.keywords.toList()
+        }.toList()
 
         //notiData Contents 가져오고
         notiDataPropContents.clear()
@@ -108,7 +118,7 @@ class AggregatedMappingChildLayout : LinearLayout{
                         aggregatedDataParams.selectedLifeList
                     }
                     NotiProperty.CONTENT -> {
-                        aggregatedDataParams.keywordGroupMap.toList()
+                        orderedKeywordGroups
                     }
                 }
         )
@@ -174,18 +184,15 @@ class AggregatedMappingChildLayout : LinearLayout{
 
         when (notiDataProp) {
             NotiProperty.CONTENT -> {
-                setNewKeywordFrameView(notiDataPropContents as MutableList<Pair<String, MutableList<String>>>, tableLayout, context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater)
+                val contents = (notiDataPropContents as List<Pair<String, List<String>>>).map{it.first}
+                setNominalNotiPropViews(contents, tableLayout, LayoutInflater.from(context))
             }
             NotiProperty.LIFE_STAGE -> {
-                val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{aggregatedDataParams.givenLifeList.indexOf(it)}
-
-                setNewSpinnerView(givenLifeStageIndices, aggregatedDataParams.givenLifeList, tableLayout)
+                setNominalNotiPropViews(aggregatedDataParams.givenLifeList, tableLayout, LayoutInflater.from(context))
             }
             NotiProperty.IMPORTANCE -> {
-                val givenImportanceList = MapFunctionUtilities.bin(aggregatedDataParams.givenImportanceRange, 5)
-                val givenImportanceIndices = (notiDataPropContents as MutableList<Pair<Double, Double>>).map{givenImportanceList.indexOf(it)}
-
-                setNewSpinnerView(givenImportanceIndices, givenImportanceList, tableLayout)
+                val givenImportanceList = MapFunctionUtilities.bin(aggregatedDataParams.givenImportanceRange, aggregatedDataParams.binNums)
+                setNominalNotiPropViews(givenImportanceList, tableLayout, LayoutInflater.from(context))
             }
             null -> { }
         }
@@ -236,59 +243,44 @@ class AggregatedMappingChildLayout : LinearLayout{
                     }
             )
         }
-
-
     }
 
-    private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
-        (inflater.inflate(R.layout.chip_view_layout, null) as Chip).let{ chipView ->
-            chipView.chipText = keyword
-            chipView.setOnCloseClickListener {
-                chipView.visibility = View.GONE
-                (chipView.parent as ViewGroup).removeView(chipView)
-                (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>)
-                        .find{keywordGroups -> keywordGroups.first == (flowLayout.tag as String) }
-                        ?.let{ keywordGroup -> keywordGroup.second.remove(keyword) }
-                updateAppConfig()
-            }
-            flowLayout.addView(chipView)
+    private fun setNominalMapping(appConfig: AppHaloConfig){
+        View.inflate(context, R.layout.item_child_new_nominal_mapping, this)
+
+        findViewById<LinearLayout>(R.id.bin_layout).let{binLayout ->
+            binLayout.visibility = View.GONE
         }
+        setNominalTableMapping(appConfig)
     }
 
-    private fun setNewKeywordFrameView(
-            notiDataPropContents: MutableList<Pair<String, MutableList<String>>>,
-            notiPropLayout: TableLayout,
-            inflater: LayoutInflater
-    ){
-        notiDataPropContents.forEachIndexed { index, keywordGroup ->
+    private fun setNominalNotiPropViews(givenPropContents: List<Any>, notiPropLayout: TableLayout, inflater: LayoutInflater){
+        val givenPropStringContents: List<String> =
+                when(notiDataProp){
+                    NotiProperty.IMPORTANCE -> {givenPropContents.map{
+                        val propContent = it as Pair<Double, Double>
+                        "${"%.1f".format(propContent.first)}-${"%.1f".format(propContent.second)}"}
+                    }
+                    NotiProperty.LIFE_STAGE -> {givenPropContents.map{
+                        val propContent = it as EnhancedNotificationLife
+                        propContent.name }
+                    }
+                    NotiProperty.CONTENT -> {
+                        givenPropContents as List<String>
+                    }
+                    else -> {
+                        emptyList()
+                    }
+                }
+
+        givenPropStringContents.forEachIndexed{ index, strContent ->
             val tr = notiPropLayout.getChildAt(index) as TableRow
             tr.addView(
                     FrameLayout(context).also { frame ->
-                        val keywordFrame = inflater.inflate(R.layout.layout_keyword_mapping, null, false) as LinearLayout
+                        val keywordFrame = inflater.inflate(R.layout.layout_new_keyword_mapping, null, false) as LinearLayout
 
-                        val flowLayout = keywordFrame.findViewById<FlowLayout>(R.id.mapping_keyword_flowLayout).apply{
-                            tag = keywordGroup.first
-                            keywordGroup.second.forEach{keyword ->  addKeywordToFlowLayout(this, keyword, inflater)}
-                        }
+                        keywordFrame.findViewById<TextView>(R.id.group_name_text).text = strContent
 
-                        keywordFrame.findViewById<ImageButton>(R.id.mapping_keyword_add_button).let{ addButton ->
-                            addButton.setOnClickListener {
-                                val mDialog = AlertDialog.Builder(context, android.R.style.Theme_Holo_Light_Dialog_NoActionBar).let { mBuilder ->
-                                    val editText = EditText(context)
-                                    mBuilder.setView(editText)
-                                    mBuilder.setPositiveButton("OK") { dialogInterface, i ->
-                                        val newKeyword = editText.text.toString()
-                                        if(newKeyword.isNotEmpty() && newKeyword !in keywordGroup.second){
-                                            keywordGroup.second.add(newKeyword)
-                                            addKeywordToFlowLayout(flowLayout, newKeyword, inflater)
-                                        }
-                                    }
-                                    mBuilder.setNegativeButton("Cancel") { _, _ -> }
-                                    mBuilder.create()
-                                }
-                                mDialog.show()
-                            }
-                        }
                         frame.addView(
                                 keywordFrame,
                                 FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT).apply{
@@ -385,7 +377,26 @@ class AggregatedMappingChildLayout : LinearLayout{
                 }
             }
             NotiVisVariable.SHAPE -> {
-                //TODO(Shape Selection View)
+                val shape = content as VisObjectShape
+                frame.addView(
+                        ImageView(context).apply{
+                            setImageDrawable(shape.drawable)
+                            setOnClickListener{
+                                CropImage.activity()
+                                        .setGuidelines(CropImageView.Guidelines.ON)
+                                        .setActivityTitle("Set Image")
+                                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                        .setAspectRatio(1, 1)
+                                        .setCropMenuCropButtonTitle("Done")
+                                        .setRequestedSize(150, 150)
+                                        .start(context as FragmentActivity)
+
+
+                                mappingContentsChangedListener?.onShapeMappingContentsUpdated(index)
+                            }
+                        },
+                        FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                )
             }
             NotiVisVariable.SIZE -> {}
             NotiVisVariable.POSITION -> {}
@@ -404,43 +415,99 @@ class AggregatedMappingChildLayout : LinearLayout{
 
     private fun setRangeMapping(appHaloConfig: AppHaloConfig){
 
+        View.inflate(context, R.layout.item_child_new_range_mapping, this)
+
+        val constraintLayout = findViewById<ConstraintLayout>(R.id.range_mapping_layout)
+        constraintLayout.addView(ContToContUI(context).apply {
+            mappingUI = this
+            id = View.generateViewId()
+            layoutParams = ConstraintLayout.LayoutParams(
+                    LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+            setViewModel(viewModel)
+            setMapping(notiVisVar, notiDataProp!!)
+        })
+        constraintLayout.getChildAt(0).apply {
+            val set = ConstraintSet()
+            set.clone(constraintLayout)
+            set.connect(this.id, ConstraintSet.TOP, constraintLayout.id, ConstraintSet.TOP)
+            set.connect(this.id, ConstraintSet.RIGHT, constraintLayout.id, ConstraintSet.RIGHT)
+            set.connect(this.id, ConstraintSet.LEFT, constraintLayout.id, ConstraintSet.LEFT)
+            set.connect(this.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
+            set.applyTo(constraintLayout)
+        }
     }
 
     private fun updateAppConfig(){
         viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
-            when(notiVisVar){
-                NotiVisVariable.MOTION -> {
-                    currentConfig.aggregatedVisualParameters[objIndex].selectedMotionList = (visVarContents as MutableList<AnimatorSet>).toList()
-                }
-                NotiVisVariable.COLOR -> {
-                    currentConfig.aggregatedVisualParameters[objIndex].selectedColorList = (visVarContents as MutableList<Int>).toList()
-                }
-                NotiVisVariable.SHAPE -> {
-                    currentConfig.aggregatedVisualParameters[objIndex].selectedShapeList = (visVarContents as MutableList<VisObjectShape>).toList()
-                }
-                NotiVisVariable.SIZE -> {
-                    currentConfig.aggregatedVisualParameters[objIndex].selectedSizeRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
-                }
-                NotiVisVariable.POSITION -> {
-                    currentConfig.aggregatedVisualParameters[objIndex].selectedPosRangeList = (visVarContents as MutableList<Pair<Double, Double>>).toList()
-                }
+            val listSize = when(notiDataProp){
+                NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().size
+                NotiProperty.IMPORTANCE -> currentConfig.aggregatedDataParameters[objIndex].binNums
+                NotiProperty.CONTENT -> currentConfig.keywordGroupPatterns.getOrderedKeywordGroups().size + 1
+                else -> 5
             }
 
-            when(notiDataProp){
-                NotiProperty.LIFE_STAGE -> {
-                    currentConfig.aggregatedDataParameters[objIndex].selectedLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
+            when(notiVisVar){
+                NotiVisVariable.MOTION -> {
+                    val currentList = currentConfig.aggregatedVisualParameters[objIndex].selectedMotionList
+
+                    currentConfig.aggregatedVisualParameters[objIndex].selectedMotionList = List(listSize){ index ->
+                        if(index >= visVarContents.size)
+                            currentList[index]
+                        else
+                            (visVarContents as MutableList<AnimatorSet>)[index]
+                    }
                 }
-                NotiProperty.IMPORTANCE -> {
-                    currentConfig.aggregatedDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
+                NotiVisVariable.COLOR -> {
+                    val currentList = currentConfig.aggregatedVisualParameters[objIndex].selectedColorList
+
+                    currentConfig.aggregatedVisualParameters[objIndex].selectedColorList = List(listSize){ index ->
+                        if(index >= visVarContents.size)
+                            currentList[index]
+                        else
+                            (visVarContents as MutableList<Int>)[index]
+                    }
                 }
-                NotiProperty.CONTENT -> {
-                    currentConfig.aggregatedDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
+                NotiVisVariable.SHAPE -> {
+                    val currentList = currentConfig.aggregatedVisualParameters[objIndex].selectedShapeList
+
+                    currentConfig.aggregatedVisualParameters[objIndex].selectedShapeList = List(listSize) { index ->
+                        if (index >= visVarContents.size)
+                            currentList[index]
+                        else
+                            (visVarContents as MutableList<VisObjectShape>)[index]
+                    }
                 }
-                else -> {}
+                NotiVisVariable.SIZE -> {
+                    val currentList = currentConfig.aggregatedVisualParameters[objIndex].getSelectedSizeRangeList(
+                            listSize
+                    )
+
+                    currentConfig.aggregatedVisualParameters[objIndex].setSelectedSizeRangeList(
+                            List(listSize){index ->
+                                if(index >= visVarContents.size)
+                                    currentList[index]
+                                else
+                                    (visVarContents as MutableList<Pair<Double, Double>>)[index]
+                            }
+                    )
+                }
+                NotiVisVariable.POSITION -> {
+                    val currentList = currentConfig.aggregatedVisualParameters[objIndex].getSelectedPosRangeList(
+                            listSize
+                    )
+
+                    currentConfig.aggregatedVisualParameters[objIndex].setSelectedPosRangeList(
+                            List(listSize){index ->
+                                if(index >= visVarContents.size)
+                                    currentList[index]
+                                else
+                                    (visVarContents as MutableList<Pair<Double, Double>>)[index]
+                            }
+                    )
+                }
             }
 
             viewModel?.appHaloConfigLiveData?.value = currentConfig
-            mappingContentsChangedListener?.onMappingContentsUpdated()
         }
     }
 

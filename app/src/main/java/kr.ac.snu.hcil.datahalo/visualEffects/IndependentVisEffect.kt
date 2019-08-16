@@ -2,16 +2,14 @@ package kr.ac.snu.hcil.datahalo.visualEffects
 
 import android.animation.Animator
 import android.animation.AnimatorSet
-import android.graphics.Color
 import android.graphics.drawable.Drawable
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
-import kr.ac.snu.hcil.datahalo.utils.ANHComponentUIDGenerator
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.IndependentVisEffectVisParams
+import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportancePatterns.Companion.ELSE_KEYWORD_GROUP
 
 interface InterfaceIndependentVisEffect{
 
@@ -68,7 +66,7 @@ abstract class AbstractIndependentVisEffect(
                     mapOf(
                             NotiProperty.IMPORTANCE to enhancedNotification.currEnhancement,
                             NotiProperty.LIFE_STAGE to enhancedNotification.lifeCycle,
-                            NotiProperty.CONTENT to (enhancedNotification.keywordGroup?: "DEFAULT")
+                            NotiProperty.CONTENT to (enhancedNotification.keywordGroup)
                     )
             )
 

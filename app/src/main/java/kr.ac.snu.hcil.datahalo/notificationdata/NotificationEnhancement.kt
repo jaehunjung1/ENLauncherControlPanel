@@ -1,9 +1,7 @@
 package kr.ac.snu.hcil.datahalo.notificationdata
 
-import kr.ac.snu.hcil.datahalo.manager.AppConfigManager
-import kr.ac.snu.hcil.datahalo.manager.DataHaloManager
-import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
+import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportancePatterns
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
 import kotlin.math.roundToLong
@@ -58,9 +56,9 @@ data class EnhancedNotification(
     var interactionEnhancement = 0.0 // Enhancement Value at the interaction time
 
     //textInfo
-    var keywordGroup: String? = null
+    var keywordGroup: String = KeywordGroupImportancePatterns.ELSE_KEYWORD_GROUP
 
-    var channelHiearchy = NotiHierarchy("Not Assigned", "Not Assigned")
+    var channelHierarchy = NotiHierarchy("Not Assigned", "Not Assigned")
 
     var whiteRank = 0
     var independent = true
@@ -72,22 +70,24 @@ data class EnhancedNotification(
     }
     
     fun setAppHaloConfig(appHaloConfig: AppHaloConfig){
-        val group: String? = appHaloConfig.keywordGroupPatterns.assignGroupToNotification(notiContent.title, notiContent.content)
+        val group: String = appHaloConfig.keywordGroupPatterns.assignGroupToNotification(notiContent.title, notiContent.content)
         keywordGroup = group
 
-        val notificationEnhacementParams: NotificationEnhacementParams =
-                if(group == null) VisDataManager.getExampleSaturationPattern("default")!!
-                else appHaloConfig.keywordGroupPatterns.getEnhancementParamOfGroup(group)!!
-        lifeSpan = notificationEnhacementParams.lifespan
+        val notificationEnhancementParams: NotificationEnhacementParams =
+                if(KeywordGroupImportancePatterns.ELSE_KEYWORD_GROUP == group)
+                    appHaloConfig.keywordGroupPatterns.getRemainderKeywordGroupPattern().enhancementParam
+                else
+                    appHaloConfig.keywordGroupPatterns.getEnhancementParamOfGroup(group)!!
+        lifeSpan = notificationEnhancementParams.lifespan
 
-        firstPattern = notificationEnhacementParams.firstPattern
-        secondPattern = notificationEnhacementParams.secondPattern
-        firstSaturationTime = notificationEnhacementParams.firstSaturationTime
-        secondSaturationTime = notificationEnhacementParams.secondSaturationTime
-        enhanceOffset = notificationEnhacementParams.initialImportance
+        firstPattern = notificationEnhancementParams.firstPattern
+        secondPattern = notificationEnhancementParams.secondPattern
+        firstSaturationTime = notificationEnhancementParams.firstSaturationTime
+        secondSaturationTime = notificationEnhancementParams.secondSaturationTime
+        enhanceOffset = notificationEnhancementParams.initialImportance
         currEnhancement = enhanceOffset
-        lowerBound = notificationEnhacementParams.importanceRange.first
-        upperBound = notificationEnhacementParams.importanceRange.second
+        lowerBound = notificationEnhancementParams.importanceRange.first
+        upperBound = notificationEnhancementParams.importanceRange.second
 
     }
 

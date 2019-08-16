@@ -56,6 +56,12 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
 
         return (convertView as AggregatedMappingParentLayout?)?.apply{
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel )
+            setMappingChangedListener(object: AggregatedMappingParentLayout.GroupViewInteractionListener {
+                override fun onMappingUpdate(visVar: NotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?) {
+                    visVarsToAggregatedNotiProperty[visVarsToAggregatedNotiProperty.indexOfFirst{it.first == visVar}] = Pair(visVar, Pair(aggrOp, notiProp))
+                    notifyDataSetChanged()
+                }
+            })
         } ?: AggregatedMappingParentLayout(context).apply{
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel )
             setMappingChangedListener(object: AggregatedMappingParentLayout.GroupViewInteractionListener {
@@ -85,7 +91,9 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
         val (visVar, aggregatedNotiProp) = getGroup(groupPosition)
         val context = parent!!.context
 
-        return AggregatedMappingChildLayout(context).apply{
+        return (convertView as AggregatedMappingChildLayout?)?.apply{
+            setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel)
+        }?: AggregatedMappingChildLayout(context).apply{
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel)
         }
     }

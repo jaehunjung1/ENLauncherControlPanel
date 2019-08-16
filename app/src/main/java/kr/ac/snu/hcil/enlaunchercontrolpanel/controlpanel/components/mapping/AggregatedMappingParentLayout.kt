@@ -1,10 +1,8 @@
 package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping
 
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
@@ -98,7 +96,10 @@ class AggregatedMappingParentLayout: LinearLayout {
         a.recycle()
         View.inflate(context, R.layout.item_parent_aggre_expandable_controlpanel, this)
 
-        findViewById<Spinner>(R.id.selected_noti_prop_spinner).let { spinner ->
+        val selectedNotiPropertySpinner = findViewById<Spinner>(R.id.selected_noti_prop_spinner)
+        val selectedAggrOperationSpinner = findViewById<Spinner>(R.id.selected_aggr_op_spinner)
+
+        selectedNotiPropertySpinner.let { spinner ->
             spinner.isFocusable = false
             spinner.isFocusableInTouchMode = false
 
@@ -115,6 +116,39 @@ class AggregatedMappingParentLayout: LinearLayout {
                 override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                     val spinnerVal = adapterView.getItemAtPosition(i) as String
                     val propVal = if (spinnerVal == "none") null else NotiProperty.valueOf(spinnerVal)
+                    when(propVal){
+                        NotiProperty.IMPORTANCE -> {
+                            (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
+                                setElementsEnabled(
+                                        NotiAggregationType.MEAN_NUMERIC.name,
+                                        NotiAggregationType.MAX_NUMERIC.name,
+                                        NotiAggregationType.MIN_NUMERIC.name
+                                )
+                            }
+                        }
+                        NotiProperty.CONTENT -> {
+                            (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
+                                setElementsEnabled(
+                                        NotiAggregationType.MOST_FREQUENT_NOMINAL.name
+                                )
+                            }
+                        }
+                        NotiProperty.LIFE_STAGE -> {
+                            (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
+                                setElementsEnabled(
+                                        NotiAggregationType.MOST_FREQUENT_NOMINAL.name
+                                )
+                            }
+                        }
+                        else -> {
+                            (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
+                                setElementsEnabled(
+                                        NotiAggregationType.COUNT.name
+                                )
+                            }
+                        }
+                    }
+
                     notiDataProp = propVal
                     if (propSpinnerInitialSet) {
                         invalidateObjAndViewModel()
@@ -126,7 +160,7 @@ class AggregatedMappingParentLayout: LinearLayout {
             }
         }
 
-        findViewById<Spinner>(R.id.selected_aggr_op_spinner).let{spinner ->
+        selectedAggrOperationSpinner.let{spinner ->
             spinner.isFocusable = false
             spinner.isFocusableInTouchMode = false
 
@@ -150,28 +184,10 @@ class AggregatedMappingParentLayout: LinearLayout {
                 override fun onNothingSelected(parent: AdapterView<*>?) {}
             }
         }
-
     }
 
-    private fun getArrayAdapter(stringList: List<String>): ArrayAdapter<String> {
-        return object : ArrayAdapter<String>(context, R.layout.item_spinner, stringList) {
-            override fun isEnabled(position: Int): Boolean {
-                return true
-            }
-
-            override fun getDropDownView(position: Int, convertView: View?,
-                                         parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val tv = view as TextView
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY)
-                } else {
-                    tv.setTextColor(Color.BLACK)
-                }
-                return view
-            }
-        }
+    private fun getArrayAdapter(stringList: List<String>): AccessibilityControllableStringAdapter {
+        return AccessibilityControllableStringAdapter(context, stringList)
     }
 
 }

@@ -197,7 +197,7 @@ class VisDataManager {
                     Options.CHANNEL -> {
                         val blackChannels = (wgbFilter as WGBFilterManager.WGBSetFilter<NotiHierarchy>).blackCondition
                         whiteAndGray = whiteAndGray.filterNot{ notiData ->
-                            blackChannels.contains(notiData.channelHiearchy)
+                            blackChannels.contains(notiData.channelHierarchy)
                         }
                     }
                 }
@@ -236,7 +236,7 @@ class VisDataManager {
                         val whiteChannels = (wgbFilter as WGBFilterManager.WGBSetFilter<NotiHierarchy>).whiteCondition
                         whiteAndGray.map{ notiData ->
                             notiData.whiteRank += whiteChannels.fold(0){ acc: Int, notiHierarchy: NotiHierarchy ->
-                                if(notiHierarchy.equals(notiData.channelHiearchy)) acc + 1 else acc }
+                                if(notiHierarchy.equals(notiData.channelHierarchy)) acc + 1 else acc }
                         }
                     }
                 }
