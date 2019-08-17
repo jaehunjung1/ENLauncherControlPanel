@@ -5,325 +5,328 @@
     android:id="@+id/search_mainBar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/color_background"
     android:layout_marginTop="20dp"
-    android:background="@drawable/post_top_bar_background"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_weight="0"
-        android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:visibility="visible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:textColor="#6d5dff"
-            android:textSize="14sp"
-            android:layout_marginBottom="11dp"
-            android:text="Max Number" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="11dp"
-            android:text="Max Number of Independent Notifications"
-            android:textColor="@color/text"
-            android:textSize="16sp" />
-
-        <io.apptik.widget.MultiSlider
-            android:id="@+id/maxIndependentNumSeekbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:thumb="@drawable/seekbar_thumb"
-            app:drawThumbsApart="true"
-            app:rangeColor="@color/theme"
-            app:scaleMax="9"
-            app:scaleMin="0"
-            app:scaleStep="1"
-            app:thumbNumber="1"
-            app:trackColor="@color/seek_bar_background" />
-
+        android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="horizontal">
+            android:layout_marginTop="11dp"
+            android:layout_weight="0"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:visibility="visible">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text = "0" />
+                android:gravity="center_vertical"
+                android:textColor="@color/primaryColor"
+                android:textSize="14sp"
+                android:layout_marginBottom="11dp"
+                android:text="Max Number" />
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text = "10" />
-        </LinearLayout>
+                android:gravity="center_vertical"
+                android:layout_marginBottom="11dp"
+                android:text="Max Number of Independent Notifications"
+                android:textSize="16sp" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:background="@drawable/post_bottom_bar_background"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="15dp"
-        android:visibility="visible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="WGB Filter Setting"
-            android:textColor="#6d5dff"
-            android:textSize="14sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_weight="0"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:visibility="visible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="Enhancement"
-            android:textColor="@color/text"
-            android:textSize="16sp" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_weight="0"
-        android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:visibility="visible">
-
-        <io.apptik.widget.MultiSlider
-            android:id="@+id/enhancementSeekbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:thumb="@drawable/seekbar_thumb"
-            app:drawThumbsApart="true"
-            app:rangeColor="@color/theme"
-            app:scaleMax="9"
-            app:scaleMin="0"
-            app:scaleStep="1"
-            app:thumbNumber="2"
-            app:trackColor="@color/seek_bar_background" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text = "Low"
-                />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text = "High"
-                />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="16dp"
-        android:visibility="visible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="Observation Window"
-            android:textColor="@color/text"
-            android:textSize="16sp" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_weight="0"
-        android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:visibility="visible">
-
-        <io.apptik.widget.MultiSlider
-            android:id="@+id/observationWindowSeekbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:thumb="@drawable/seekbar_thumb"
-            app:drawThumbsApart="true"
-            app:rangeColor="@color/theme"
-            app:scaleMax="8"
-            app:scaleMin="0"
-            app:scaleStep="1"
-            app:thumbNumber="2"
-            app:trackColor="@color/seek_bar_background" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="horizontal">
-            <TextView
-                android:id="@+id/birth"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:gravity="left"
-                android:text = "Birth"
-                />
-            <TextView
-                android:id="@+id/death"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text = "Death"
-                />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:orientation="horizontal"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:paddingTop="16dp"
-        android:visibility="visible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:focusableInTouchMode="false"
-            android:gravity="center_vertical"
-            android:text="Keyword"
-            android:textColor="@color/text"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="11dp"
-        android:layout_weight="0"
-        android:focusable="auto"
-        android:focusableInTouchMode="true"
-        android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
-        android:visibility="visible">
-
-        <com.nex3z.flowlayout.FlowLayout
-            android:id="@+id/whiteFlowLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            app:flChildSpacing="5dp"
-            app:flChildSpacingForLastRow="5dp"
-            app:flRowSpacing="8dp"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/white_keyword_text_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/holo_blue_light"
-            android:focusableInTouchMode="false"
-            android:hint="White List"
-            android:theme="@style/WhiteTextInputEditText"
-            app:hintTextAppearance="@style/WhiteHintTextAppearance">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/white_keyword_editText"
-                style="@style/WhiteTextInputEditText"
+            <io.apptik.widget.MultiSlider
+                android:id="@+id/maxIndependentNumSeekbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textSize="15sp" />
+                android:thumb="@drawable/seekbar_thumb"
+                app:drawThumbsApart="true"
+                app:rangeColor="@color/secondaryColor"
+                app:scaleMax="9"
+                app:scaleMin="0"
+                app:scaleStep="1"
+                app:thumbNumber="1"
+                app:trackColor="@color/seek_bar_background" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.nex3z.flowlayout.FlowLayout
-            android:id="@+id/blackFlowLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            app:flChildSpacing="5dp"
-            app:flChildSpacingForLastRow="5dp"
-            app:flRowSpacing="8dp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/black_keyword_text_input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="9dp"
-            android:backgroundTint="@color/holo_red_light"
-            android:focusableInTouchMode="false"
-            android:hint="Black List"
-            android:theme="@style/BlackTextInputEditText"
-            app:hintTextAppearance="@style/BlackHintTextAppearance">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/black_keyword_editText"
-                style="@style/BlackTextInputEditText"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                android:maxLines="1"
-                android:textSize="15sp" />
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
 
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="left"
+                    android:text = "0" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:text = "10" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:background="@drawable/post_bottom_bar_background"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="15dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="WGB Filter Setting"
+                    android:textColor="#6d5dff"
+                    android:textSize="14sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:layout_weight="0"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="Enhancement"
+                    android:textColor="@color/text"
+                    android:textSize="16sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:layout_weight="0"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:visibility="visible">
+
+                <io.apptik.widget.MultiSlider
+                    android:id="@+id/enhancementSeekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/seekbar_thumb"
+                    app:drawThumbsApart="true"
+                    app:rangeColor="@color/theme"
+                    app:scaleMax="9"
+                    app:scaleMin="0"
+                    app:scaleStep="1"
+                    app:thumbNumber="2"
+                    app:trackColor="@color/seek_bar_background" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text = "Low"
+                        />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text = "High"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:orientation="horizontal"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:paddingTop="16dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="Observation Window"
+                    android:textColor="@color/text"
+                    android:textSize="16sp" />
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="11dp"
+                android:layout_weight="0"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:visibility="visible">
+
+                <io.apptik.widget.MultiSlider
+                    android:id="@+id/observationWindowSeekbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:thumb="@drawable/seekbar_thumb"
+                    app:drawThumbsApart="true"
+                    app:rangeColor="@color/theme"
+                    app:scaleMax="8"
+                    app:scaleMin="0"
+                    app:scaleStep="1"
+                    app:thumbNumber="2"
+                    app:trackColor="@color/seek_bar_background" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginEnd="20dp"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:id="@+id/birth"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="left"
+                        android:text = "Birth"
+                        />
+                    <TextView
+                        android:id="@+id/death"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:text = "Death"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:focusableInTouchMode="false"
+                android:gravity="center_vertical"
+                android:text="Keyword"
+                android:textColor="@color/text"
+                android:textSize="16sp" />
+
+            <com.nex3z.flowlayout.FlowLayout
+                android:id="@+id/whiteFlowLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                app:flChildSpacing="5dp"
+                app:flChildSpacingForLastRow="5dp"
+                app:flRowSpacing="8dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/white_keyword_text_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/holo_blue_light"
+                android:focusableInTouchMode="false"
+                android:hint="White List"
+                android:theme="@style/WhiteTextInputEditText"
+                app:hintTextAppearance="@style/WhiteHintTextAppearance">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/white_keyword_editText"
+                    style="@style/WhiteTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.nex3z.flowlayout.FlowLayout
+                android:id="@+id/blackFlowLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:flChildSpacing="5dp"
+                app:flChildSpacingForLastRow="5dp"
+                app:flRowSpacing="8dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/black_keyword_text_input"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="9dp"
+                android:backgroundTint="@color/holo_red_light"
+                android:focusableInTouchMode="false"
+                android:hint="Black List"
+                android:theme="@style/BlackTextInputEditText"
+                app:hintTextAppearance="@style/BlackHintTextAppearance">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/black_keyword_editText"
+                    style="@style/BlackTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 </LinearLayout>
