@@ -472,9 +472,6 @@ class IndependentMappingChildLayout : LinearLayout {
                 }
         )
         when(notiVisVar){
-            NotiVisVariable.MOTION -> {
-
-            }
             NotiVisVariable.COLOR -> {
                 val origColor = content as Int
                 frame.setBackgroundColor(origColor)
@@ -512,21 +509,10 @@ class IndependentMappingChildLayout : LinearLayout {
                         },
                         FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                 )
-                /*
-                frame.setOnClickListener{
-                    CropImage.activity()
-                            .setGuidelines(CropImageView.Guidelines.ON)
-                            .setActivityTitle("My Crop")
-                            .setCropShape(CropImageView.CropShape.OVAL)
-                            .setCropMenuCropButtonTitle("Done")
-                            .setRequestedSize(50, 50)
-                            .start(context as FragmentActivity)
-                    mappingContentsChangedListener?.onShapeMappingContentsUpdated(index)
-                }
-                */
             }
             NotiVisVariable.SIZE -> {}
             NotiVisVariable.POSITION -> {}
+            NotiVisVariable.MOTION -> {}
         }
     }
 

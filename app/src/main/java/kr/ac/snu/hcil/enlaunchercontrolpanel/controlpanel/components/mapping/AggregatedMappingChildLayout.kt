@@ -390,8 +390,6 @@ class AggregatedMappingChildLayout : LinearLayout{
                                         .setCropMenuCropButtonTitle("Done")
                                         .setRequestedSize(150, 150)
                                         .start(context as FragmentActivity)
-
-
                                 mappingContentsChangedListener?.onShapeMappingContentsUpdated(index)
                             }
                         },
