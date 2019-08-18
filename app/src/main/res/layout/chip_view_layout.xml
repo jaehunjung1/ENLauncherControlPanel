@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="27dp"
-    app:mcv_backgroundColor="@color/holo_blue_light"
+    app:mcv_backgroundColor="@color/secondaryColor"
     app:mcv_chipIcon="@drawable/cancel_icon"
     app:mcv_closable="true"
     app:mcv_closeColor="@color/white"

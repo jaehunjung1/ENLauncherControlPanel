@@ -8,29 +8,34 @@
 
     <ImageView
         android:id="@+id/handle"
-        android:layout_width="24dp"
+        android:layout_width="0dp"
         android:layout_height="24dp"
+        android:layout_weight="1"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:src="@drawable/ic_keyword_group_dependency_arrow_right_24dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/ic_item_keyword_group_dependency_24dp"
         />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_weight="3"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:orientation="vertical">
 
         <TextView
-            android:id = "@+id/flow_layout_text"
+            android:id="@+id/flow_layout_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/TextAppearance.MyTheme.Overline"
             android:text="Group Name"
-            android:textSize="14sp" />
+             />
 
         <com.nex3z.flowlayout.FlowLayout
             android:id="@+id/flow_layout"
@@ -44,18 +49,31 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/flow_layout_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:text="+"
-        android:textSize="20sp"
-        android:textColor="@color/theme"
-         />
+        android:id="@+id/flow_layout_add_button"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_vertical"
+        android:text="Add"
+        />
 
+    <Button
+        android:id="@+id/flow_layout_edit_button"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_vertical"
+        android:text="Edit"
+        />
 
 </LinearLayout>

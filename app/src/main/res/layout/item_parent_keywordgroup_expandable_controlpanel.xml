@@ -10,15 +10,12 @@
 
     <TextView
         android:id="@+id/keyword_group_name"
-        style="@android:style/Widget.DeviceDefault.Light.TextView"
+        style="@style/TextAppearance.MyTheme.Body2"
         android:layout_width="0dp"
         android:layout_weight="3"
         android:layout_height="match_parent"
-        android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal|center_vertical"
         android:text="[Group_Name]"
-        android:textColor="@color/text"
-        android:textSize="14sp"
         android:textStyle="italic"
         android:textIsSelectable="false" />
 
@@ -26,10 +23,9 @@
         android:layout_width="0dp"
         android:layout_weight="1"
         android:layout_height="match_parent"
+        style="@style/TextAppearance.MyTheme.Overline"
         android:gravity="center_horizontal|center_vertical"
         android:text="to"
-        android:textColor="@color/theme"
-        android:textSize="14sp"
         android:textIsSelectable="false" />
 
     <Spinner

@@ -5,8 +5,8 @@
         android:height="@dimen/seek_bar_thumb_size"
         android:width="@dimen/seek_bar_thumb_size"
         />
-    <solid android:color="@color/text_white"/>
+    <solid android:color="@color/secondaryLightColor"/>
     <stroke
         android:width="2dp"
-        android:color="@color/theme"/>
+        android:color="@color/color_secondary"/>
 </shape>

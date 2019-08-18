@@ -107,7 +107,7 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
         private val handle: ImageView = itemView.findViewById(R.id.handle)
         private var groupText: TextView = itemView.findViewById(R.id.flow_layout_text)
         private var flowLayout: FlowLayout = itemView.findViewById(R.id.flow_layout)
-        private var button: Button = itemView.findViewById(R.id.flow_layout_button)
+        private var button: Button = itemView.findViewById(R.id.flow_layout_add_button)
 
         private fun addKeywordChipView(group: String, keyword: String, isNew: Boolean = false){
             (layoutInflater?.inflate(R.layout.chip_view_layout, null) as Chip).let{chip ->

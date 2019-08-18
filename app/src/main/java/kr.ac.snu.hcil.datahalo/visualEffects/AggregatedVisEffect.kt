@@ -396,35 +396,16 @@ abstract class AbstractAggregatedVisEffect(
                 if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){
                     val imageView = ImageView(constraintLayout.context).also{
                         it.id = visObj.getID()
-                        it.setImageDrawable(groupedDrawables[index])
-                        /*
                         if(index in activatedGroupBoundVisObjectIndices)
                             it.setImageDrawable(groupedDrawables[activatedGroupBoundVisObjectIndices.indexOf(index)])
-                        */
-
-                        /*
-                        val (centerBasedX, centerBasedY) = CoordinateConverter.polarToCenterBasedCartesianCoordinate(
-                                currentCenterPolar.first.toDouble(),
-                                currentCenterPolar.second.toDouble()
-                        )
-
-                        val (defaultX, defaultY) = CoordinateConverter.centerBasedToDefaultCartesianCoordinate(
-                                centerBasedX,
-                                centerBasedY,
-                                constraintLayout.width.toDouble(),
-                                constraintLayout.height.toDouble()
-                        )
-                        it.pivotX = defaultX.toFloat()
-                        it.pivotY = defaultY.toFloat()
-                        it.rotation = theta.toFloat()
-                        */
                     }
                     constraintLayout.addView(imageView, layoutParams)
                 }
                 else{
                     constraintLayout.findViewById<ImageView>(visObj.getID()).also{
-                        it.setImageDrawable(groupedDrawables[index])
                         it.layoutParams = layoutParams
+                        if(index in activatedGroupBoundVisObjectIndices)
+                            it.setImageDrawable(groupedDrawables[activatedGroupBoundVisObjectIndices.indexOf(index)])
                     }
                 }
             }

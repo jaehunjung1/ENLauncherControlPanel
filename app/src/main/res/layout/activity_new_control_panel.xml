@@ -41,11 +41,12 @@
                     android:id="@+id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/primaryColor"
-                    app:tabTextColor="@color/primaryTextColor"
-                    app:tabBackground="@color/primaryLightColor"
-                    app:tabIndicatorColor="@color/secondaryColor"
+                    android:background="@color/color_background"
+                    app:tabTextColor="@color/primaryColor"
+                    app:tabBackground="@color/color_surface"
+                    app:tabIndicatorColor="@color/primaryColor"
                     app:tabMode="scrollable" />
+
             </com.google.android.material.appbar.AppBarLayout>
 
             <androidx.viewpager.widget.ViewPager
@@ -62,8 +63,9 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:fitsSystemWindows="true"
-            app:itemTextColor="@color/secondaryTextColor"
-            app:itemIconTint="@color/secondaryColor"
+            app:itemTextColor="@color/color_on_surface"
+            app:itemIconTint="@color/primaryColor"
+            app:itemBackground="@drawable/drawer_list_selector"
             app:menu="@menu/drawer" />
     </androidx.drawerlayout.widget.DrawerLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

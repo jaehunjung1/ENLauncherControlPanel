@@ -4,30 +4,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="20dp"
+            style="@style/TextAppearance.MyTheme.Subtitle2"
             android:text="Initial Importance"
-            android:textColor="@color/theme"
-            android:textSize="16sp"
             />
+
         <TextView
             android:id="@+id/initialImportance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginTop="20dp"
-            android:textSize="14sp" />
+            style="@style/TextAppearance.MyTheme.Body2" />
 
     </LinearLayout>
 
@@ -36,11 +36,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:thumb="@drawable/seekbar_thumb"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         app:drawThumbsApart="true"
-        app:rangeColor="@color/theme"
+        app:rangeColor="@color/secondaryColor"
         app:scaleMax="10"
         app:scaleMin="0"
         app:scaleStep="1"
@@ -50,14 +50,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="left"
+            style="@style/TextAppearance.MyTheme.Caption"
             android:text = "Low"
             />
         <TextView
@@ -65,6 +67,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:gravity="right"
+            style="@style/TextAppearance.MyTheme.Caption"
             android:text = "High"
             />
 
@@ -73,11 +76,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:text="From Creation to Interaction"
-        android:textSize="16sp"
-        android:textColor="@color/theme"
+        android:layout_marginTop="24dp"
+        android:text="Pre-Interaction Importance Pattern"
+        style="@style/TextAppearance.MyTheme.Subtitle2"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Specify How the Importance Changes Before User Interaction"
+        style="@style/TextAppearance.MyTheme.Caption"
         />
 
     <include
@@ -88,11 +97,17 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:text="From Interaction to Decay"
-        android:textSize="16sp"
-        android:textColor="@color/theme"
+        android:layout_marginTop="24dp"
+        android:text="Post-Interaction Importance Pattern"
+        style="@style/TextAppearance.MyTheme.Subtitle2"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Specify How the Importance Changes After User Interaction"
+        style="@style/TextAppearance.MyTheme.Caption"
         />
 
     <include

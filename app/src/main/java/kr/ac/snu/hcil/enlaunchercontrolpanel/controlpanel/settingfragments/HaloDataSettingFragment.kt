@@ -36,13 +36,13 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
     val maxTimeWindow: Long = 1000L * 60 * 60 * 24
 
     val filterEnhancmentMin: Double = 0.0
-    val filterEnhancmentMax: Double = 9.0
+    val filterEnhancmentMax: Double = 10.0
 
     var filterObservationWindowMin: Long = 0L
     var filterObservationWindowMax: Long = maxTimeWindow
 
     val observationTimeUnit: Long = 60 * 60 * 1000L
-    val observationTimeScales: List<Double> = listOf(0.0, 0.25, 0.5, 1.0, 2.0, 4.0, 6.0, 12.0, 24.0)
+    val observationTimeScales: List<Double> = listOf(0.0, 0.25, 0.5, 1.0, 2.0, 4.0, 6.0, 12.0, 24.0, 24.0*7)
 
     var keywordBlackList = ArrayList<String>()
     var keywordWhiteList = ArrayList<String>()
