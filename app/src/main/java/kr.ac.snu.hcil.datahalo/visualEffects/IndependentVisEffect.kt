@@ -3,6 +3,7 @@ package kr.ac.snu.hcil.datahalo.visualEffects
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.view.View
 import android.widget.ImageView
@@ -84,7 +85,7 @@ abstract class AbstractIndependentVisEffect(
     override fun setLocalStructure(localLayoutParams: List<ConstraintLayout.LayoutParams>, visParams: IndependentVisEffectVisParams) {
         val unitAngle = 360f / localLayoutParams.size
         localLayoutParams.forEachIndexed{ index, layoutParam ->
-            layoutParam.run{
+            layoutParam.apply{
                 circleConstraint = localPivotID
                 circleRadius = visParams.radius[index]
                 circleAngle = visParams.offsetAngle + (unitAngle * index)
@@ -92,12 +93,11 @@ abstract class AbstractIndependentVisEffect(
         }
     }
 
-    final override fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, pivotLayoutParams: ConstraintLayout.LayoutParams) {
+    override fun placeVisObjectsInLayout(constraintLayout: ConstraintLayout, pivotLayoutParams: ConstraintLayout.LayoutParams) {
         var localPivotView = constraintLayout.findViewById<View>(localPivotID) as ImageView?
 
         if(localPivotView == null){
-            //r: global pivot -> local pivot 사이의 거리
-            //theta: 꼭대기 기준으로 r과 이루는 각도
+            //r: global pivot -> local pivot 사이의 거리, theta: 꼭대기 기준으로 r과 이루는 각도
             currentCenterPolar = Pair(pivotLayoutParams.circleRadius, pivotLayoutParams.circleAngle)
             localPivotView = ImageView(constraintLayout.context).also{
                 it.id = localPivotID
@@ -108,7 +108,7 @@ abstract class AbstractIndependentVisEffect(
             constraintLayout.addView(localPivotView)
         }
 
-        if(currentCenterPolar.first != pivotLayoutParams.circleRadius || currentCenterPolar.second != pivotLayoutParams.circleAngle){
+        if (currentCenterPolar.first != pivotLayoutParams.circleRadius || currentCenterPolar.second != pivotLayoutParams.circleAngle){
             currentCenterPolar = Pair(pivotLayoutParams.circleRadius, pivotLayoutParams.circleAngle)
             localPivotView.layoutParams = pivotLayoutParams
         }
@@ -120,14 +120,14 @@ abstract class AbstractIndependentVisEffect(
 
             objectView?.let{
                 it.setImageDrawable(drawables[index])
-                it.rotation = localLayoutParams[index].circleAngle
+                it.rotation = pivotLayoutParams.circleAngle
                 it.layoutParams = localLayoutParams[index]
 
             }?: run{
                 val imageView = ImageView(constraintLayout.context).also{
                     it.id = visObj.getID()
                     it.setImageDrawable(drawables[index])
-                    it.rotation = localLayoutParams[index].circleAngle
+                    it.rotation = pivotLayoutParams.circleAngle
                 }
                 constraintLayout.addView(imageView, localLayoutParams[index])
             }
