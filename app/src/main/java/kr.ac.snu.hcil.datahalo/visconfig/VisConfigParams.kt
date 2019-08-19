@@ -268,6 +268,7 @@ class KeywordGroupImportancePatterns(
         elsePattern.type = VisDataManager.CUSTOM_PATTERN
         elsePattern.enhancementParam = param
     }
+
     fun setRemainderKeywordGroupEnhancementParams(type: String) {
         elsePattern.type = type
         elsePattern.enhancementParam = VisDataManager.getExampleSaturationPattern(type)!!
@@ -313,6 +314,18 @@ class KeywordGroupImportancePatterns(
         keywordGroupPatterns.find{it.group == group}?.let{ item ->
             keywordGroupPatterns.remove(item)
         }
+        keywordGroupPatterns.forEachIndexed{index, keywordGroupImportance ->
+            keywordGroupImportance.rank = index
+        }
+        elsePattern.rank = keywordGroupPatterns.size
+    }
+
+    fun swapRankOfGroup(rank1: Int, rank2: Int){
+        val el1 = getGroupOfRank(rank1)
+        val el2 = getGroupOfRank(rank2)
+        el2?.rank = rank1
+        el1?.rank = rank2
+        keywordGroupPatterns.sortBy{it.rank}
     }
 
     fun changeRankOfGroup(group: String, changedRank: Int){

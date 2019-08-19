@@ -74,6 +74,8 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
             }
 
             datafilteringCardView.findViewById<MultiSlider>(R.id.enhancementSeekbar).also{ enhancementSeekbar ->
+                enhancementSeekbar.getThumb(0).thumb = resources.getDrawable(R.drawable.seek_bar_black, null)
+                enhancementSeekbar.getThumb(1).thumb = resources.getDrawable(R.drawable.seek_bar_white, null)
                 enhancementSeekbar.getThumb(0).value = ((appHaloConfig.filterImportanceConfig[WGBFilterVar.BLACK_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
                 enhancementSeekbar.getThumb(1).value = ((appHaloConfig.filterImportanceConfig[WGBFilterVar.WHITE_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
                 enhancementSeekbar.setOnThumbValueChangeListener{ _, _, thumbIndex, value ->
@@ -97,6 +99,8 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
 
             datafilteringCardView.findViewById<MultiSlider>(R.id.observationWindowSeekbar).also{ observationWindowSeekbar ->
                 val filter = appHaloConfig.filterObservationWindowConfig
+                observationWindowSeekbar.getThumb(0).thumb = resources.getDrawable(R.drawable.seek_bar_white, null)
+                observationWindowSeekbar.getThumb(1).thumb = resources.getDrawable(R.drawable.seek_bar_black, null)
                 observationWindowSeekbar.getThumb(0).value = observationTimeScales.indexOf((filter[WGBFilterVar.WHITE_COND] as Long).toDouble() / observationTimeUnit)
                 observationWindowSeekbar.getThumb(1).value = observationTimeScales.indexOf((filter[WGBFilterVar.BLACK_COND] as Long).toDouble() / observationTimeUnit)
                 observationWindowSeekbar.setOnThumbValueChangeListener{_, _, thumbIndex, value ->

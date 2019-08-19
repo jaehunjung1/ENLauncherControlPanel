@@ -120,14 +120,14 @@ abstract class AbstractIndependentVisEffect(
 
             objectView?.let{
                 it.setImageDrawable(drawables[index])
-                it.rotation = localLayoutParams[index].circleAngle
+                it.rotation = localLayoutParams[index].circleAngle //pivotlayoutParams.circleAngle
                 it.layoutParams = localLayoutParams[index]
 
             }?: run{
                 val imageView = ImageView(constraintLayout.context).also{
                     it.id = visObj.getID()
                     it.setImageDrawable(drawables[index])
-                    it.rotation = localLayoutParams[index].circleAngle
+                    it.rotation = localLayoutParams[index].circleAngle //pivotlayoutParams.circleAngle
                 }
                 constraintLayout.addView(imageView, localLayoutParams[index])
             }

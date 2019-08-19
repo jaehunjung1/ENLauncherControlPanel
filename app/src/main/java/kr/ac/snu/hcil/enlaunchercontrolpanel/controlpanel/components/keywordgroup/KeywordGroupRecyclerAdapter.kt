@@ -30,11 +30,8 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
     private val keywordGroupData: MutableList<Triple<Long, String, MutableSet<String>>> = mutableListOf()
     private var layoutInflater: LayoutInflater? = null
     var startDragListener: OnStartDragListener? = null
-
-
     var tracker: SelectionTracker<Long>? = null
-
-
+    
     init{
         setHasStableIds(true)
         viewModel.appHaloConfigLiveData.value?.let{ appConfig ->
@@ -59,7 +56,7 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
         Collections.swap(keywordGroupData, from, to)
         notifyItemMoved(from, to)
         viewModel.appHaloConfigLiveData.value?.let{ appConfig ->
-            appConfig.keywordGroupPatterns.changeRankOfGroup(source.second, to)
+            appConfig.keywordGroupPatterns.swapRankOfGroup(from, to)
             viewModel.appHaloConfigLiveData.value = appConfig
         }
         return true
@@ -89,18 +86,19 @@ class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
         return keywordGroupData.filter{keyword in it.second}.isEmpty()
     }
 
-    /*
+
     fun addKeywordGroup(group: String){
-        if (group !in keywordGroupData){
-            keywordGroupData[group] = mutableListOf()
-            viewModel.appHaloConfigLiveData.value?.let{ appConfig ->
-                //appConfig.independentDataParameters[0].keywordGroupMap = keywordGroupData.toMap()
-                viewModel.appHaloConfigLiveData.value = appConfig
+        viewModel.appHaloConfigLiveData.value?.let{ config ->
+            config.keywordGroupPatterns.addKeywordGroup(group)
+            config.keywordGroupPatterns.getOrderedKeywordGroupImportancePatterns().find{it.group == group}?.let{
+                val pos = keywordGroupData.size
+                keywordGroupData.add(Triple(it.id, it.group,  it.keywords))
+                notifyItemInserted(pos)
             }
-            notifyItemInserted(itemCount)
+            viewModel.appHaloConfigLiveData.value = config
         }
     }
-    */
+
 
     inner class KeywordGroupViewHolder(itemView: View)
         : RecyclerView.ViewHolder(itemView), KeywordGroupItemTouchHelperViewHolder{
