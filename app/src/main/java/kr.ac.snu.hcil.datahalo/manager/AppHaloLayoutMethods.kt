@@ -1,5 +1,6 @@
 package kr.ac.snu.hcil.datahalo.manager
 
+import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
@@ -66,7 +67,7 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
                     ?: throw EXCEPTION_VIS_EFFECT_NOT_EXIST(notiID)
             val layoutParam = ConstraintLayout.LayoutParams(sizeOfIVE,sizeOfIVE).also{
                 it.circleConstraint = pivotViewID
-                it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2.5).roundToInt()
                 it.circleAngle = (index * eachAngle).toFloat()
             }
             enhancedNotification.id to layoutParam
@@ -119,7 +120,7 @@ object BookshelfLayout: AbstractANHVisLayout("BookshelfLayout"){
 
             val layoutParam = ConstraintLayout.LayoutParams(sizeOfIVE, sizeOfIVE).also{
                 it.circleConstraint = pivotViewID
-                it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                it.circleRadius = (0.2 * target.layoutParams.width).roundToInt()
                 it.circleAngle = intervalAngle * index
             }
             enhancedNotification.id to layoutParam

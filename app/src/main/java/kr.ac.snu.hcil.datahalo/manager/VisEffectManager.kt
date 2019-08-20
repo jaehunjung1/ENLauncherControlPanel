@@ -12,6 +12,7 @@ class VisEffectManager {
 
         private val registeredIndependentVisEffects:Map<String, String>
                 = mapOf(
+                "TestIndependentEffect" to "TestIndependentVisEffect",
                 "SingleVisObjIndependentEffect" to "SingleObjIndependentVisEffect",
                 "DoubleVisObjIndependentEffect" to "DoubleObjIndependentVisEffect"
         )

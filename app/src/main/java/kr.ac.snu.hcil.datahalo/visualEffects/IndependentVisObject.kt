@@ -8,6 +8,7 @@ import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
+import android.util.Log
 import android.view.Gravity
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
@@ -21,6 +22,7 @@ interface InterfaceVisObject{
     fun getID(): Int
 
     fun getPosition(): Pair<Double, Double>
+    fun setPosition(pos: Pair<Double, Double>)
 
     fun getMappingState(visVar: NotiVisVariable): MappingState?
     fun getVisVarsOf(mappingState: MappingState): List<NotiVisVariable>
@@ -48,7 +50,7 @@ interface InterfaceVisObject{
     fun getDrawableWithAnimator(input:Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet>
 }
 
-class IndependentVisObject(
+open class IndependentVisObject(
         visualMapping: Map<NotiVisVariable, NotiProperty?>,
         importanceEnhancementPatterns: KeywordGroupImportancePatterns,
         visualParameters: IndependentVisObjectVisParams,
@@ -99,9 +101,9 @@ abstract class AbstractIndependentVisObject(
     private var visParams: IndependentVisObjectVisParams = visualParameters
     private var dataParams: IndependentVisObjectDataParams = dataParameters
 
-    private lateinit var currMapping: Map<NotiVisVariable, NotiProperty?>
-    private lateinit var boundConversions: Map<NotiVisVariable, (Any) -> Any?>
-    private lateinit var userDefinedConversions: Map<NotiVisVariable, Any>
+    lateinit var currMapping: Map<NotiVisVariable, NotiProperty?>
+    lateinit var boundConversions: Map<NotiVisVariable, (Any) -> Any?>
+    lateinit var userDefinedConversions: Map<NotiVisVariable, Any>
     private var position: Pair<Double, Double> = Pair(0.0, 0.0)
     private lateinit var animationMap: Map<EnhancedNotificationLife, AnimatorSet>
 
@@ -141,6 +143,7 @@ abstract class AbstractIndependentVisObject(
     final override fun setID(id: Int) { this.id = id }
 
     final override fun getPosition(): Pair<Double, Double> = position
+    final override fun setPosition(pos: Pair<Double, Double>) { this.position = pos}
 
     final override fun getImportanceEnhancementPatterns(): KeywordGroupImportancePatterns = enhancementPatterns
     final override fun setImportanceEnhancementPatterns(keywordGroupImportancePatterns: KeywordGroupImportancePatterns) {
@@ -346,7 +349,9 @@ abstract class AbstractIndependentVisObject(
     }
 
     final override fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable) {}
-    final override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
+
+    // TODO override this to enable height-only mapping
+    override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
 
         val visualParams = getVisParams()
         var pos: Double = visualParams.selectedPos
@@ -415,6 +420,7 @@ abstract class AbstractIndependentVisObject(
                 ShapeDrawable().also{
                     it.shape = RectShape()
                     it.paint.color = color
+                    Log.e("Size", mySize.toString())
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
                 }
@@ -466,5 +472,112 @@ abstract class AbstractIndependentVisObject(
 
 }
 
+class HeightOnlyIndependentObject(
+        visualMapping: Map<NotiVisVariable, NotiProperty?>,
+        importanceEnhancementPatterns: KeywordGroupImportancePatterns,
+        visualParameters: IndependentVisObjectVisParams,
+        dataParameters: IndependentVisObjectDataParams,
+        animationParameters: List<IndependentVisObjectAnimParams>)
+    : IndependentVisObject(
+        visualMapping = visualMapping,
+        importanceEnhancementPatterns = importanceEnhancementPatterns,
+        visualParameters = visualParameters,
+        dataParameters = dataParameters,
+        animationParameters = animationParameters
+) {
+    override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
 
+        val visualParams = getVisParams()
+        var pos: Double = visualParams.selectedPos
+        var size: Double = visualParams.selectedSize
+        var shape: VisObjectShape = visualParams.selectedShape
+        var color: Int = visualParams.selectedColor
+        var motion: AnimatorSet = visualParams.selectedMotion
+
+        input.forEach{ propertyToValue ->
+            val notiProp: NotiProperty = propertyToValue.key
+            val notiVal: Any = propertyToValue.value
+
+            val visVars = currMapping.filter{it.value == notiProp}.map{ it.key }.toList()
+            visVars.forEach{ visVar ->
+                when(visVar){
+                    in boundConversions -> {
+                        val f = boundConversions[visVar]!!
+                        f(notiVal)?.let{ visVal ->
+                            when(visVar){
+                                NotiVisVariable.SIZE -> size = visVal as Double
+                                NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
+                                NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                                NotiVisVariable.POSITION -> pos = visVal as Double
+                                NotiVisVariable.COLOR -> color = visVal as Int
+                            }
+                        }
+                    }
+                    in userDefinedConversions -> {
+                        val visVal = userDefinedConversions[visVar]!!
+                        when(visVar){
+                            NotiVisVariable.SIZE -> size = visVal as Double
+                            NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
+                            NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                            NotiVisVariable.POSITION -> pos = visVal as Double
+                            NotiVisVariable.COLOR -> color = visVal as Int
+                        }
+                    }
+                    else -> {
+                        //여기 오면 문제 생김
+                    }
+                }
+            }
+        }
+        setPosition(Pair(pos, pos))
+
+        val mySize = (150 * size).roundToInt()
+
+        val shapeDrawable: Drawable = when(shape.type){
+            NewVisShape.RECT -> {
+                ShapeDrawable().also{
+                    it.shape = RectShape()
+                    it.paint.color = color
+                    it.intrinsicWidth = 20
+                    it.intrinsicHeight = mySize
+                }
+            }
+            NewVisShape.OVAL -> {
+                ShapeDrawable().also{
+                    it.shape = OvalShape()
+                    it.paint.color = color
+                    it.intrinsicWidth = 20
+                    it.intrinsicHeight = mySize
+                }
+                //TODO(VisConfigParam의 ShapeDrawable 고쳐야 함 공유 문제)
+            }
+            NewVisShape.PATH -> {
+                (shape.drawable as ShapeDrawable).also{
+                    it.paint.color = color
+                    it.intrinsicWidth = 20
+                    it.intrinsicHeight = mySize
+                }
+            }
+            NewVisShape.IMAGE -> {
+                ScaleDrawable(shape.drawable, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
+            }
+            NewVisShape.RAW -> {
+                (shape.drawable as TextDrawable).also{
+                    it.setColor(color)
+                }
+            }
+        }
+
+        val resultDrawable = ScaleDrawable(
+                shapeDrawable,
+                Gravity.CENTER,
+                1.0f,
+                1.0f
+        ).also{
+            it.level = (10000 * size).roundToInt()
+        }
+
+        return Pair(shapeDrawable, motion.also{it.setTarget(resultDrawable)})
+    }
+}
 
