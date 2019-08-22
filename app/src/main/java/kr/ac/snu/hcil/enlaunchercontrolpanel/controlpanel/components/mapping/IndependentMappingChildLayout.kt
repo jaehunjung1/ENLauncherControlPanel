@@ -243,7 +243,6 @@ class IndependentMappingChildLayout : LinearLayout {
                     NotiVisVariable.SIZE -> {
                         if(notiDataPropContents.size == 0)
                         {
-
                             listOf(independentVisParams.selectedSizeRange)
                         }
                         else{
@@ -303,10 +302,9 @@ class IndependentMappingChildLayout : LinearLayout {
 
         visVarContents.forEachIndexed { index, content ->
             val tableRow = tableLayout.getChildAt(index) as TableRow
-
             val frame = FrameLayout(context)
-            setVisVarFrame(index, frame, content)
 
+            setVisVarFrame(appConfig, index, frame, content)
             tableRow.addView(
                     TextView(context).apply{
                         text = "to"
@@ -361,14 +359,6 @@ class IndependentMappingChildLayout : LinearLayout {
         setNominalTableMapping(appConfig)
     }
 
-    private fun addKeywordToFlowLayout(flowLayout: FlowLayout, keyword: String, inflater: LayoutInflater) {
-        (inflater.inflate(R.layout.chip_view_layout, null) as Chip).let{ chipView ->
-            chipView.chipText = keyword
-            chipView.isClosable = false
-            flowLayout.addView(chipView)
-        }
-    }
-
     private fun setNominalNotiPropViews(givenPropContents: List<Any>, notiPropLayout: TableLayout, inflater: LayoutInflater){
         val givenPropStringContents: List<String> =
                 when(notiDataProp){
@@ -387,6 +377,7 @@ class IndependentMappingChildLayout : LinearLayout {
                         emptyList()
                     }
                 }
+
         givenPropStringContents.forEachIndexed{ index, strContent ->
             val tr = notiPropLayout.getChildAt(index) as TableRow
             tr.addView(
@@ -411,56 +402,7 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setNewSpinnerView(selectedPropContentsIndices: List<Int>, givenPropContents: List<Any>, notiPropLayout: TableLayout){
-        val givenPropStringContents: List<String> =
-                when(notiDataProp){
-                    NotiProperty.IMPORTANCE -> {givenPropContents.map{
-                        val propContent = it as Pair<Double, Double>
-                        "${"%.1f".format(propContent.first)}-${"%.1f".format(propContent.second)}"}
-                    }
-                    NotiProperty.LIFE_STAGE -> {givenPropContents.map{
-                        val propContent = it as EnhancedNotificationLife
-                        propContent.name }
-                    }
-                    else -> {
-                        emptyList()
-                    }
-                }
-        val spinnerAdapter = getArrayAdapter(givenPropStringContents.toMutableList().apply{
-            add(0, "None")
-        }.toList())
-        spinnerAdapter.setDropDownViewResource(R.layout.item_spinner)
-        selectedPropContentsIndices.forEachIndexed{ index, indexVal ->
-            val tr = notiPropLayout.getChildAt(index) as TableRow
-            tr.addView(
-                    FrameLayout(context).also{ frame ->
-                        val spinner = Spinner(context)
-                        spinner.adapter = spinnerAdapter
-                        spinner.setSelection(indexVal + 1) //indexVal 번째 순서에 있는 givenPropContent
-                        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                            override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-                                if(i == 0){
-                                    //TODO(mapping)
-                                    //notiDataPropContents[index] = selectedData
-                                } else{
-                                    val selectedData = givenPropContents[i - 1]
-                                    notiDataPropContents[index] = selectedData
-                                }
-                                updateAppConfig()
-                            }
-                            override fun onNothingSelected(adapterView: AdapterView<*>) {}
-                        }
-                        frame.addView(spinner)
-                    },
-                    TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
-                        gravity = Gravity.CENTER
-                        column = 0
-                    }
-            )
-        }
-    }
-
-    private fun setVisVarFrame(index: Int, frame: FrameLayout, content: Any ){
+    private fun setVisVarFrame(appConfig: AppHaloConfig, index: Int, frame: FrameLayout, content: Any ){
         frame.tag = index
         when(notiVisVar){
             NotiVisVariable.COLOR -> {
@@ -490,77 +432,66 @@ class IndependentMappingChildLayout : LinearLayout {
                 )
             }
             NotiVisVariable.SHAPE -> {
-                //TODO(반복되는 실행 처리 필요)
-                viewModel?.appHaloConfigLiveData?.value?.let{ config ->
-                    NominalVisVarContentSpinner.generateForIndependentMapping(context, config, notiVisVar).let{ spinner ->
-                        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                                (parent?.getItemAtPosition(position) as Triple<String, String, VisShapeType>?)?.let{ item->
-                                    when(item.third){
-                                        VisShapeType.IMAGE -> {
-                                            CropImage.activity()
-                                                    .setGuidelines(CropImageView.Guidelines.ON)
-                                                    .setActivityTitle("Set Image")
-                                                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-                                                    .setAspectRatio(1, 1)
-                                                    .setCropMenuCropButtonTitle("Done")
-                                                    .setRequestedSize(150, 150)
-                                                    .start(context as FragmentActivity)
-                                            mappingContentsChangedListener?.onShapeMappingContentsUpdated(index, item.third)
-                                        }
-                                        else -> {
-                                            mappingContentsChangedListener?.onShapeMappingContentsUpdated(index, item.third)
-                                        }
+                NominalVisVarContentSpinner.generateForIndependentMapping(context, appConfig, notiVisVar).let{ spinner ->
+                    spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            (parent?.getItemAtPosition(position) as Triple<String, String, VisShapeType>?)?.let{ item->
+                                when(item.third){
+                                    VisShapeType.IMAGE -> {
+                                        CropImage.activity()
+                                                .setGuidelines(CropImageView.Guidelines.ON)
+                                                .setActivityTitle("Set Image Drawable")
+                                                .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                                .setAspectRatio(1, 1)
+                                                .setCropMenuCropButtonTitle("Done")
+                                                .setRequestedSize(150, 150)
+                                                .start(context as FragmentActivity)
+                                        mappingContentsChangedListener?.onShapeMappingContentsUpdated(index, item.third)
+                                    }
+                                    else -> {
+                                        visVarContents[index] = VisObjectShape(item.third, null)
+                                        updateAppConfig()
                                     }
                                 }
                             }
-                            override fun onNothingSelected(parent: AdapterView<*>?) {}
                         }
-
-                        frame.addView(
-                                spinner,
-                                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
-                        )
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
                     }
+
+                    (spinner.adapter as NominalVisVarContentSpinner.NominalVisVarContentAdapter).let {adapter ->
+                        val visObjectShape = visVarContents[index] as VisObjectShape
+                        spinner.setSelection(adapter.findContent(visObjectShape.type)?: 0)
+                    }
+
+                    frame.addView(
+                            spinner,
+                            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                    )
                 }
+
             }
             else -> {
-                viewModel?.appHaloConfigLiveData?.value?.let{ config ->
-                    NominalVisVarContentSpinner.generateForIndependentMapping(context, config, notiVisVar).let{ spinner ->
-                        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
-                            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                                (parent?.getItemAtPosition(position) as Triple<String, String, Any>?)?.let{ item ->
-                                    visVarContents[index] = item.third
-                                    updateAppConfig()
-                                }
+                NominalVisVarContentSpinner.generateForIndependentMapping(context, appConfig, notiVisVar).let{ spinner ->
+                    spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                            (parent?.getItemAtPosition(position) as Triple<String, String, Any>?)?.let{ item ->
+                                visVarContents[index] = item.third
+                                updateAppConfig()
                             }
-                            override fun onNothingSelected(parent: AdapterView<*>?) {}
                         }
-
-                        //visVarContents[index] 이 값이 위치가 어딘건가 찾아야되는거지
-                        (spinner.adapter as NominalVisVarContentSpinner.NominalVisVarContentAdapter).let {adapter ->
-                            spinner.setSelection(adapter.findContent(visVarContents[index])?: index)
-                        }
-
-                        //spinner.setSelection()
-
-                        frame.addView(
-                                spinner
-                                //, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
-                        )
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
                     }
+
+                    (spinner.adapter as NominalVisVarContentSpinner.NominalVisVarContentAdapter).let {adapter ->
+                        spinner.setSelection(adapter.findContent(visVarContents[index])?: index)
+                    }
+
+                    frame.addView(
+                            spinner,
+                            FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                    )
                 }
             }
-        }
-    }
-
-    private fun contentToString(notiVisVar: NotiVisVariable, content: Any): String{
-        return when (notiVisVar){
-            NotiVisVariable.MOTION -> content.toString()
-            NotiVisVariable.SHAPE -> (content as VisObjectShape).type.name
-            NotiVisVariable.COLOR -> (content as Int).let{"R:${Color.red(it)}, G:${Color.green(it)}, B:${Color.blue(it)}"}
-            NotiVisVariable.SIZE -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
-            NotiVisVariable.POSITION -> (content as Pair<Double, Double>).let{"${"%.1f".format(it.first)}-${"%.1f".format(it.second)}"}
         }
     }
 
@@ -586,13 +517,6 @@ class IndependentMappingChildLayout : LinearLayout {
             set.connect(this.id, ConstraintSet.BOTTOM, constraintLayout.id, ConstraintSet.BOTTOM)
             set.applyTo(constraintLayout)
         }
-
-        /*
-        * TODO set appconfig with range mapping
-        * mappingUI.config returns [left Start, left End, right Start, right End]
-        */
-        //Log.i("Initial Mapping", Arrays.toString(mappingUI.config))
-
     }
 
     private fun init(attrs: AttributeSet?, defStyle: Int) {
@@ -602,36 +526,4 @@ class IndependentMappingChildLayout : LinearLayout {
         a.recycle()
         mappingContentsChangedListener = null
     }
-
-    private fun getArrayAdapter(stringList: List<String>): ArrayAdapter<String> {
-        return object : ArrayAdapter<String>(context, R.layout.item_spinner, stringList) {
-            override fun isEnabled(position: Int): Boolean {
-                return true
-                /*
-                return if (position == 0) {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    false
-                } else {
-                    true
-                }
-                */
-            }
-
-            override fun getDropDownView(position: Int, convertView: View?,
-                                         parent: ViewGroup): View {
-                val view = super.getDropDownView(position, convertView, parent)
-                val tv = view as TextView
-                if (position == 0) {
-                    // Set the hint text color gray
-                    tv.setTextColor(Color.GRAY)
-                } else {
-                    tv.setTextColor(Color.BLACK)
-                }
-                return view
-            }
-        }
-    }
-
-
 }

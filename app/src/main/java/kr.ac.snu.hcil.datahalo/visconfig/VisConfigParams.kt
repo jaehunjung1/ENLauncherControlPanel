@@ -21,7 +21,7 @@ import kotlin.math.roundToLong
 data class IndependentVisObjectVisParams(
         var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedShape: VisObjectShape = VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
+        var selectedShape: VisObjectShape = VisObjectShape(VisShapeType.RECT, null),
         var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
         var selectedMotionList: List<AnimatorSet> = listOf(),
@@ -99,7 +99,7 @@ data class IndependentVisEffectVisParams(
 data class AggregatedVisObjectVisParams(
         var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedShape: VisObjectShape = VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
+        var selectedShape: VisObjectShape = VisObjectShape(VisShapeType.OVAL, null),
         var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
         var selectedMotionList: List<AnimatorSet> = listOf(),

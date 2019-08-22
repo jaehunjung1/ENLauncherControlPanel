@@ -29,8 +29,7 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
             visVartoNotiPropMappings.clear()
             visVartoNotiPropMappings.addAll(appHaloConfig.independentVisualMappings[0].toList())
         }
-
-        notifyDataSetInvalidated()
+        notifyDataSetChanged()
     }
 
     override fun hasStableIds(): Boolean {
