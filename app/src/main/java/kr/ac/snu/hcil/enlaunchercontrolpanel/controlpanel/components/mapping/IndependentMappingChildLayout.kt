@@ -486,10 +486,11 @@ class IndependentMappingChildLayout : LinearLayout {
 
                 frame.addView(
                         imgView,
-                        FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                        FrameLayout.LayoutParams(50, 50)
                 )
             }
             NotiVisVariable.SHAPE -> {
+                //TODO(반복되는 실행 처리 필요)
                 viewModel?.appHaloConfigLiveData?.value?.let{ config ->
                     NominalVisVarContentSpinner.generateForIndependentMapping(context, config, notiVisVar).let{ spinner ->
                         spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
