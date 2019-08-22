@@ -9,7 +9,7 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import kr.ac.snu.hcil.datahalo.visconfig.*
 import kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisMappingRule
-import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
+import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 class AppConfigManager {
@@ -51,11 +51,11 @@ class AppConfigManager {
                 independentVisualParameters.add(
                         IndependentVisObjectVisParams().also{
                             it.selectedShapeList = listOf(
-                                    VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape()))
+                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
+                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
+                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
+                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
+                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape()))
                             )
                             it.selectedMotionList = listOf(
                                     AnimatorSet(),
@@ -106,11 +106,11 @@ class AppConfigManager {
                 aggregatedVisualParameters.add(
                         AggregatedVisObjectVisParams().also{
                             it.selectedShapeList = listOf(
-                                    VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape()))
+                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
+                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
+                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
+                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
+                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape()))
                             )
                             it.selectedMotionList = listOf(
                                     AnimatorSet(),

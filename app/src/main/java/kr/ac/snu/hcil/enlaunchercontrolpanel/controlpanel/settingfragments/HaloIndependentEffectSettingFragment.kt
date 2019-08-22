@@ -4,6 +4,9 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.PathShape
+import android.graphics.drawable.shapes.RectShape
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
@@ -13,7 +16,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.theartofdev.edmodo.cropper.CropImage
 
@@ -24,8 +26,8 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselec
 
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
-import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
-import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
+import kr.ac.snu.hcil.datahalo.utils.TextDrawable
+import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 class HaloIndependentEffectSettingFragment : Fragment() {
@@ -54,27 +56,49 @@ class HaloIndependentEffectSettingFragment : Fragment() {
 
     private var currentShapeChangedIndex: Int? = null
     private var currentShapeChangedUri: Uri? = null
+    private var currentShapeChangedType: VisShapeType? = null
+
     private fun updateShapeChanged(){
-        if(currentShapeChangedIndex == null || currentShapeChangedUri == null)
-            return
-        appConfigViewModel.appHaloConfigLiveData.value?.let{ currentConfig ->
 
-            currentConfig.independentVisualParameters[0].selectedShapeList =
-                    currentConfig.independentVisualParameters[0].selectedShapeList.mapIndexed{index, visObjShape ->
-                        if(index == currentShapeChangedIndex!!){
-                            VisObjectShape(
-                                    NewVisShape.IMAGE,
-                                    BitmapDrawable(resources, MediaStore.Images.Media.getBitmap(activity!!.contentResolver, currentShapeChangedUri!!))
-                            )
+        currentShapeChangedType?.let{ type ->
+            when(type){
+                VisShapeType.OVAL -> {
+                    VisObjectShape(type, ShapeDrawable(OvalShape()))
+                }
+                VisShapeType.RECT -> {
+                    VisObjectShape(type, ShapeDrawable(RectShape()))
+                }
+                VisShapeType.PATH -> {
+                    VisObjectShape(type, ShapeDrawable())
+                }
+                VisShapeType.TEXT -> {
+                    VisObjectShape(type, ShapeDrawable())
+                }
+                VisShapeType.IMAGE -> {
+                    if(currentShapeChangedIndex != null && currentShapeChangedUri != null){
+                        VisObjectShape(
+                                VisShapeType.IMAGE,
+                                BitmapDrawable(resources, MediaStore.Images.Media.getBitmap(activity!!.contentResolver, currentShapeChangedUri!!))
+                        )
+                    } else null
+                }
+            }
+        }?.let{ newVisObjShape ->
+            appConfigViewModel.appHaloConfigLiveData.value?.let{ currentConfig ->
+                currentConfig.independentVisualParameters[0].selectedShapeList =
+                        currentConfig.independentVisualParameters[0].selectedShapeList.mapIndexed{index, visObjShape ->
+                            if(index == currentShapeChangedIndex!!){
+                                newVisObjShape
+                            }
+                            else visObjShape
                         }
-                        else visObjShape
-                    }
 
-            appConfigViewModel.appHaloConfigLiveData.value = currentConfig
-            currentShapeChangedIndex = null
-            currentShapeChangedUri = null
-            expandableListView?.expandableListAdapter?.let{
-                (it as IndependentMappingExpandableListAdapter).notifyDataSetChanged()
+                appConfigViewModel.appHaloConfigLiveData.value = currentConfig
+                currentShapeChangedIndex = null
+                currentShapeChangedUri = null
+                expandableListView?.expandableListAdapter?.let{
+                    (it as IndependentMappingExpandableListAdapter).notifyDataSetChanged()
+                }
             }
         }
     }
@@ -120,8 +144,9 @@ class HaloIndependentEffectSettingFragment : Fragment() {
                         IndependentMappingExpandableListAdapter().apply{
                             setViewModel(appConfigViewModel)
                             shapeMappingParameterChangedLister = object: IndependentMappingExpandableListAdapter.MappingParameterChangedListener{
-                                override fun onShapeParameterChanged(index: Int) {
+                                override fun onShapeParameterChanged(index: Int, visShapeType: VisShapeType) {
                                     currentShapeChangedIndex = index
+                                    currentShapeChangedType = visShapeType
                                     updateShapeChanged()
                                 }
                             }
