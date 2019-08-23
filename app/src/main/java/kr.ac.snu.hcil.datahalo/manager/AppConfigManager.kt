@@ -1,7 +1,10 @@
 package kr.ac.snu.hcil.datahalo.manager
 
 import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
@@ -14,6 +17,7 @@ import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 class AppConfigManager {
     companion object {
+        @SuppressLint("ObjectAnimatorBinding")
         fun retrieveDefaultAppConfig(packageName: String): AppHaloConfig {
             return AppHaloConfig(packageName).apply{
 
@@ -59,8 +63,17 @@ class AppConfigManager {
                             )
                             it.selectedMotionList = listOf(
                                     AnimatorSet(),
-                                    AnimatorSet(),
-                                    AnimatorSet(),
+                                    AnimatorSet().apply{
+                                        val alphaAnim: ObjectAnimator = ObjectAnimator.ofInt(null, "alpha", 255, 20)
+                                        alphaAnim.repeatCount = ObjectAnimator.INFINITE
+                                        alphaAnim.repeatMode = ObjectAnimator.REVERSE
+                                        alphaAnim.duration = 1500
+                                        play(alphaAnim)
+                                    },
+                                    AnimatorSet().apply{
+                                        // TODO ("Not Implemented")
+//                                        val sizeAnim: ObjectAnimator = ObjectAnimator.of
+                                    },
                                     AnimatorSet(),
                                     AnimatorSet()
                             )
