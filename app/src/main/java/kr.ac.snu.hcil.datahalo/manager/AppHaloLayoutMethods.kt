@@ -128,6 +128,31 @@ object BookshelfLayout: AbstractANHVisLayout("BookshelfLayout"){
 
         var aggregatedLPs: Pair<List<ConstraintLayout.LayoutParams>, List<ConstraintLayout.LayoutParams>> = Pair(emptyList(), emptyList())
 
+        //TODO(임시코드) 에러 없애는 용
+        aggregatedVisEffect?.let{ aggrVisEffect ->
+            val groupVisObjs = aggrVisEffect.getGroupBoundVisObjects()
+            val groupVisLPs = List(groupVisObjs.size){ index ->
+                val (wScale, hScale) = groupVisObjs[index].getPosition()
+                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                    it.circleConstraint = pivotViewID
+                    it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                    it.circleAngle = (index * 45f).toFloat()
+                }
+            }
+
+            val normalVisObjs = aggrVisEffect.getNormalVisObjects()
+            val normalVisLPs = List(normalVisObjs.size){ index ->
+                val (wScale, hScale) = normalVisObjs[index].getPosition()
+                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                    it.circleConstraint = pivotViewID
+                    it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
+                    it.circleAngle = (index * 45f).toFloat()
+                }
+            }
+
+            aggregatedLPs = Pair(groupVisLPs, normalVisLPs)
+        }
+
         return Pair(independentLPs, aggregatedLPs)
     }
 }
