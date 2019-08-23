@@ -18,6 +18,7 @@ interface InterfaceIndependentVisEffect{
     val independentVisObjects: List<AbstractIndependentVisObject>
     val localPivotID: Int
 
+
     fun getMappedNotificationID(): Int
     fun getDrawables(): List<Drawable>
     fun getLocalLayoutParams(): List<ConstraintLayout.LayoutParams>
@@ -44,6 +45,8 @@ abstract class AbstractIndependentVisEffect(
     private var animatorSet: AnimatorSet = AnimatorSet()
     private var currentCenterPolar: Pair<Int, Float> = Pair(-1, 0f)
     private var mappedNotificationID: Int = -1
+    private val animatorCollection = mutableListOf<Animator>()
+
 
     init{
         independentVisObjects.forEach{ abstractIndependentVisObject ->
@@ -61,7 +64,6 @@ abstract class AbstractIndependentVisEffect(
         mappedNotificationID = enhancedNotification.id
         drawables.clear()
 
-        val animatorCollection = mutableListOf<Animator>()
         independentVisObjects.forEach{ visObject ->
             val (drawable, animator) = visObject.getDrawableWithAnimator(
                     mapOf(
@@ -73,14 +75,15 @@ abstract class AbstractIndependentVisEffect(
 
             drawables.add(drawable)
             animatorCollection.addAll(
-                    animator.childAnimations.map{anim->
-                        anim.also{ it.setTarget(drawable)}
-                    }
+                    animator.childAnimations
+//                            .map{anim->
+//                        anim.also{ it.setTarget(drawable)}
+//                    }
             )
         }
 
-        animatorSet.playTogether(animatorCollection)
-        animatorSet.start()
+//        animatorSet.playTogether(animatorCollection)
+//        animatorSet.start()
     }
 
     override fun setLocalStructure(localLayoutParams: List<ConstraintLayout.LayoutParams>, visParams: IndependentVisEffectVisParams) {
@@ -124,6 +127,10 @@ abstract class AbstractIndependentVisEffect(
                 it.rotation = pivotLayoutParams.circleAngle
                 it.layoutParams = localLayoutParams[index]
 
+                animatorCollection.forEach{ it.setTarget(objectView) }
+                animatorSet.playTogether(animatorCollection)
+                animatorSet.start()
+
             }?: run{
                 val imageView = ImageView(constraintLayout.context).also{
                     it.id = visObj.getID()
@@ -131,6 +138,10 @@ abstract class AbstractIndependentVisEffect(
                     it.rotation = pivotLayoutParams.circleAngle
                 }
                 constraintLayout.addView(imageView, localLayoutParams[index])
+
+                animatorCollection.forEach{ it.setTarget(imageView) }
+                animatorSet.playTogether(animatorCollection)
+                animatorSet.start()
             }
         }
     }

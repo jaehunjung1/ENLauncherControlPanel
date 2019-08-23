@@ -10,7 +10,6 @@ class TestIndependentVisEffect(appHaloConfig: AppHaloConfig)
     : AbstractIndependentVisEffect(
         effectID = "TestIndependentEffect",
         independentVisObjects = listOf(
-                // TODO change this to testVisObject (height-only change)
                 HeightOnlyIndependentObject(
                         visualMapping = appHaloConfig.independentVisualMappings[0],
                         importanceEnhancementPatterns = appHaloConfig.keywordGroupPatterns,

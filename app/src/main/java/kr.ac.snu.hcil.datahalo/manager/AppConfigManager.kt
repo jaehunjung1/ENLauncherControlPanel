@@ -2,6 +2,7 @@ package kr.ac.snu.hcil.datahalo.manager
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
@@ -16,6 +17,7 @@ import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 
 class AppConfigManager {
     companion object {
+        @SuppressLint("ObjectAnimatorBinding")
         fun retrieveDefaultAppConfig(packageName: String): AppHaloConfig {
             return AppHaloConfig(packageName).apply{
 
@@ -68,7 +70,10 @@ class AppConfigManager {
                                         alphaAnim.duration = 1500
                                         play(alphaAnim)
                                     },
-                                    AnimatorSet(),
+                                    AnimatorSet().apply{
+                                        // TODO ("Not Implemented")
+//                                        val sizeAnim: ObjectAnimator = ObjectAnimator.of
+                                    },
                                     AnimatorSet(),
                                     AnimatorSet()
                             )
