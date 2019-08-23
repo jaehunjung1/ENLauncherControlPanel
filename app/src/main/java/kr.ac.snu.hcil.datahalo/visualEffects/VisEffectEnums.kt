@@ -28,5 +28,5 @@ enum class VisShapeType(val explanation: String){
     IMAGE("Image Drawable")
 }
 
-data class VisObjectShape(val type: VisShapeType, val drawable: Drawable)
+data class VisObjectShape(val type: VisShapeType, val drawable: Drawable?)
 

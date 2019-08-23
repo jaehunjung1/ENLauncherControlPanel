@@ -3,7 +3,6 @@ package kr.ac.snu.hcil.datahalo.visualEffects
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import android.widget.ImageView
@@ -233,8 +232,6 @@ abstract class AbstractAggregatedVisEffect(
                 val aggregationResult: Any? = aggregate(enhancedNotifications, targetProp, aggrType, visObject.getDataParams())
                 Pair(aggregationTypeAndTargetProperty, aggregationResult)
             }.toMap()
-
-            Log.i("Aggr_Vis_Eff", tempResult.toString())
 
             visObject.getDrawableWithAnimator(tempResult)?.let{ pair ->
                 val drawable = pair.first

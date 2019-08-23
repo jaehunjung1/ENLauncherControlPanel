@@ -120,13 +120,13 @@ class KeywordGroupExpandableListAdapter(
         return childPosition.toLong()
     }
 
-    override fun getChild(groupPosition: Int, childPosition: Int): Pair<Set<String>, NotificationEnhacementParams>? {
+    override fun getChild(groupPosition: Int, childPosition: Int): Pair<Set<String>, NotificationEnhancementParams>? {
         return getGroup(groupPosition)?.let{ Pair(it.keywords, it.enhancementParam) }
     }
 
     private fun createChildViewListener(groupPosition: Int, groupData:KeywordGroupImportance): KeywordGroupChildView.KeywordGroupChildInteractionListener {
         return object: KeywordGroupChildView.KeywordGroupChildInteractionListener{
-            override fun onEnhancementParamUpdated(pattern: NotificationEnhacementParams) {
+            override fun onEnhancementParamUpdated(pattern: NotificationEnhancementParams) {
                 if(groupPosition == groupCount - 1)
                     keywordGroupImportancePatterns.setRemainderKeywordGroupEnhancementParams(pattern)
                 else

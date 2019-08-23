@@ -3,7 +3,7 @@ package kr.ac.snu.hcil.datahalo.notificationdata
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportancePatterns
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
-import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
+import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams
 import kotlin.math.roundToLong
 
 abstract class AbstractEnhancedData{
@@ -73,7 +73,7 @@ data class EnhancedNotification(
         val group: String = appHaloConfig.keywordGroupPatterns.assignGroupToNotification(notiContent.title, notiContent.content)
         keywordGroup = group
 
-        val notificationEnhancementParams: NotificationEnhacementParams =
+        val notificationEnhancementParams: NotificationEnhancementParams =
                 if(KeywordGroupImportancePatterns.ELSE_KEYWORD_GROUP == group)
                     appHaloConfig.keywordGroupPatterns.getRemainderKeywordGroupPattern().enhancementParam
                 else

@@ -34,7 +34,7 @@ data class AppHaloConfig(val packageName: String){
     val keywordGroupPatterns: KeywordGroupImportancePatterns = KeywordGroupImportancePatterns(mutableMapOf())
 
     var notificationEnhancementExamplePatternName: String = VisDataManager.exampleImportanceSaturationPatterns.keys.toList()[0]
-    var notificationEnhancementParams: NotificationEnhacementParams = NotificationEnhacementParams()
+    var notificationEnhancementParams: NotificationEnhancementParams = NotificationEnhancementParams()
 
     //AppHalo Layout & Visualization Methods
     var haloLayoutMethodName: String = AppHaloLayoutMethods.availiableLayouts[0]

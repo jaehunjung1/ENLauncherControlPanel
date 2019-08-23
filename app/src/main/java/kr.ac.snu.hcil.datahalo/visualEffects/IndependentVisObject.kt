@@ -398,19 +398,12 @@ abstract class AbstractIndependentVisObject(
                 }
             }
         }
-        /*
-        position = Pair(
-                visualParams.selectedPosRange.first + (visualParams.selectedPosRange.second - visualParams.selectedPosRange.first) * pos,
-                visualParams.selectedPosRange.first + (visualParams.selectedPosRange.second - visualParams.selectedPosRange.first) * pos
-        )
-        */
-        position = Pair(pos, pos)
 
-        //val width: Double = visualParams.wRange.first + (visualParams.wRange.second - visualParams.wRange.first) * size
-        //val height: Double = visualParams.hRange.first + (visualParams.hRange.second - visualParams.hRange.first) * size
+        position = Pair(pos, pos)
 
         val mySize = (150 * size).roundToInt()
 
+        //TODO(Drawable 조정)
         val shapeDrawable: Drawable = when(shape.type){
             VisShapeType.RECT -> {
                 /*
@@ -445,19 +438,22 @@ abstract class AbstractIndependentVisObject(
                 //TODO(VisConfigParam의 ShapeDrawable 고쳐야 함 공유 문제)
             }
             VisShapeType.PATH -> {
-                (shape.drawable as ShapeDrawable).also{
+                //이거 다 고쳐야 함
+                (shape.drawable as ShapeDrawable?)?.also{
                     it.paint.color = color
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
-                }
+                }?: ShapeDrawable()
             }
             VisShapeType.IMAGE -> {
-                ScaleDrawable(shape.drawable, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
+                (shape.drawable)?.let{
+                    ScaleDrawable(it, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
+                }?: ShapeDrawable()
             }
             VisShapeType.TEXT -> {
-                (shape.drawable as TextDrawable).also{
+                (shape.drawable as TextDrawable?)?.also{
                     it.setColor(color)
-                }
+                }?: ShapeDrawable()
             }
         }
 

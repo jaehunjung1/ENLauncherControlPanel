@@ -55,11 +55,11 @@ class AppConfigManager {
                 independentVisualParameters.add(
                         IndependentVisObjectVisParams().also{
                             it.selectedShapeList = listOf(
-                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
-                                    VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape()))
+                                    VisObjectShape(VisShapeType.RECT, null),
+                                    VisObjectShape(VisShapeType.RECT, null),
+                                    VisObjectShape(VisShapeType.RECT, null),
+                                    VisObjectShape(VisShapeType.RECT, null),
+                                    VisObjectShape(VisShapeType.RECT, null)
                             )
                             it.selectedMotionList = listOf(
                                     AnimatorSet(),
@@ -119,11 +119,11 @@ class AppConfigManager {
                 aggregatedVisualParameters.add(
                         AggregatedVisObjectVisParams().also{
                             it.selectedShapeList = listOf(
-                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
-                                    VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape()))
+                                    VisObjectShape(VisShapeType.OVAL, null),
+                                    VisObjectShape(VisShapeType.OVAL, null),
+                                    VisObjectShape(VisShapeType.OVAL, null),
+                                    VisObjectShape(VisShapeType.OVAL, null),
+                                    VisObjectShape(VisShapeType.OVAL, null)
                             )
                             it.selectedMotionList = listOf(
                                     AnimatorSet(),
