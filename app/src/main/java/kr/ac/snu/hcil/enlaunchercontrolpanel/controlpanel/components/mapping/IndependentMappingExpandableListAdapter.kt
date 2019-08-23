@@ -97,7 +97,6 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
                 override fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType) {
-                    //child의 몇 번째 component를 바꿔야 하느냐하고 관련되어 있는거고
                     shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex, shapeType)
                 }
             })
@@ -105,7 +104,6 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
                 override fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType) {
-                    //child의 몇 번째 component를 바꿔야 하느냐하고 관련되어 있는거고
                     shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex, shapeType)
                 }
             })

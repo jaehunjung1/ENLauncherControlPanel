@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.*
+import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 
 class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
 
@@ -12,6 +13,12 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
         private const val TAG = "Expandable_Mapping_Adapter"
         private fun exceptionVisVarDuplicated(visVar: NotiVisVariable) = Exception("$TAG: $visVar Duplicated")
     }
+
+    interface MappingParameterChangedListener{
+        fun onShapeParameterChanged(index: Int, visShapeType: VisShapeType)
+    }
+
+    var shapeMappingParameterChangedListener: MappingParameterChangedListener? = null
 
     private var groupByNotiProp: NotiProperty? = null
     private val visVarsToAggregatedNotiProperty: MutableList<Pair<NotiVisVariable, Pair<NotiAggregationType, NotiProperty?>>> = mutableListOf()
@@ -26,8 +33,7 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
             visVarsToAggregatedNotiProperty.clear()
             visVarsToAggregatedNotiProperty.addAll(rule.visMapping.toList())
         }
-
-        notifyDataSetInvalidated()
+        notifyDataSetChanged()
     }
 
     override fun hasStableIds(): Boolean {
@@ -93,8 +99,18 @@ class AggregatedMappingExpandableListAdapter: BaseExpandableListAdapter() {
 
         return (convertView as AggregatedMappingChildLayout?)?.apply{
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel)
+            setMappingContentsChangedListener(object: AggregatedMappingChildLayout.ChildViewInteractionListener{
+                override fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType) {
+                    shapeMappingParameterChangedListener?.onShapeParameterChanged(componentIndex, shapeType)
+                }
+            })
         }?: AggregatedMappingChildLayout(context).apply{
             setProperties(groupByNotiProp, visVar, aggregatedNotiProp.first, aggregatedNotiProp.second, 0, viewModel)
+            setMappingContentsChangedListener(object: AggregatedMappingChildLayout.ChildViewInteractionListener{
+                override fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType) {
+                    shapeMappingParameterChangedListener?.onShapeParameterChanged(componentIndex, shapeType)
+                }
+            })
         }
     }
 }

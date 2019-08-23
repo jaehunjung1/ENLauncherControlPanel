@@ -4,9 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.TimeInterpolator
 import android.graphics.Color
-import android.graphics.drawable.ShapeDrawable
-import android.graphics.drawable.shapes.OvalShape
-import android.graphics.drawable.shapes.RectShape
 import android.util.Property
 import android.view.View
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
@@ -208,7 +205,7 @@ data class KeywordGroupImportance(
         val keywords: MutableSet<String>,
         var rank: Int = -1,
         var type: String = VisDataManager.DEFAULT_PATTERN,
-        var enhancementParam: NotificationEnhacementParams
+        var enhancementParam: NotificationEnhancementParams
 ){
     companion object{
         private var currentLastID: Long = 0L
@@ -262,7 +259,7 @@ class KeywordGroupImportancePatterns(
     fun getOrderedKeywordGroups(): List<String> = keywordGroupPatterns.map{it.group}
 
     fun getRemainderKeywordGroupPattern(): KeywordGroupImportance = elsePattern
-    fun setRemainderKeywordGroupEnhancementParams(param: NotificationEnhacementParams) {
+    fun setRemainderKeywordGroupEnhancementParams(param: NotificationEnhancementParams) {
         elsePattern.type = VisDataManager.CUSTOM_PATTERN
         elsePattern.enhancementParam = param
     }
@@ -292,7 +289,7 @@ class KeywordGroupImportancePatterns(
             keywords: Set<String> = emptySet(),
             rank: Int = keywordGroupPatterns.size,
             type: String,
-            enhancementParam: NotificationEnhacementParams) {
+            enhancementParam: NotificationEnhancementParams) {
 
         if(group !in keywordGroupPatterns.map{it.group}){
             keywordGroupPatterns.add(
@@ -354,9 +351,9 @@ class KeywordGroupImportancePatterns(
         keywordGroupPatterns.find{it.group == group}?.keywords?.remove(keyword)
     }
 
-    fun getEnhancementParamOfGroup(group: String): NotificationEnhacementParams? = keywordGroupPatterns.find{it.group == group}?.enhancementParam
+    fun getEnhancementParamOfGroup(group: String): NotificationEnhancementParams? = keywordGroupPatterns.find{it.group == group}?.enhancementParam
 
-    fun setEnhancementParamOfGroup(group: String, params: NotificationEnhacementParams){
+    fun setEnhancementParamOfGroup(group: String, params: NotificationEnhancementParams){
         keywordGroupPatterns.find{it.group == group}?.let{
             it.type = VisDataManager.CUSTOM_PATTERN
             it.enhancementParam = params
@@ -380,7 +377,7 @@ class KeywordGroupImportancePatterns(
     }
 }
 
-data class NotificationEnhacementParams(
+data class NotificationEnhancementParams(
         var initialImportance: Double = 0.5,
         var lifespan: Long = 1000L * 60 * 60 * 6,
         var importanceRange: Pair<Double, Double> = Pair(0.0, 1.0),

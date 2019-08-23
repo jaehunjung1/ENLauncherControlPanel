@@ -400,6 +400,8 @@ abstract class AbstractAggregatedVisObject(
         position = Pair(pos, pos)
 
         val mySize = 200
+
+        //TODO(Drawable 조정)
         val shapeDrawable = when(shape.type){
             VisShapeType.RECT -> {
                 (shape.drawable as ShapeDrawable).also{

@@ -398,6 +398,7 @@ abstract class AbstractIndependentVisObject(
 
         val mySize = (150 * size).roundToInt()
 
+        //TODO(Drawable 조정)
         val shapeDrawable: Drawable = when(shape.type){
             VisShapeType.RECT -> {
                 /*

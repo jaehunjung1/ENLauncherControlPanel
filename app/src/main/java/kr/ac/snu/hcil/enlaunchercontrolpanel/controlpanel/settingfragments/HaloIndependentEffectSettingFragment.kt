@@ -99,12 +99,6 @@ class HaloIndependentEffectSettingFragment : Fragment() {
                 appConfigViewModel.appHaloConfigLiveData.value = currentConfig
                 currentShapeChangedIndex = null
                 currentShapeChangedUri = null
-
-                /*
-                expandableListView?.expandableListAdapter?.let{
-                    (it as IndependentMappingExpandableListAdapter).notifyDataSetChanged()
-                }
-                */
             }
         }
     }

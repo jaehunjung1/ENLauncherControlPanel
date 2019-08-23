@@ -10,14 +10,12 @@ import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.FragmentActivity
-import com.nex3z.flowlayout.FlowLayout
+import com.google.android.material.textview.MaterialTextView
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
-import com.robertlevonyan.views.chip.Chip
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 
@@ -52,7 +50,7 @@ class IndependentMappingChildLayout : LinearLayout {
     private val visVarContents: MutableList<Any> = mutableListOf()
     private val notiDataPropContents: MutableList<Any> = mutableListOf()
 
-    private lateinit var mappingUI: ContToContUI
+    private lateinit var mappingUI: IndependentContToContUI
 
     constructor(context: Context) : super(context) {
         init(null, 0)
@@ -96,42 +94,108 @@ class IndependentMappingChildLayout : LinearLayout {
     private fun updateAppConfig(){
         viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
 
+            when(notiDataProp){
+                NotiProperty.LIFE_STAGE -> {
+                    //currentConfig.independentDataParameters[objIndex].givenLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
+                }
+                NotiProperty.IMPORTANCE -> {
+                    //currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
+                    currentConfig.independentDataParameters[objIndex].binNums = findViewById<NumberPicker>(R.id.bin_number_picker).value
+                }
+                NotiProperty.CONTENT -> {
+                    //currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
+                    //이게 필요한가? 아닐듯
+                }
+                else -> {}
+            }
+
             val listSize = when(notiDataProp){
                 NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().size
                 NotiProperty.IMPORTANCE -> currentConfig.independentDataParameters[objIndex].binNums
-                NotiProperty.CONTENT -> currentConfig.keywordGroupPatterns.getOrderedKeywordGroups().size + 1
+                NotiProperty.CONTENT -> currentConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatternsWithRemainder().size
                 else -> 5
             }
 
             when(notiVisVar){
                 NotiVisVariable.MOTION -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].selectedMotionList
-
-                    currentConfig.independentVisualParameters[objIndex].selectedMotionList = List(listSize){index ->
-                        if(index >= visVarContents.size)
-                            currentList[index]
-                        else
-                            (visVarContents as MutableList<AnimatorSet>)[index]
+                    currentConfig.independentVisualParameters[objIndex].selectedMotionList = List(listSize){ index ->
+                        if(currentList.size >= visVarContents.size){
+                            if(index >= currentList.size){
+                                AnimatorSet()
+                            }
+                            else if(index >= visVarContents.size){
+                                currentList[index]
+                            }
+                            else{
+                                (visVarContents as MutableList<AnimatorSet>)[index]
+                            }
+                        }
+                        else{
+                            if(index >= currentList.size){
+                                AnimatorSet()
+                            }
+                            else if(index >= visVarContents.size){
+                                currentList[index]
+                            }
+                            else{
+                                (visVarContents as MutableList<AnimatorSet>)[index]
+                            }
+                        }
                     }
                 }
                 NotiVisVariable.COLOR -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].selectedColorList
-
-                    currentConfig.independentVisualParameters[objIndex].selectedColorList = List(listSize){index ->
-                        if(index >= visVarContents.size)
-                            currentList[index]
-                        else
-                            (visVarContents as MutableList<Int>)[index]
+                    currentConfig.independentVisualParameters[objIndex].selectedColorList = List(listSize){ index ->
+                        if(currentList.size >= visVarContents.size){
+                            if(index >= currentList.size){
+                                Color.BLACK
+                            }
+                            else if(index >= visVarContents.size){
+                                currentList[index]
+                            }
+                            else{
+                                (visVarContents as MutableList<Int>)[index]
+                            }
+                        }
+                        else{
+                            if(index >= currentList.size){
+                                Color.BLACK
+                            }
+                            else if(index >= visVarContents.size){
+                                currentList[index]
+                            }
+                            else{
+                                (visVarContents as MutableList<Int>)[index]
+                            }
+                        }
                     }
                 }
                 NotiVisVariable.SHAPE -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].selectedShapeList
-
-                    currentConfig.independentVisualParameters[objIndex].selectedShapeList = List(listSize){index ->
-                        if(index >= visVarContents.size)
-                            currentList[index]
-                        else
-                            (visVarContents as MutableList<VisObjectShape>)[index]
+                    currentConfig.independentVisualParameters[objIndex].selectedShapeList = List(listSize){ index ->
+                        if(currentList.size >= visVarContents.size){
+                            if(index >= currentList.size){
+                                VisObjectShape(VisShapeType.RECT, null)
+                            }
+                            else if(index >= visVarContents.size){
+                                currentList[index]
+                            }
+                            else{
+                                (visVarContents as MutableList<VisObjectShape>)[index]
+                            }
+                        }
+                        else{
+                            if(index >= currentList.size){
+                                VisObjectShape(VisShapeType.RECT, null)
+                            }
+                            else if(index >= visVarContents.size){
+                                currentList[index]
+                            }
+                            else{
+                                (visVarContents as MutableList<VisObjectShape>)[index]
+                            }
+                        }
                     }
                 }
                 NotiVisVariable.SIZE -> {
@@ -162,21 +226,6 @@ class IndependentMappingChildLayout : LinearLayout {
                             }
                     )
                 }
-            }
-
-            when(notiDataProp){
-                NotiProperty.LIFE_STAGE -> {
-                    //currentConfig.independentDataParameters[objIndex].givenLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
-                }
-                NotiProperty.IMPORTANCE -> {
-                    //currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
-                    currentConfig.independentDataParameters[objIndex].binNums = findViewById<NumberPicker>(R.id.bin_number_picker).value
-                }
-                NotiProperty.CONTENT -> {
-                    //currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
-                    //이게 필요한가? 아닐듯
-                }
-                else -> {}
             }
 
             viewModel?.appHaloConfigLiveData?.value = currentConfig
@@ -288,9 +337,8 @@ class IndependentMappingChildLayout : LinearLayout {
         if(notiDataPropContents.size == 0){
             val tableRow = tableLayout.getChildAt(0) as TableRow
             tableRow.addView(
-                    TextView(context).apply{
+                    MaterialTextView(context, null, R.style.TextAppearance_MyTheme_Subtitle2).apply{
                         text = "Not Mapped"
-                        textSize = 16f
                         gravity = Gravity.CENTER
                     },
                     TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT ).apply{
@@ -306,9 +354,8 @@ class IndependentMappingChildLayout : LinearLayout {
 
             setVisVarFrame(appConfig, index, frame, content)
             tableRow.addView(
-                    TextView(context).apply{
+                    MaterialTextView(context, null, R.style.TextAppearance_MyTheme_Overline).apply{
                         text = "to"
-                        textSize = 13f
                         gravity = Gravity.CENTER
                     },
                     TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
@@ -317,14 +364,13 @@ class IndependentMappingChildLayout : LinearLayout {
                     }
             )
 
-
             tableRow.addView(
                     frame,
                     TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT).apply{
-                        marginStart = Utilities.dpToPx(context, 10)
-                        marginEnd = Utilities.dpToPx(context, 10)
-                        topMargin = Utilities.dpToPx(context, 10)
-                        bottomMargin = Utilities.dpToPx(context, 10)
+                        marginStart = Utilities.dpToPx(context, 8)
+                        marginEnd = Utilities.dpToPx(context, 8)
+                        topMargin = Utilities.dpToPx(context, 8)
+                        bottomMargin = Utilities.dpToPx(context, 8)
                         gravity = Gravity.CENTER
                         column = 2
                     }
@@ -344,10 +390,9 @@ class IndependentMappingChildLayout : LinearLayout {
                         value = appConfig.independentDataParameters[objIndex].binNums
                         setOnValueChangedListener { _, oldVal, newVal ->
                             if(oldVal != newVal){
-                                //table layout을 다시 그려줘야 될 것 같음
                                 updateAppConfig()
-                                viewModel?.appHaloConfigLiveData?.value?.let{
-                                    setNominalTableMapping(it)
+                                viewModel?.appHaloConfigLiveData?.value?.let{newConfig ->
+                                    setNominalTableMapping(newConfig)
                                 }
                             }
                         }
@@ -364,7 +409,7 @@ class IndependentMappingChildLayout : LinearLayout {
                 when(notiDataProp){
                     NotiProperty.IMPORTANCE -> {givenPropContents.map{
                         val propContent = it as Pair<Double, Double>
-                        "${"%.1f".format(propContent.first)}-${"%.1f".format(propContent.second)}"}
+                        "${"%.2f".format(propContent.first)}-${"%.2f".format(propContent.second)}"}
                     }
                     NotiProperty.LIFE_STAGE -> {givenPropContents.map{
                         val propContent = it as EnhancedNotificationLife
@@ -432,10 +477,10 @@ class IndependentMappingChildLayout : LinearLayout {
                 )
             }
             NotiVisVariable.SHAPE -> {
-                NominalVisVarContentSpinner.generateForIndependentMapping(context, appConfig, notiVisVar).let{ spinner ->
+                NominalVisVarContentSpinner.generate(context, appConfig.independentDataParameters[0].binNums, notiVisVar).let{ spinner ->
                     spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                            (parent?.getItemAtPosition(position) as Triple<String, String, VisShapeType>?)?.let{ item->
+                            (parent?.getItemAtPosition(position) as Triple<String, String, VisShapeType>?)?.let{ item ->
                                 when(item.third){
                                     VisShapeType.IMAGE -> {
                                         CropImage.activity()
@@ -468,10 +513,9 @@ class IndependentMappingChildLayout : LinearLayout {
                             FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                     )
                 }
-
             }
             else -> {
-                NominalVisVarContentSpinner.generateForIndependentMapping(context, appConfig, notiVisVar).let{ spinner ->
+                NominalVisVarContentSpinner.generate(context, appConfig.independentDataParameters[0].binNums, notiVisVar).let{ spinner ->
                     spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                             (parent?.getItemAtPosition(position) as Triple<String, String, Any>?)?.let{ item ->
@@ -500,7 +544,7 @@ class IndependentMappingChildLayout : LinearLayout {
         View.inflate(context, R.layout.item_child_new_range_mapping, this)
 
         val constraintLayout = findViewById<ConstraintLayout>(R.id.range_mapping_layout)
-        constraintLayout.addView(ContToContUI(context).apply {
+        constraintLayout.addView(IndependentContToContUI(context).apply {
             mappingUI = this
             id = View.generateViewId()
             layoutParams = ConstraintLayout.LayoutParams(
