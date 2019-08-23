@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.layout_importance_saturation_control.view.
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
-import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
+import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
 
@@ -377,7 +377,7 @@ class ImportanceControlView : LinearLayout {
 
 
         viewModel?.appHaloConfigLiveData?.value?.let{appConfig ->
-            appConfig.notificationEnhancementParams = NotificationEnhacementParams(
+            appConfig.notificationEnhancementParams = NotificationEnhancementParams(
                     importanceOffset,
                     lifespan,
                     Pair(importanceLowerBound, importanceUpperBound),

@@ -9,7 +9,7 @@ import android.widget.*
 import io.apptik.widget.MultiSlider
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
 import kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance
-import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhacementParams
+import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams
 import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.ImportanceControlView
@@ -37,7 +37,7 @@ class KeywordGroupChildView: LinearLayout {
     private var invalidateFlag = true
 
     interface KeywordGroupChildInteractionListener{
-        fun onEnhancementParamUpdated(pattern: NotificationEnhacementParams)
+        fun onEnhancementParamUpdated(pattern: NotificationEnhancementParams)
     }
 
     var keywordGroupChildInteractionListener: KeywordGroupChildInteractionListener? = null

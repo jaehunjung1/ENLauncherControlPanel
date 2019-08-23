@@ -1,8 +1,6 @@
 package kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping
 
 import android.content.Context
-import android.content.res.Resources
-import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,17 +9,15 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import android.widget.TextView
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
-import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
-import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 
 class NominalVisVarContentSpinner{
     companion object {
-        fun generateForIndependentMapping(
+        fun generate(
                 context: Context,
-                appConfig: AppHaloConfig,
+                importanceBinNum: Int,
                 visVar: NotiVisVariable
         ): Spinner{
             val spinner = Spinner(context, Spinner.MODE_DIALOG)
@@ -41,14 +37,14 @@ class NominalVisVarContentSpinner{
                     spinner.adapter = adapter
                 }
                 NotiVisVariable.POSITION -> {
-                    val contents = MapFunctionUtilities.bin(Pair(0.0, 1.0), appConfig.independentDataParameters[0].binNums)
+                    val contents = MapFunctionUtilities.bin(Pair(0.0, 1.0), importanceBinNum)
                     val keys = contents.map{"${"%.2f".format(it.first)}-${"%.2f".format(it.second)}"}
                     val explanations = contents.mapIndexed{index, pair -> " ${index + 1} of ${contents.size} binned position ranges"}
                     val adapter = NominalVisVarContentAdapter(context, List(contents.size){index -> Triple(keys[index], explanations[index], contents[index])})
                     spinner.adapter = adapter
                 }
                 NotiVisVariable.SIZE -> {
-                    val contents = MapFunctionUtilities.bin(Pair(0.0, 1.0), appConfig.independentDataParameters[0].binNums)
+                    val contents = MapFunctionUtilities.bin(Pair(0.0, 1.0), importanceBinNum)
                     val keys = contents.map{"${"%.2f".format(it.first)}-${"%.2f".format(it.second)}"}
                     val explanations = contents.mapIndexed{index, pair -> " ${index + 1} of ${contents.size} binned size ranges"}
                     val adapter = NominalVisVarContentAdapter(context, List(contents.size){index -> Triple(keys[index], explanations[index], contents[index])})

@@ -362,8 +362,6 @@ abstract class AbstractAggregatedVisObject(
         var color: Int = visualParams.selectedColor
         var motion: AnimatorSet = visualParams.selectedMotion
 
-        Log.i("AggrEffect", "$input")
-
         input.forEach { mapEntry ->
             mapEntry.value?.let{ notiVal ->
                 val visVars: List<NotiVisVariable> = currMapping.filter{ it.value == mapEntry.key }.map{ it.key }
@@ -402,6 +400,8 @@ abstract class AbstractAggregatedVisObject(
         position = Pair(pos, pos)
 
         val mySize = 200
+
+        //TODO(Drawable 조정)
         val shapeDrawable = when(shape.type){
             VisShapeType.RECT -> {
                 (shape.drawable as ShapeDrawable).also{

@@ -25,10 +25,10 @@ class VisDataManager {
         )
         fun availableImportanceSaturationPatterns() = exampleImportanceSaturationPatterns.keys.toList()
 
-        fun getExampleSaturationPattern(key: String): NotificationEnhacementParams?{
+        fun getExampleSaturationPattern(key: String): NotificationEnhancementParams?{
             return when(key){
                 DEFAULT_PATTERN -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.0,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
@@ -39,7 +39,7 @@ class VisDataManager {
                     )
                 }
                 "type1" -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
@@ -50,7 +50,7 @@ class VisDataManager {
                     )
                 }
                 "type2" -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
@@ -61,7 +61,7 @@ class VisDataManager {
                     )
                 }
                 "type3" -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
@@ -72,7 +72,7 @@ class VisDataManager {
                     )
                 }
                 "type4" -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
@@ -83,7 +83,7 @@ class VisDataManager {
                     )
                 }
                 "type5" -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
@@ -94,7 +94,7 @@ class VisDataManager {
                     )
                 }
                 "type6" -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
@@ -105,7 +105,7 @@ class VisDataManager {
                     )
                 }
                 "type7" -> {
-                    NotificationEnhacementParams(
+                    NotificationEnhancementParams(
                             initialImportance = 0.5,
                             lifespan = 1000L * 60 * 60 * 6,
                             importanceRange = Pair(0.0, 1.0),
