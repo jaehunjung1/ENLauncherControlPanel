@@ -74,12 +74,13 @@ abstract class AbstractIndependentVisEffect(
             drawables.add(drawable)
             animatorCollection.addAll(
                     animator.childAnimations.map{anim->
-                        anim.also{it.setTarget(drawable)}
+                        anim.also{ it.setTarget(drawable)}
                     }
             )
         }
 
         animatorSet.playTogether(animatorCollection)
+        animatorSet.start()
     }
 
     override fun setLocalStructure(localLayoutParams: List<ConstraintLayout.LayoutParams>, visParams: IndependentVisEffectVisParams) {

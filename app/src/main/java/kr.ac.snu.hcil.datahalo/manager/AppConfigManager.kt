@@ -1,7 +1,9 @@
 package kr.ac.snu.hcil.datahalo.manager
 
 import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.graphics.drawable.shapes.RectShape
@@ -59,7 +61,13 @@ class AppConfigManager {
                             )
                             it.selectedMotionList = listOf(
                                     AnimatorSet(),
-                                    AnimatorSet(),
+                                    AnimatorSet().apply{
+                                        val alphaAnim: ObjectAnimator = ObjectAnimator.ofInt(null, "alpha", 255, 20)
+                                        alphaAnim.repeatCount = ObjectAnimator.INFINITE
+                                        alphaAnim.repeatMode = ObjectAnimator.REVERSE
+                                        alphaAnim.duration = 1500
+                                        play(alphaAnim)
+                                    },
                                     AnimatorSet(),
                                     AnimatorSet(),
                                     AnimatorSet()
