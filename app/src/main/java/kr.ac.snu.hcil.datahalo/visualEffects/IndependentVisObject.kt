@@ -533,7 +533,7 @@ class HeightOnlyIndependentObject(
         val mySize = (150 * size).roundToInt()
 
         val shapeDrawable: Drawable = when(shape.type){
-            NewVisShape.RECT -> {
+            VisShapeType.RECT -> {
                 ShapeDrawable().also{
                     it.shape = RectShape()
                     it.paint.color = color
@@ -541,7 +541,7 @@ class HeightOnlyIndependentObject(
                     it.intrinsicHeight = mySize
                 }
             }
-            NewVisShape.OVAL -> {
+            VisShapeType.OVAL -> {
                 ShapeDrawable().also{
                     it.shape = OvalShape()
                     it.paint.color = color
@@ -550,17 +550,17 @@ class HeightOnlyIndependentObject(
                 }
                 //TODO(VisConfigParam의 ShapeDrawable 고쳐야 함 공유 문제)
             }
-            NewVisShape.PATH -> {
+            VisShapeType.PATH -> {
                 (shape.drawable as ShapeDrawable).also{
                     it.paint.color = color
                     it.intrinsicWidth = 20
                     it.intrinsicHeight = mySize
                 }
             }
-            NewVisShape.IMAGE -> {
+            VisShapeType.IMAGE -> {
                 ScaleDrawable(shape.drawable, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
             }
-            NewVisShape.RAW -> {
+            VisShapeType.TEXT -> {
                 (shape.drawable as TextDrawable).also{
                     it.setColor(color)
                 }
