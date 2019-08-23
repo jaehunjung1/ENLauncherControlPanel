@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.app.Activity
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.Gravity
@@ -11,10 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.nex3z.flowlayout.FlowLayout
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
@@ -31,14 +30,16 @@ import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
+import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 
 class IndependentMappingChildLayout : LinearLayout {
     companion object{
         private const val TAG = "Inde_Map_Child"
+        private const val nominalVisvarContentsMinSize = 50
     }
 
     interface ChildViewInteractionListener{
-        fun onShapeMappingContentsUpdated(componentIndex: Int)
+        fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType)
     }
 
     private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
@@ -165,7 +166,7 @@ class IndependentMappingChildLayout : LinearLayout {
 
             when(notiDataProp){
                 NotiProperty.LIFE_STAGE -> {
-                    //currentConfig.independentDataParameters[objIndex].selectedLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
+                    //currentConfig.independentDataParameters[objIndex].givenLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
                 }
                 NotiProperty.IMPORTANCE -> {
                     //currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
@@ -202,7 +203,7 @@ class IndependentMappingChildLayout : LinearLayout {
                         independentDataParams.selectedImportanceRangeList
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        independentDataParams.selectedLifeList
+                        independentDataParams.givenLifeList
                     }
                     NotiProperty.CONTENT -> {
                         orderedKeywordGroups
@@ -242,12 +243,11 @@ class IndependentMappingChildLayout : LinearLayout {
                     NotiVisVariable.SIZE -> {
                         if(notiDataPropContents.size == 0)
                         {
+
                             listOf(independentVisParams.selectedSizeRange)
                         }
                         else{
-                            MapFunctionUtilities.bin(
-                                    independentVisParams.selectedSizeRange,
-                                    notiDataPropContents.size)
+                            independentVisParams.getSelectedSizeRangeList(notiDataPropContents.size)
 
                         }
                     }
@@ -257,9 +257,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             listOf(independentVisParams.selectedPosRange)
                         }
                         else{
-                            MapFunctionUtilities.bin(
-                                    independentVisParams.selectedPosRange,
-                                    notiDataPropContents.size)
+                            independentVisParams.getSelectedPosRangeList(notiDataPropContents.size)
                         }
                     }
                 }
@@ -463,56 +461,95 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     private fun setVisVarFrame(index: Int, frame: FrameLayout, content: Any ){
-        frame.background = ContextCompat.getDrawable(context, R.drawable.rounded_rectangle)
         frame.tag = index
-        frame.addView(
-                TextView(context).apply {
-                    text = contentToString(notiVisVar, content)
-                    gravity = Gravity.CENTER
-                }
-        )
         when(notiVisVar){
             NotiVisVariable.COLOR -> {
                 val origColor = content as Int
-                frame.setBackgroundColor(origColor)
-                frame.setOnClickListener {
-                    ColorPicker(context as Activity,
-                            Color.red(origColor), Color.green(origColor), Color.blue(origColor)
-                    ).let { cp ->
-                        cp.enableAutoClose()
-                        cp.setCallback { color ->
-                            visVarContents[index] = color
-                            frame.setBackgroundColor(color)
-                            Log.d(TAG, "$color Picked. ${visVarContents[index]}")
-                            updateAppConfig()
+                val imgView = ImageView(context).apply{
+
+                    setImageDrawable(ColorDrawable(origColor))
+                    setOnClickListener {
+                        ColorPicker(context as Activity,
+                                Color.red(origColor), Color.green(origColor), Color.blue(origColor)
+                        ).let { cp ->
+                            cp.enableAutoClose()
+                            cp.setCallback { color ->
+                                visVarContents[index] = color
+                                setImageDrawable(ColorDrawable(color))
+                                Log.d(TAG, "$color Picked. ${visVarContents[index]}")
+                                updateAppConfig()
+                            }
+                            cp.show()
                         }
-                        cp.show()
                     }
                 }
-            }
-            NotiVisVariable.SHAPE -> {
-                val shape = content as VisObjectShape
+
                 frame.addView(
-                        ImageView(context).apply{
-                            setImageDrawable(shape.drawable)
-                            setOnClickListener{
-                                CropImage.activity()
-                                        .setGuidelines(CropImageView.Guidelines.ON)
-                                        .setActivityTitle("Set Image")
-                                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                                        .setAspectRatio(1, 1)
-                                        .setCropMenuCropButtonTitle("Done")
-                                        .setRequestedSize(150, 150)
-                                        .start(context as FragmentActivity)
-                                mappingContentsChangedListener?.onShapeMappingContentsUpdated(index)
-                            }
-                        },
+                        imgView,
                         FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
                 )
             }
-            NotiVisVariable.SIZE -> {}
-            NotiVisVariable.POSITION -> {}
-            NotiVisVariable.MOTION -> {}
+            NotiVisVariable.SHAPE -> {
+                viewModel?.appHaloConfigLiveData?.value?.let{ config ->
+                    NominalVisVarContentSpinner.generateForIndependentMapping(context, config, notiVisVar).let{ spinner ->
+                        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                                (parent?.getItemAtPosition(position) as Triple<String, String, VisShapeType>?)?.let{ item->
+                                    when(item.third){
+                                        VisShapeType.IMAGE -> {
+                                            CropImage.activity()
+                                                    .setGuidelines(CropImageView.Guidelines.ON)
+                                                    .setActivityTitle("Set Image")
+                                                    .setCropShape(CropImageView.CropShape.RECTANGLE)
+                                                    .setAspectRatio(1, 1)
+                                                    .setCropMenuCropButtonTitle("Done")
+                                                    .setRequestedSize(150, 150)
+                                                    .start(context as FragmentActivity)
+                                            mappingContentsChangedListener?.onShapeMappingContentsUpdated(index, item.third)
+                                        }
+                                        else -> {
+                                            mappingContentsChangedListener?.onShapeMappingContentsUpdated(index, item.third)
+                                        }
+                                    }
+                                }
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>?) {}
+                        }
+
+                        frame.addView(
+                                spinner,
+                                FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+                        )
+                    }
+                }
+            }
+            else -> {
+                viewModel?.appHaloConfigLiveData?.value?.let{ config ->
+                    NominalVisVarContentSpinner.generateForIndependentMapping(context, config, notiVisVar).let{ spinner ->
+                        spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
+                            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                                (parent?.getItemAtPosition(position) as Triple<String, String, Any>?)?.let{ item ->
+                                    visVarContents[index] = item.third
+                                    updateAppConfig()
+                                }
+                            }
+                            override fun onNothingSelected(parent: AdapterView<*>?) {}
+                        }
+
+                        //visVarContents[index] 이 값이 위치가 어딘건가 찾아야되는거지
+                        (spinner.adapter as NominalVisVarContentSpinner.NominalVisVarContentAdapter).let {adapter ->
+                            spinner.setSelection(adapter.findContent(visVarContents[index])?: index)
+                        }
+
+                        //spinner.setSelection()
+
+                        frame.addView(
+                                spinner
+                                //, FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT
+                        )
+                    }
+                }
+            }
         }
     }
 

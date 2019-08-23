@@ -11,14 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.nex3z.flowlayout.FlowLayout
 import com.pes.androidmaterialcolorpickerdialog.ColorPicker
-import com.robertlevonyan.views.chip.Chip
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
@@ -31,7 +28,6 @@ import kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
-import kotlin.math.max
 
 class AggregatedMappingChildLayout : LinearLayout{
     companion object{
@@ -115,7 +111,7 @@ class AggregatedMappingChildLayout : LinearLayout{
                         aggregatedDataParams.selectedImportanceRangeList
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        aggregatedDataParams.selectedLifeList
+                        aggregatedDataParams.givenLifeList
                     }
                     NotiProperty.CONTENT -> {
                         orderedKeywordGroups

@@ -118,6 +118,19 @@ class MapFunctionUtilities {
             }
         }
 
+        fun<T> createMapFuncToBinnedNumericRange(keyRange: List<T>, valRange:List<Pair<Double, Double>>):(T) -> Double? {
+            return { key: T ->
+                val index = keyRange.indexOf(key)
+                if (index == -1) {
+                    null
+
+                } else {
+                    val pair = valRange[index]
+                    (pair.first + pair.second) / 2
+                }
+            }
+        }
+
 
         fun<T, R> createMapFunc(keyRange: List<T>, valRange: List<R>): (T) -> (R?){
             return { key -> if(key in keyRange) valRange[keyRange.indexOf(key)] else null}

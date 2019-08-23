@@ -246,7 +246,7 @@ class VisDataManager {
             //compareByDescending{it.whiteRank}.thenByDescending{it.currEnhancement}.thenByDescending{it.initTime}
             val sampleCount = if(fromWhiteToGray.size > sampleMax) sampleMax else fromWhiteToGray.size
             val independentNotis = if(fromWhiteToGray.isNotEmpty()) fromWhiteToGray.subList(0, sampleCount) else emptyList()
-            val aggregatedNotis = if(fromWhiteToGray.size > sampleCount) fromWhiteToGray.subList(sampleCount, fromWhiteToGray.size - 1) else emptyList()
+            val aggregatedNotis = if(fromWhiteToGray.size > sampleCount) fromWhiteToGray.subList(sampleCount, fromWhiteToGray.size) else emptyList()
 
             return mapOf(
                     NotificationType.INDEPENDENT to independentNotis,

@@ -14,14 +14,14 @@ import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
 import kr.ac.snu.hcil.datahalo.notificationdata.NotiHierarchy
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
-import kr.ac.snu.hcil.datahalo.visualEffects.NewVisShape
+import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
 import kotlin.math.roundToLong
 
 data class IndependentVisObjectVisParams(
         var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.RECT, ShapeDrawable(RectShape())),
+        var selectedShape: VisObjectShape = VisObjectShape(VisShapeType.RECT, ShapeDrawable(RectShape())),
         var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
         var selectedMotionList: List<AnimatorSet> = listOf(),
@@ -58,14 +58,13 @@ data class IndependentVisObjectVisParams(
 data class IndependentVisObjectDataParams(
         var binNums: Int = 5,
         var selectedImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING),
         var tSaturation: Long = -1L, //3hrs
         var additional: Map<String, Any> = emptyMap()
 ){
+    val givenLifeList: List<EnhancedNotificationLife> = EnhancedNotificationLife.values().toList()
     val selectedImportanceRangeList: List<Pair<Double, Double>>
         get() = MapFunctionUtilities.bin(selectedImportanceRange, binNums)
     val givenImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0)
-    val givenLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING)
 }
 
 data class IndependentVisObjectAnimParams(
@@ -100,7 +99,7 @@ data class IndependentVisEffectVisParams(
 data class AggregatedVisObjectVisParams(
         var selectedPos: Double = 1.0,
         var selectedPosRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedShape: VisObjectShape = VisObjectShape(NewVisShape.OVAL, ShapeDrawable(OvalShape())),
+        var selectedShape: VisObjectShape = VisObjectShape(VisShapeType.OVAL, ShapeDrawable(OvalShape())),
         var selectedShapeList: List<VisObjectShape> = listOf(),
         var selectedMotion: AnimatorSet = AnimatorSet(),
         var selectedMotionList: List<AnimatorSet> = listOf(),
@@ -138,18 +137,17 @@ data class AggregatedVisObjectDataParams(
         var binNums: Int = 5,
         var countThreshold: Int = 10,
         var selectedImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0),
-        var selectedLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING),
+
         var keywordGroupMap: Map<String, MutableList<String>> = emptyMap(),
         var tSaturation: Long = -1L, //3hrs
         var additional: Map<String, Any> = emptyMap()
 ){
+    val givenLifeList: List<EnhancedNotificationLife> = EnhancedNotificationLife.values().toList()
     val keywordGroups: List<String>
         get() = keywordGroupMap.keys.toList()
     val givenImportanceRange: Pair<Double, Double> = Pair(0.0, 1.0)
     val selectedImportanceRangeList: List<Pair<Double, Double>>
         get() = MapFunctionUtilities.bin(selectedImportanceRange, binNums)
-    val givenLifeList: List<EnhancedNotificationLife> = listOf(EnhancedNotificationLife.JUST_TRIGGERED, EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED, EnhancedNotificationLife.JUST_INTERACTED, EnhancedNotificationLife.INTERACTED_NOT_DECAYING, EnhancedNotificationLife.DECAYING)
-
 }
 data class AggregatedVisObjectAnimParams(
         var property: Property<View, Float>,
@@ -268,6 +266,7 @@ class KeywordGroupImportancePatterns(
         elsePattern.type = VisDataManager.CUSTOM_PATTERN
         elsePattern.enhancementParam = param
     }
+
     fun setRemainderKeywordGroupEnhancementParams(type: String) {
         elsePattern.type = type
         elsePattern.enhancementParam = VisDataManager.getExampleSaturationPattern(type)!!
@@ -313,6 +312,18 @@ class KeywordGroupImportancePatterns(
         keywordGroupPatterns.find{it.group == group}?.let{ item ->
             keywordGroupPatterns.remove(item)
         }
+        keywordGroupPatterns.forEachIndexed{index, keywordGroupImportance ->
+            keywordGroupImportance.rank = index
+        }
+        elsePattern.rank = keywordGroupPatterns.size
+    }
+
+    fun swapRankOfGroup(rank1: Int, rank2: Int){
+        val el1 = getGroupOfRank(rank1)
+        val el2 = getGroupOfRank(rank2)
+        el2?.rank = rank1
+        el1?.rank = rank2
+        keywordGroupPatterns.sortBy{it.rank}
     }
 
     fun changeRankOfGroup(group: String, changedRank: Int){

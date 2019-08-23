@@ -390,22 +390,25 @@ abstract class AbstractAggregatedVisEffect(
             return
 
         //local pivot 기준의 극좌표계 배치. 법선 방향이 꼭대기가 되도록 회전
-        groupBoundVisObjects[0].let{ visObjs ->
-            visObjs.forEachIndexed{ index, visObj ->
-                val layoutParams = aggregatedPivotLayoutParams.first[index]
-                if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){
-                    val imageView = ImageView(constraintLayout.context).also{
-                        it.id = visObj.getID()
-                        if(index in activatedGroupBoundVisObjectIndices)
-                            it.setImageDrawable(groupedDrawables[activatedGroupBoundVisObjectIndices.indexOf(index)])
+
+        if(groupBoundVisObjects.size != 0){
+            groupBoundVisObjects[0].let{ visObjs ->
+                visObjs.forEachIndexed{ index, visObj ->
+                    val layoutParams = aggregatedPivotLayoutParams.first[index]
+                    if(constraintLayout.findViewById<ImageView>(visObj.getID()) == null){
+                        val imageView = ImageView(constraintLayout.context).also{
+                            it.id = visObj.getID()
+                            if(index in activatedGroupBoundVisObjectIndices)
+                                it.setImageDrawable(groupedDrawables[activatedGroupBoundVisObjectIndices.indexOf(index)])
+                        }
+                        constraintLayout.addView(imageView, layoutParams)
                     }
-                    constraintLayout.addView(imageView, layoutParams)
-                }
-                else{
-                    constraintLayout.findViewById<ImageView>(visObj.getID()).also{
-                        it.layoutParams = layoutParams
-                        if(index in activatedGroupBoundVisObjectIndices)
-                            it.setImageDrawable(groupedDrawables[activatedGroupBoundVisObjectIndices.indexOf(index)])
+                    else{
+                        constraintLayout.findViewById<ImageView>(visObj.getID()).also{
+                            it.layoutParams = layoutParams
+                            if(index in activatedGroupBoundVisObjectIndices)
+                                it.setImageDrawable(groupedDrawables[activatedGroupBoundVisObjectIndices.indexOf(index)])
+                        }
                     }
                 }
             }

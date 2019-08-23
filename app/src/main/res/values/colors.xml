@@ -28,6 +28,11 @@
     <color name="primaryTextColor">#ffffff</color>
     <color name="secondaryTextColor">#000000</color>
 
+    <color name="whiteThumbColor">#eeeeee</color>
+    <color name="whiteRangeColor">#eeeeee</color>
+    <color name="blackThumbColor">#333333</color>
+    <color name="blackRangeColor">#333333</color>
+
     <!--text colors-->
     <color name="text">#4d4d4d</color>
     <color name="text_unfocused">#4c4d4d4d</color>

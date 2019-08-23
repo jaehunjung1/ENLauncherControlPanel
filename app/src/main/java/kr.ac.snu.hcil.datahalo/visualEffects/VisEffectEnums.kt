@@ -20,13 +20,13 @@ enum class AnimationTypes {
     TRANSLATION_Y
 }
 
-enum class NewVisShape{
-    RECT,
-    OVAL,
-    PATH,
-    IMAGE,
-    RAW
+enum class VisShapeType(val explanation: String){
+    RECT("Rectangle Shaped Drawable"),
+    OVAL("Circle Shaped Drawable"),
+    PATH("Path Shaped Drawable"),
+    TEXT("Raw Data Drawable"),
+    IMAGE("Image Drawable")
 }
 
-data class VisObjectShape(val type: NewVisShape, val drawable: Drawable)
+data class VisObjectShape(val type: VisShapeType, val drawable: Drawable)
 
