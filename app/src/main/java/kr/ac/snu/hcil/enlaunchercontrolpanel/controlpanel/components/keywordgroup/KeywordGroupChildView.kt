@@ -29,6 +29,9 @@ class KeywordGroupChildView: LinearLayout {
     private var _saturationTimeBeforeInteraction: Long = 0L
     private var _saturationUnitBeforeInteraction: ImportanceControlView.SaturationTimeUnit = ImportanceControlView.SaturationTimeUnit.MINUTES
 
+    private var _tempNumBeforeInteraction: Double = 0.0
+    private var _tempNumAfterInteraction: Double = 0.0
+
     private var _patternAfterInteraction: EnhancementPattern = EnhancementPattern.EQ
     private var _saturationTimeAfterInteraction: Long = 0L
     private var _saturationUnitAfterInteraction: ImportanceControlView.SaturationTimeUnit = ImportanceControlView.SaturationTimeUnit.MINUTES
@@ -143,9 +146,9 @@ class KeywordGroupChildView: LinearLayout {
             _patternBeforeInteraction = param.firstPattern
             _patternAfterInteraction = param.secondPattern
             _saturationTimeBeforeInteraction = param.firstSaturationTime
-            _saturationUnitBeforeInteraction = ImportanceControlView.SaturationTimeUnit.OBSERVATION_WINDOW_SIZE
+            //_saturationUnitBeforeInteraction = ImportanceControlView.SaturationTimeUnit.OBSERVATION_WINDOW_SIZE
             _saturationTimeAfterInteraction = param.secondSaturationTime
-            _saturationUnitAfterInteraction = ImportanceControlView.SaturationTimeUnit.OBSERVATION_WINDOW_SIZE
+            //_saturationUnitAfterInteraction = ImportanceControlView.SaturationTimeUnit.OBSERVATION_WINDOW_SIZE
         }
 
         invalidateFlag = false
