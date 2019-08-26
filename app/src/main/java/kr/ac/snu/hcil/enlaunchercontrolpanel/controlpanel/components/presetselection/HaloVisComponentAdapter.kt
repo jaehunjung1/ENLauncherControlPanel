@@ -12,14 +12,14 @@ import androidx.recyclerview.selection.SelectionTracker
 
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 
-class HaloVisComponentAdapter(private val context: Context, hlmArrayList: List<HaloVisComponent>) : RecyclerView.Adapter<HaloVisComponentAdapter.HaloLayoutViewHolder>() {
+class HaloVisComponentAdapter(private val context: Context, components: List<HaloVisComponent>) : RecyclerView.Adapter<HaloVisComponentAdapter.HaloLayoutViewHolder>() {
     private val layoutInflater: LayoutInflater = LayoutInflater.from(context)
-    val componentList: List<HaloVisComponent> = hlmArrayList
+    val componentList: List<HaloVisComponent> = components
     var tracker: SelectionTracker<Long>? = null
+
     init{
         setHasStableIds(true)
     }
-
 
     override fun onCreateViewHolder(viewGroup: ViewGroup, i: Int): HaloLayoutViewHolder {
 

@@ -33,9 +33,11 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
     private val currentIndependentNotificationIDs: MutableList<Int> = mutableListOf()
     private val currentAggregatedNotificationIDs : MutableList<Int> = mutableListOf()
 
+    private var currentIndependentVisEffectName: String? = null
     private val currentIndependentNotiVisLayoutInfos: MutableMap<Int, LayoutParams> = mutableMapOf()
     private val currentIndependentVisEffects: MutableMap<Int, AbstractIndependentVisEffect> = mutableMapOf()
 
+    private var currentAggregatedVisEffectName: String? = null
     private var currentAggregatedVisEffect: AbstractAggregatedVisEffect? = null
     private var currentAggregatedNotisVisLayoutInfo: Pair<List<LayoutParams>, List<LayoutParams>>? = null
 
@@ -43,8 +45,6 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
         clipChildren = false
         clipToPadding = false
         clipToOutline = false
-
-        //setBackgroundColor(Color.LTGRAY)
 
         id = View.generateViewId()
 
@@ -83,6 +83,17 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
     fun getAppPackageName(): String = appPackageName
 
     fun setVisConfig(appHaloConfig: AppHaloConfig){
+
+        //TODO(만약 visConfig에서 layoutmethod, independent effect, aggregated effect의 이름이 바뀌었다면, 현재 존재하는 VisEffect도 치환해야함
+        //current visConfig
+
+        val replaceLayoutMethod = visConfig?.let{currentConfig -> currentConfig.haloLayoutMethodName != appHaloConfig.haloLayoutMethodName}?: true
+        val replaceIndependentVisEffect = currentIndependentVisEffectName?.let{ it != appHaloConfig.independentVisEffectName} ?: true
+        val replaceAggregatedVisEffect = currentAggregatedVisEffectName?.let{ it != appHaloConfig.aggregatedVisEffectName} ?: true
+
+        currentIndependentVisEffectName = appHaloConfig.independentVisEffectName
+        currentAggregatedVisEffectName = appHaloConfig.aggregatedVisEffectName
+
         visConfig = appHaloConfig
         appPackageName = appHaloConfig.packageName
 
@@ -91,7 +102,13 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
             //TODO()
         }
 
-        currentIndependentVisEffects.values.forEach{effect ->
+        if(replaceIndependentVisEffect){
+            currentIndependentVisEffects.keys.forEach{ id ->
+                currentIndependentVisEffects[id] = VisEffectManager.createNewIndependentVisEffect(appHaloConfig.independentVisEffectName, appHaloConfig)
+            }
+        }
+
+        currentIndependentVisEffects.values.forEach{ effect ->
             effect.visualParameters = appHaloConfig.independentVisEffectVisParams
             effect.independentVisObjects.forEachIndexed{ index, visObj ->
                 visObj.setVisParams(appHaloConfig.independentVisualParameters[index])
@@ -99,6 +116,10 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
                 visObj.setAnimParams(*appHaloConfig.independentAnimationParameters[index].toTypedArray())
                 visObj.setVisMapping(appHaloConfig.independentVisualMappings[index])
             }
+        }
+
+        if(replaceAggregatedVisEffect){
+            currentAggregatedVisEffect = VisEffectManager.createNewAggregatedVisEffect(appHaloConfig.aggregatedVisEffectName, appHaloConfig)
         }
 
         currentAggregatedVisEffect?.apply{

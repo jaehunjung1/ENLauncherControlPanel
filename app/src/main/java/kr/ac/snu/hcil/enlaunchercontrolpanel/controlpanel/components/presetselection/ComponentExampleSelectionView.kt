@@ -134,7 +134,6 @@ class ComponentExampleSelectionView : LinearLayout {
                                         appHaloConfig.aggregatedVisEffectName = selected.label!!
                                     }
                                     HaloVisComponent.HaloVisComponentType.VISEFFECT_LAYOUT -> {
-                                        //appConfig의 layout 이름 바꾸면 런타임에 알아서 가져오는듯?
                                         appHaloConfig.haloLayoutMethodName = selected.label!!
                                     }
                                     HaloVisComponent.HaloVisComponentType.IMPORTANCE_SATURATION -> {
@@ -142,6 +141,9 @@ class ComponentExampleSelectionView : LinearLayout {
                                         VisDataManager.getExampleSaturationPattern(selected.label!!)?.let{
                                             appHaloConfig.notificationEnhancementParams = it
                                         }
+                                    }
+                                    else ->{
+
                                     }
                                 }
                                 viewModel?.appHaloConfigLiveData?.value = appHaloConfig
