@@ -22,7 +22,7 @@ class HaloLayoutSettingFragment : Fragment() {
     private lateinit var appConfigViewModel: AppHaloConfigViewModel
     private lateinit var visComponents: List<HaloVisComponent>
     private var componentExamples = AppHaloLayoutMethods.availiableLayouts.map{
-        HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT)
+        HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.VISEFFECT_LAYOUT)
     }
 
     private var componentExampleSelector: ComponentExampleSelectionView? = null

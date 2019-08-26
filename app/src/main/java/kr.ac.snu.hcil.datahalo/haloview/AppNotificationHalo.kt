@@ -214,5 +214,4 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
 
         }
     }
-
 }
