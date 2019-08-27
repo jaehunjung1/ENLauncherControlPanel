@@ -127,7 +127,7 @@ abstract class AbstractIndependentVisEffect(
                 it.rotation = pivotLayoutParams.circleAngle
                 it.layoutParams = localLayoutParams[index]
 
-                animatorCollection.forEach{ it.setTarget(objectView) }
+                animatorCollection.forEach{ animator -> animator.setTarget(objectView) }
                 animatorSet.playTogether(animatorCollection)
                 animatorSet.start()
 

@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
+import android.graphics.drawable.shapes.PathShape
 import android.graphics.drawable.shapes.RectShape
 import android.util.Log
 import android.view.Gravity
@@ -152,7 +153,6 @@ abstract class AbstractIndependentVisObject(
             conversionForPredefinedVisVar(it)
         }
     }
-
 
     final override fun getDataParams() = dataParams
     final override fun setDataParams(params: IndependentVisObjectDataParams){
@@ -353,7 +353,6 @@ abstract class AbstractIndependentVisObject(
 
     final override fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable) {}
 
-    // TODO override this to enable height-only mapping
     override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
 
         val visualParams = getVisParams()
@@ -362,6 +361,7 @@ abstract class AbstractIndependentVisObject(
         var shape: VisObjectShape = visualParams.selectedShape
         var color: Int = visualParams.selectedColor
         var motion: AnimatorSet = visualParams.selectedMotion
+        var shapeText: String = ""
 
         input.forEach{ propertyToValue ->
             val notiProp: NotiProperty = propertyToValue.key
@@ -376,7 +376,10 @@ abstract class AbstractIndependentVisObject(
                             when(visVar){
                                 NotiVisVariable.SIZE -> size = visVal as Double
                                 NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                                NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                                NotiVisVariable.SHAPE -> {
+                                    shape = visVal as VisObjectShape
+                                    shapeText = notiVal.toString()
+                                }
                                 NotiVisVariable.POSITION -> pos = visVal as Double
                                 NotiVisVariable.COLOR -> color = visVal as Int
                             }
@@ -387,7 +390,10 @@ abstract class AbstractIndependentVisObject(
                         when(visVar){
                             NotiVisVariable.SIZE -> size = visVal as Double
                             NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                            NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
+                            NotiVisVariable.SHAPE -> {
+                                shape = visVal as VisObjectShape
+                                shapeText = ""
+                            }
                             NotiVisVariable.POSITION -> pos = visVal as Double
                             NotiVisVariable.COLOR -> color = visVal as Int
                         }
@@ -403,16 +409,8 @@ abstract class AbstractIndependentVisObject(
 
         val mySize = (150 * size).roundToInt()
 
-        //TODO(Drawable 조정)
         val shapeDrawable: Drawable = when(shape.type){
             VisShapeType.RECT -> {
-                /*
-                (shape.drawable as ShapeDrawable).also{
-                    it.paint.color = color
-                    it.intrinsicWidth = mySize
-                    it.intrinsicHeight = mySize
-                }
-                */
                 ShapeDrawable().also{
                     it.shape = RectShape()
                     it.paint.color = color
@@ -422,28 +420,20 @@ abstract class AbstractIndependentVisObject(
                 }
             }
             VisShapeType.OVAL -> {
-                /*
-                (shape.drawable as ShapeDrawable).also{
-                    it.paint.color = color
-                    it.intrinsicWidth = mySize
-                    it.intrinsicHeight = mySize
-                }
-                */
                 ShapeDrawable().also{
                     it.shape = OvalShape()
                     it.paint.color = color
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
                 }
-                //TODO(VisConfigParam의 ShapeDrawable 고쳐야 함 공유 문제)
             }
             VisShapeType.PATH -> {
-                //이거 다 고쳐야 함
-                (shape.drawable as ShapeDrawable?)?.also{
+                ShapeDrawable().also{
+                    //it.shape = PathShape()
                     it.paint.color = color
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
-                }?: ShapeDrawable()
+                }
             }
             VisShapeType.IMAGE -> {
                 (shape.drawable)?.let{
@@ -451,9 +441,9 @@ abstract class AbstractIndependentVisObject(
                 }?: ShapeDrawable()
             }
             VisShapeType.TEXT -> {
-                (shape.drawable as TextDrawable?)?.also{
+                TextDrawable(shapeText, 15f).also{
                     it.setColor(color)
-                }?: ShapeDrawable()
+                }
             }
         }
 

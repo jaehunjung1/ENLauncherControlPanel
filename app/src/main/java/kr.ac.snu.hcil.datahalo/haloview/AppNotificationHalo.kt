@@ -104,6 +104,7 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
 
         if(replaceIndependentVisEffect){
             currentIndependentVisEffects.keys.forEach{ id ->
+                currentIndependentVisEffects[id]?.deleteVisObjectsInLayout(this)
                 currentIndependentVisEffects[id] = VisEffectManager.createNewIndependentVisEffect(appHaloConfig.independentVisEffectName, appHaloConfig)
             }
         }
@@ -119,6 +120,7 @@ class AppNotificationHalo(context: Context, attributeSet: AttributeSet? = null)
         }
 
         if(replaceAggregatedVisEffect){
+            currentAggregatedVisEffect?.deleteVisObjectsInLayout(this)
             currentAggregatedVisEffect = VisEffectManager.createNewAggregatedVisEffect(appHaloConfig.aggregatedVisEffectName, appHaloConfig)
         }
 
