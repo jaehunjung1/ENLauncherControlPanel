@@ -15,6 +15,7 @@ class TextDrawable(text: CharSequence, textSize: Float): Drawable() {
 
     private var mPaint: Paint? = null
     private var mText: CharSequence? = null
+    private var rotation: Float? = null
     private var mIntrinsicWidth: Int = 0
     private var mIntrinsicHeight: Int = 0
 
@@ -26,11 +27,12 @@ class TextDrawable(text: CharSequence, textSize: Float): Drawable() {
             it.textSize = textSize
 
             mIntrinsicWidth = (it.measureText(text, 0, text.length) + .5).roundToInt()
-            mIntrinsicHeight = it.getFontMetricsInt(null)
+            mIntrinsicHeight = it.getFontMetricsInt(Paint.FontMetricsInt())
         }
     }
 
-    fun setText(cs: CharSequence, textSize: Float = DEFAULT_TEXT_SIZE, textColor: Int = DEFAULT_COLOR){
+    fun setText(cs: CharSequence, textSize: Float = DEFAULT_TEXT_SIZE, textColor: Int = DEFAULT_COLOR, rotate: Float? = null){
+        rotation = rotate
         mText = cs
         mPaint = Paint(Paint.ANTI_ALIAS_FLAG).also{
             it.color = textColor
@@ -38,7 +40,7 @@ class TextDrawable(text: CharSequence, textSize: Float): Drawable() {
             it.textSize = textSize
 
             mIntrinsicWidth = (it.measureText(cs, 0, cs.length) + .5).roundToInt()
-            mIntrinsicHeight = it.getFontMetricsInt(null)
+            mIntrinsicHeight = it.getFontMetricsInt(Paint.FontMetricsInt())
         }
         invalidateSelf()
     }
@@ -49,12 +51,19 @@ class TextDrawable(text: CharSequence, textSize: Float): Drawable() {
     }
 
     override fun draw(canvas: Canvas) {
-        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR)
-
         val bounds = bounds
-        mPaint?.let{paint ->
+        mPaint?.let{ paint ->
             mText?.let{ text ->
-                canvas.drawText(text, 0, text.length, bounds.exactCenterX(), bounds.exactCenterY(), paint)
+                rotation?.let{ angle ->
+                    canvas.apply{
+                        save()
+                        rotate(angle, bounds.exactCenterX(), bounds.exactCenterY())
+                        drawText(text, 0, text.length, bounds.exactCenterX(),bounds.exactCenterY(), paint)
+                        restore()
+                    }
+                }?: run{
+                    canvas.drawText(text, 0, text.length, bounds.exactCenterX(), bounds.exactCenterY(), paint)
+                }
             }
         }
     }

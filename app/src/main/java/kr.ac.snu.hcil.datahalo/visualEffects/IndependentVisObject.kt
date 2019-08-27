@@ -3,14 +3,15 @@ package kr.ac.snu.hcil.datahalo.visualEffects
 import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.content.res.Resources
+import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.ScaleDrawable
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
-import android.graphics.drawable.shapes.PathShape
 import android.graphics.drawable.shapes.RectShape
-import android.util.Log
-import android.view.Gravity
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.utils.TextDrawable
@@ -107,6 +108,7 @@ abstract class AbstractIndependentVisObject(
     lateinit var userDefinedConversions: Map<NotiVisVariable, Any>
     private var position: Pair<Double, Double> = Pair(0.0, 0.0)
     private lateinit var animationMap: Map<EnhancedNotificationLife, AnimatorSet>
+
 
     init{
         setVisMapping(visualMapping)
@@ -353,7 +355,7 @@ abstract class AbstractIndependentVisObject(
 
     final override fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable) {}
 
-    override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
+    internal fun computeVisVarVal(input: Map<NotiProperty, Any>): Map<NotiVisVariable, Any>{
 
         val visualParams = getVisParams()
         var pos: Double = visualParams.selectedPos
@@ -361,7 +363,6 @@ abstract class AbstractIndependentVisObject(
         var shape: VisObjectShape = visualParams.selectedShape
         var color: Int = visualParams.selectedColor
         var motion: AnimatorSet = visualParams.selectedMotion
-        var shapeText: String = ""
 
         input.forEach{ propertyToValue ->
             val notiProp: NotiProperty = propertyToValue.key
@@ -376,10 +377,7 @@ abstract class AbstractIndependentVisObject(
                             when(visVar){
                                 NotiVisVariable.SIZE -> size = visVal as Double
                                 NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                                NotiVisVariable.SHAPE -> {
-                                    shape = visVal as VisObjectShape
-                                    shapeText = notiVal.toString()
-                                }
+                                NotiVisVariable.SHAPE -> { shape = (visVal as VisObjectShape).also{it.raw = notiVal} }
                                 NotiVisVariable.POSITION -> pos = visVal as Double
                                 NotiVisVariable.COLOR -> color = visVal as Int
                             }
@@ -390,10 +388,7 @@ abstract class AbstractIndependentVisObject(
                         when(visVar){
                             NotiVisVariable.SIZE -> size = visVal as Double
                             NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                            NotiVisVariable.SHAPE -> {
-                                shape = visVal as VisObjectShape
-                                shapeText = ""
-                            }
+                            NotiVisVariable.SHAPE -> { shape = (visVal as VisObjectShape).also{it.raw = null} }
                             NotiVisVariable.POSITION -> pos = visVal as Double
                             NotiVisVariable.COLOR -> color = visVal as Int
                         }
@@ -405,16 +400,33 @@ abstract class AbstractIndependentVisObject(
             }
         }
 
+        return mapOf(
+                NotiVisVariable.POSITION to pos,
+                NotiVisVariable.SIZE to size,
+                NotiVisVariable.SHAPE to shape,
+                NotiVisVariable.COLOR to color,
+                NotiVisVariable.MOTION to motion
+        )
+    }
+
+    override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
+
+        val computedResult = computeVisVarVal(input)
+
+        val pos = computedResult[NotiVisVariable.POSITION] as Double
+        val size = computedResult[NotiVisVariable.SIZE] as Double
+        val shape = computedResult[NotiVisVariable.SHAPE] as VisObjectShape
+        val color = computedResult[NotiVisVariable.COLOR] as Int
+        val motion = computedResult[NotiVisVariable.MOTION] as AnimatorSet
+
         position = Pair(pos, pos)
 
         val mySize = (150 * size).roundToInt()
-
-        val shapeDrawable: Drawable = when(shape.type){
+        val resultDrawable: Drawable = when(shape.type){
             VisShapeType.RECT -> {
                 ShapeDrawable().also{
                     it.shape = RectShape()
                     it.paint.color = color
-                    Log.e("Size", mySize.toString())
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
                 }
@@ -436,27 +448,37 @@ abstract class AbstractIndependentVisObject(
                 }
             }
             VisShapeType.IMAGE -> {
-                (shape.drawable)?.let{
-                    ScaleDrawable(it, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
-                }?: ShapeDrawable()
+                (shape.drawable as BitmapDrawable?)?.let{
+                    val w = mySize
+                    val h = mySize
+                    BitmapDrawable(
+                            Resources.getSystem(),
+                            Bitmap.createScaledBitmap(
+                                    it.bitmap,
+                                    if(w == 0) 1 else w,
+                                    if(h == 0) 1 else h,
+                                    true
+                            )
+                    ).apply{
+                        setColorFilter(
+                                Color.argb((255 * 0.5).roundToInt(), Color.red(color), Color.green(color), Color.blue(color)),
+                                PorterDuff.Mode.OVERLAY
+                        )
+                    }
+                }?: ShapeDrawable().apply{
+                    paint.color = color
+                    intrinsicWidth = mySize
+                    intrinsicHeight = mySize
+                }
             }
             VisShapeType.TEXT -> {
-                TextDrawable(shapeText, 15f).also{
-                    it.setColor(color)
+                TextDrawable(shape.raw.toString(), mySize.toFloat()).also{
+                    it.setText(shape.raw.toString(), mySize.toFloat(), color)
                 }
             }
         }
 
-        val resultDrawable = ScaleDrawable(
-                shapeDrawable,
-                Gravity.CENTER,
-                1.0f,
-                1.0f
-        ).also{
-            it.level = (10000 * size).roundToInt()
-        }
-
-        return Pair(shapeDrawable, motion.also{it.setTarget(resultDrawable)})
+        return Pair(resultDrawable, motion.also{it.setTarget(resultDrawable)})
     }
 
 }
@@ -476,53 +498,19 @@ class HeightOnlyIndependentObject(
 ) {
     override fun getDrawableWithAnimator(input: Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet> {
 
-        val visualParams = getVisParams()
-        var pos: Double = visualParams.selectedPos
-        var size: Double = visualParams.selectedSize
-        var shape: VisObjectShape = visualParams.selectedShape
-        var color: Int = visualParams.selectedColor
-        var motion: AnimatorSet = visualParams.selectedMotion
+        val computedResult = computeVisVarVal(input)
 
-        input.forEach{ propertyToValue ->
-            val notiProp: NotiProperty = propertyToValue.key
-            val notiVal: Any = propertyToValue.value
+        val pos = computedResult[NotiVisVariable.POSITION] as Double
+        val size = computedResult[NotiVisVariable.SIZE] as Double
+        val shape = computedResult[NotiVisVariable.SHAPE] as VisObjectShape
+        val color = computedResult[NotiVisVariable.COLOR] as Int
+        val motion = computedResult[NotiVisVariable.MOTION] as AnimatorSet
 
-            val visVars = currMapping.filter{it.value == notiProp}.map{ it.key }.toList()
-            visVars.forEach{ visVar ->
-                when(visVar){
-                    in boundConversions -> {
-                        val f = boundConversions[visVar]!!
-                        f(notiVal)?.let{ visVal ->
-                            when(visVar){
-                                NotiVisVariable.SIZE -> size = visVal as Double
-                                NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                                NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
-                                NotiVisVariable.POSITION -> pos = visVal as Double
-                                NotiVisVariable.COLOR -> color = visVal as Int
-                            }
-                        }
-                    }
-                    in userDefinedConversions -> {
-                        val visVal = userDefinedConversions[visVar]!!
-                        when(visVar){
-                            NotiVisVariable.SIZE -> size = visVal as Double
-                            NotiVisVariable.MOTION -> motion = visVal as AnimatorSet
-                            NotiVisVariable.SHAPE -> shape = visVal as VisObjectShape
-                            NotiVisVariable.POSITION -> pos = visVal as Double
-                            NotiVisVariable.COLOR -> color = visVal as Int
-                        }
-                    }
-                    else -> {
-                        //여기 오면 문제 생김
-                    }
-                }
-            }
-        }
         setPosition(Pair(pos, pos))
 
         val mySize = (150 * size).roundToInt()
 
-        val shapeDrawable: Drawable = when(shape.type){
+        val resultDrawable: Drawable = when(shape.type){
             VisShapeType.RECT -> {
                 ShapeDrawable().also{
                     it.shape = RectShape()
@@ -538,7 +526,6 @@ class HeightOnlyIndependentObject(
                     it.intrinsicWidth = 20
                     it.intrinsicHeight = mySize
                 }
-                //TODO(VisConfigParam의 ShapeDrawable 고쳐야 함 공유 문제)
             }
             VisShapeType.PATH -> {
                 (shape.drawable as ShapeDrawable).also{
@@ -548,25 +535,36 @@ class HeightOnlyIndependentObject(
                 }
             }
             VisShapeType.IMAGE -> {
-                ScaleDrawable(shape.drawable, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
+                (shape.drawable as BitmapDrawable?)?.let{
+                    val h = mySize
+                    BitmapDrawable(
+                            Resources.getSystem(),
+                            Bitmap.createScaledBitmap(
+                                    it.bitmap,
+                                    20,
+                                    if(h == 0) 1 else mySize,
+                                    true
+                            )
+                    ).apply{
+                        setColorFilter(
+                                Color.argb((255 * 0.5).roundToInt(), Color.red(color), Color.green(color), Color.blue(color)),
+                                PorterDuff.Mode.OVERLAY
+                        )
+                    }
+                }?: ShapeDrawable().apply{
+                    paint.color = color
+                    intrinsicWidth = mySize
+                    intrinsicHeight = mySize
+                }
             }
             VisShapeType.TEXT -> {
-                (shape.drawable as TextDrawable).also{
-                    it.setColor(color)
+                TextDrawable(shape.raw.toString(), mySize.toFloat()).also{
+                    it.setText(shape.raw.toString(), mySize.toFloat(), color, 90f)
                 }
             }
         }
 
-        val resultDrawable = ScaleDrawable(
-                shapeDrawable,
-                Gravity.CENTER,
-                1.0f,
-                1.0f
-        ).also{
-            it.level = (10000 * size).roundToInt()
-        }
-
-        return Pair(shapeDrawable, motion.also{it.setTarget(resultDrawable)})
+        return Pair(resultDrawable, motion.also{it.setTarget(resultDrawable)})
     }
 }
 
