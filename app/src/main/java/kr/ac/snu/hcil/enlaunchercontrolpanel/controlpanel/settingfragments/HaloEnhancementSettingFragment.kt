@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_halo_enhancement_setting.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.ImportanceControlView
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.KeywordGroupExpandableListAdapter
 
@@ -20,18 +20,18 @@ class HaloEnhancementSettingFragment: androidx.fragment.app.Fragment() {
         fun newInstance() = HaloEnhancementSettingFragment()
     }
 
-    private lateinit var appConfigViewModel: AppHaloConfigViewModel
+    private lateinit var appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         appConfigViewModel = activity?.run{
-            ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
+            ViewModelProviders.of(this).get(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
-        val appConfigObserver = Observer<AppHaloConfig> { newConfig ->
+        val appConfigObserver = Observer<kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig> { newConfig ->
             (expandable_importance_pattern_mapping.expandableListAdapter as KeywordGroupExpandableListAdapter).setAppConfig(newConfig)
         }
         appConfigViewModel.appHaloConfigLiveData.observe(this, appConfigObserver)

@@ -46,7 +46,7 @@ interface InterfaceVisObject{
 
 
     fun conversionForPredefinedVisVar(predefinedVisVar: NotiVisVariable)
-    fun conversionForBoundVisVar(boundVisVar: NotiVisVariable, notiProp:NotiProperty): (Any) -> Any?
+    fun conversionForBoundVisVar(boundVisVar: NotiVisVariable, notiProp: NotiProperty): (Any) -> Any?
     fun conversionForTransparentVisVar(transparentVisVar: NotiVisVariable): Any
 
     fun getDrawableWithAnimator(input:Map<NotiProperty, Any>): Pair<Drawable, AnimatorSet>
@@ -88,13 +88,13 @@ abstract class AbstractIndependentVisObject(
         visualParameters: IndependentVisObjectVisParams,
         dataParameters: IndependentVisObjectDataParams,
         animationParameters: List<IndependentVisObjectAnimParams>
-): InterfaceVisObject{
+): InterfaceVisObject {
     companion object {
         val exceptionInvalidCustomizability = Exception("CustomizabilitySpec May Lack Information.")
         val exceptionInvalidMappingInput = Exception("Input Mapping is Invalid")
         val exceptionNotInitialized = Exception("Object is Not Initialized. Set Mapping First.")
-        val exceptionVisVariable = {visVar:NotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
-        val exceptionNotSupportedTransformation = { visVar:NotiVisVariable, notiProp:NotiProperty -> Exception("$notiProp -> $visVar Mapping Does Not Exist.")}
+        val exceptionVisVariable = {visVar: NotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
+        val exceptionNotSupportedTransformation = { visVar: NotiVisVariable, notiProp: NotiProperty -> Exception("$notiProp -> $visVar Mapping Does Not Exist.")}
     }
 
     private var id: Int = -1
@@ -199,7 +199,7 @@ abstract class AbstractIndependentVisObject(
     private fun updateMappingFunction(){
         //check if mapping is absurd
         val isValid = currMapping.keys.fold(true){
-            acc:Boolean, el:NotiVisVariable ->
+            acc:Boolean, el: NotiVisVariable ->
             val truth = el in customizabilitySpec.filter{it.value == VisVarCustomizability.CUSTOMIZABLE}.keys
             acc && truth
         }

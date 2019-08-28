@@ -5,18 +5,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.*
 
 class KeywordGroupExpandableListAdapter(
-        private var viewModel: AppHaloConfigViewModel
+        private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 ): BaseExpandableListAdapter() {
     companion object {
         private const val TAG = "ExpandKeywordAdapter"
     }
 
-    private lateinit var keywordGroupImportancePatterns: KeywordGroupImportancePatterns
-    private lateinit var observationWindowFilter: Map<WGBFilterVar, Any>
+    private lateinit var keywordGroupImportancePatterns: kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportancePatterns
+    private lateinit var observationWindowFilter: Map<kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar, Any>
 
     init{
         viewModel.appHaloConfigLiveData.value?.let{ config ->
@@ -25,7 +25,7 @@ class KeywordGroupExpandableListAdapter(
         }
     }
 
-    fun setAppConfig(appHaloConfig: AppHaloConfig){
+    fun setAppConfig(appHaloConfig: kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig){
         keywordGroupImportancePatterns = appHaloConfig.keywordGroupPatterns
         observationWindowFilter = appHaloConfig.filterObservationWindowConfig
         notifyDataSetInvalidated()
@@ -50,7 +50,7 @@ class KeywordGroupExpandableListAdapter(
             keywordGroupImportancePatterns.getGroupOfRank(groupPosition)!!.id
     }
 
-    override fun getGroup(groupPosition: Int): KeywordGroupImportance {
+    override fun getGroup(groupPosition: Int): kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance {
         return if(groupPosition == groupCount - 1) {
             keywordGroupImportancePatterns.getRemainderKeywordGroupPattern()
         }
@@ -60,10 +60,10 @@ class KeywordGroupExpandableListAdapter(
         }
     }
 
-    private fun createGroupViewListener(groupPosition: Int, groupData: KeywordGroupImportance): KeywordGroupParentView.KeywordGroupParentInteractionListener{
+    private fun createGroupViewListener(groupPosition: Int, groupData: kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance): KeywordGroupParentView.KeywordGroupParentInteractionListener{
         return object: KeywordGroupParentView.KeywordGroupParentInteractionListener{
             override fun onMappingUpdate(patternName: String) {
-                if(patternName != VisDataManager.CUSTOM_PATTERN){
+                if(patternName != kr.ac.snu.hcil.datahalo.manager.VisDataManager.CUSTOM_PATTERN){
                     //Predefined Pattern으로의 변경
                     if(groupPosition == groupCount - 1)
                         keywordGroupImportancePatterns.setRemainderKeywordGroupEnhancementParams(patternName)
@@ -120,13 +120,13 @@ class KeywordGroupExpandableListAdapter(
         return childPosition.toLong()
     }
 
-    override fun getChild(groupPosition: Int, childPosition: Int): Pair<Set<String>, NotificationEnhancementParams>? {
+    override fun getChild(groupPosition: Int, childPosition: Int): Pair<Set<String>, kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams>? {
         return getGroup(groupPosition)?.let{ Pair(it.keywords, it.enhancementParam) }
     }
 
-    private fun createChildViewListener(groupPosition: Int, groupData:KeywordGroupImportance): KeywordGroupChildView.KeywordGroupChildInteractionListener {
+    private fun createChildViewListener(groupPosition: Int, groupData: kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance): KeywordGroupChildView.KeywordGroupChildInteractionListener {
         return object: KeywordGroupChildView.KeywordGroupChildInteractionListener{
-            override fun onEnhancementParamUpdated(pattern: NotificationEnhancementParams) {
+            override fun onEnhancementParamUpdated(pattern: kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams) {
                 if(groupPosition == groupCount - 1)
                     keywordGroupImportancePatterns.setRemainderKeywordGroupEnhancementParams(pattern)
                 else

@@ -19,7 +19,7 @@ class DataHaloManager {
 
         fun createAppHalo(context: Context,
                           config: AppHaloConfig)
-                : AppNotificationHalo{
+                : AppNotificationHalo {
             if(config.packageName in appNotificationHalos.keys)
                 exceptionRedundantAddition(config.packageName)
 

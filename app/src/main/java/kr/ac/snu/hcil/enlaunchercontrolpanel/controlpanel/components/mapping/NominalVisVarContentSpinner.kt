@@ -18,33 +18,33 @@ class NominalVisVarContentSpinner{
         fun generate(
                 context: Context,
                 importanceBinNum: Int,
-                visVar: NotiVisVariable
+                visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
         ): Spinner{
             val spinner = Spinner(context, Spinner.MODE_DIALOG)
             spinner.isFocusable = false
             spinner.isFocusableInTouchMode = false
             when(visVar){
-                NotiVisVariable.COLOR ->{
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.COLOR ->{
                     //지금대로 크게 문제 없음
                 }
-                NotiVisVariable.SHAPE -> {
-                    val adapter = NominalVisVarContentAdapter(context, VisShapeType.values().map{Triple(it.name, it.explanation, it)})
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SHAPE -> {
+                    val adapter = NominalVisVarContentAdapter(context, kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.values().map{Triple(it.name, it.explanation, it)})
                     spinner.adapter = adapter
                 }
-                NotiVisVariable.MOTION -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.MOTION -> {
                     //TODO(Motion Dictionaries)
                     val adapter = NominalVisVarContentAdapter(context, emptyList())
                     spinner.adapter = adapter
                 }
-                NotiVisVariable.POSITION -> {
-                    val contents = MapFunctionUtilities.bin(Pair(0.0, 1.0), importanceBinNum)
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION -> {
+                    val contents = kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities.bin(Pair(0.0, 1.0), importanceBinNum)
                     val keys = contents.map{"${"%.2f".format(it.first)}-${"%.2f".format(it.second)}"}
                     val explanations = contents.mapIndexed{index, pair -> " ${index + 1} of ${contents.size} binned position ranges"}
                     val adapter = NominalVisVarContentAdapter(context, List(contents.size){index -> Triple(keys[index], explanations[index], contents[index])})
                     spinner.adapter = adapter
                 }
-                NotiVisVariable.SIZE -> {
-                    val contents = MapFunctionUtilities.bin(Pair(0.0, 1.0), importanceBinNum)
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE -> {
+                    val contents = kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities.bin(Pair(0.0, 1.0), importanceBinNum)
                     val keys = contents.map{"${"%.2f".format(it.first)}-${"%.2f".format(it.second)}"}
                     val explanations = contents.mapIndexed{index, pair -> " ${index + 1} of ${contents.size} binned size ranges"}
                     val adapter = NominalVisVarContentAdapter(context, List(contents.size){index -> Triple(keys[index], explanations[index], contents[index])})

@@ -22,7 +22,7 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.mapping.Agg
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.ComponentExampleSelectionView
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.HaloVisComponent
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
@@ -36,8 +36,8 @@ class HaloAggregatedEffectSettingFragment : Fragment() {
         fun newInstance() = HaloAggregatedEffectSettingFragment()
     }
 
-    private lateinit var appConfigViewModel: AppHaloConfigViewModel
-    private var componentExamples = VisEffectManager.availableAggregatedVisEffects.map{
+    private lateinit var appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
+    private var componentExamples = kr.ac.snu.hcil.datahalo.manager.VisEffectManager.availableAggregatedVisEffects.map{
         HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.AGGREGATED_VISEFFECT)
     }
 
@@ -47,10 +47,10 @@ class HaloAggregatedEffectSettingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appConfigViewModel = activity?.run {
-            ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
+            ViewModelProviders.of(this).get(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        val appConfigObserver = Observer<AppHaloConfig> { newConfig ->
+        val appConfigObserver = Observer<kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig> { newConfig ->
             componentExampleSelector?.setViewModel(appConfigViewModel)
         }
         appConfigViewModel.appHaloConfigLiveData.observe(this, appConfigObserver)
@@ -58,28 +58,28 @@ class HaloAggregatedEffectSettingFragment : Fragment() {
 
     private var currentShapeChangedIndex: Int? = null
     private var currentShapeChangedUri: Uri? = null
-    private var currentShapeChangedType: VisShapeType? = null
+    private var currentShapeChangedType: kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType? = null
 
 
     private fun updateShapedChanged(){
         currentShapeChangedType?.let{ type ->
             when(type){
-                VisShapeType.OVAL -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.OVAL -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.RECT -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.RECT -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.PATH -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.PATH -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.TEXT -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.TEXT -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.IMAGE -> {
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.IMAGE -> {
                     if(currentShapeChangedIndex != null && currentShapeChangedUri != null){
-                        VisObjectShape(
-                                VisShapeType.IMAGE,
+                        kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(
+                                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.IMAGE,
                                 BitmapDrawable(resources, MediaStore.Images.Media.getBitmap(activity!!.contentResolver, currentShapeChangedUri!!))
                         )
                     } else null
@@ -147,17 +147,17 @@ class HaloAggregatedEffectSettingFragment : Fragment() {
                 spinner.adapter = ArrayAdapter(
                         context!!,
                         R.layout.item_spinner,
-                        NotiProperty.values().map{prop -> prop.name}.toMutableList().apply{
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.values().map{ prop -> prop.name}.toMutableList().apply{
                             add(0, "None")
                         }.toList()
                 )
 
                 spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        val notiProp: NotiProperty? = if(position == 0){ null } else{ NotiProperty.values()[position - 1]}
+                        val notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty? = if(position == 0){ null } else{ kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.values()[position - 1]}
 
                         when(notiProp){
-                            NotiProperty.IMPORTANCE ->{
+                            kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE ->{
                                 binNumberPicker.visibility = View.VISIBLE
                             }
                             else -> {
@@ -198,10 +198,10 @@ class HaloAggregatedEffectSettingFragment : Fragment() {
                         AggregatedMappingExpandableListAdapter().apply{
                             setViewModel(appConfigViewModel)
                             shapeMappingParameterChangedListener = object: AggregatedMappingExpandableListAdapter.MappingParameterChangedListener{
-                                override fun onShapeParameterChanged(index: Int, visShapeType: VisShapeType) {
+                                override fun onShapeParameterChanged(index: Int, visShapeType: kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType) {
                                     currentShapeChangedIndex = index
                                     currentShapeChangedType = visShapeType
-                                    if(visShapeType != VisShapeType.IMAGE)
+                                    if(visShapeType != kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.IMAGE)
                                         updateShapedChanged()
                                 }
                             }

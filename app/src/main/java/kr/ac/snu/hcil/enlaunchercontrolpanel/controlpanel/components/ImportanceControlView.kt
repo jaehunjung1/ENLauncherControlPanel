@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.layout_importance_control_view.view.*
 import kotlinx.android.synthetic.main.layout_importance_saturation_control.view.*
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams
 import kotlin.math.roundToInt
 import kotlin.math.roundToLong
@@ -40,18 +40,18 @@ class ImportanceControlView : LinearLayout {
 
     private var _initalImportance: Double = 0.5
 
-    private var _patternBeforeInteraction: EnhancementPattern = EnhancementPattern.EQ
+    private var _patternBeforeInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern = kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ
     private var _saturationNumberBeforeInteraction: Double = 0.0
     private var _saturationUnitBeforeInteraction: SaturationTimeUnit = SaturationTimeUnit.MINUTES
 
-    private var _patternAfterInteraction: EnhancementPattern = EnhancementPattern.EQ
+    private var _patternAfterInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern = kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ
     private var _saturationNumberAfterInteraction: Double = 0.0
     private var _saturationUnitAfterInteraction: SaturationTimeUnit = SaturationTimeUnit.MINUTES
 
-    private var viewModel: AppHaloConfigViewModel? = null
+    private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
     private var invalidateFlag = true
 
-    private var importanceSaturationExamples = VisDataManager.exampleImportanceSaturationPatterns.map{
+    private var importanceSaturationExamples = kr.ac.snu.hcil.datahalo.manager.VisDataManager.exampleImportanceSaturationPatterns.map{
         HaloVisComponent(it.key, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.IMPORTANCE_SATURATION)
     }
 
@@ -119,7 +119,7 @@ class ImportanceControlView : LinearLayout {
             invalidateSaturationInformation()
         }
 
-    var patternBeforeInteraction: EnhancementPattern
+    var patternBeforeInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
         get() = _patternBeforeInteraction
         set(value){
             _patternBeforeInteraction = value
@@ -127,7 +127,7 @@ class ImportanceControlView : LinearLayout {
         }
 
 
-    var patternAfterInteraction: EnhancementPattern
+    var patternAfterInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
         get() = _patternAfterInteraction
         set(value){
             _patternAfterInteraction = value
@@ -209,12 +209,12 @@ class ImportanceControlView : LinearLayout {
         val firstSaturationUnit = firstSaturationControl.findViewById<Spinner>(R.id.saturationUnit)
 
         firstSaturationImportancePattern.apply{
-            adapter = ArrayAdapter(context, R.layout.item_spinner, EnhancementPattern.values())
+            adapter = ArrayAdapter(context, R.layout.item_spinner, kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.values())
             onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    patternBeforeInteraction = getItemAtPosition(position) as EnhancementPattern
+                    patternBeforeInteraction = getItemAtPosition(position) as kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
                     when(patternBeforeInteraction){
-                        EnhancementPattern.EQ -> {
+                        kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ -> {
                             firstSaturationTime.visibility = View.INVISIBLE
                             firstSaturationUnit.visibility = View.INVISIBLE
                         }
@@ -236,12 +236,12 @@ class ImportanceControlView : LinearLayout {
         val secondSaturationUnit = secondSaturationControl.findViewById<Spinner>(R.id.saturationUnit)
 
         secondSaturationImportancePattern.apply{
-            adapter = ArrayAdapter(context, R.layout.item_spinner, EnhancementPattern.values())
+            adapter = ArrayAdapter(context, R.layout.item_spinner, kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.values())
             onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                    patternAfterInteraction = getItemAtPosition(position) as EnhancementPattern
+                    patternAfterInteraction = getItemAtPosition(position) as kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
                     when(patternAfterInteraction){
-                        EnhancementPattern.EQ -> {
+                        kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ -> {
                             secondSaturationTime.visibility = View.INVISIBLE
                             secondSaturationUnit.visibility = View.INVISIBLE
                         }
@@ -301,7 +301,7 @@ class ImportanceControlView : LinearLayout {
         invalidateTextPaintAndMeasurements()
     }
 
-    fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
+    fun setViewModel(appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel){
         viewModel = appConfigViewModel
 
         findViewById<ComponentExampleSelectionView>(R.id.exampleSelectionView).apply{
@@ -377,7 +377,7 @@ class ImportanceControlView : LinearLayout {
 
 
         viewModel?.appHaloConfigLiveData?.value?.let{appConfig ->
-            appConfig.notificationEnhancementParams = NotificationEnhancementParams(
+            appConfig.notificationEnhancementParams = kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams(
                     importanceOffset,
                     lifespan,
                     Pair(importanceLowerBound, importanceUpperBound),

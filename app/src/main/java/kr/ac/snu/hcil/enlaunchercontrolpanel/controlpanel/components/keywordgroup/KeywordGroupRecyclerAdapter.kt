@@ -17,11 +17,11 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import com.nex3z.flowlayout.FlowLayout
 import com.robertlevonyan.views.chip.Chip
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import java.util.*
 
-class KeywordGroupRecyclerAdapter(private val viewModel: AppHaloConfigViewModel)
+class KeywordGroupRecyclerAdapter(private val viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel)
     : RecyclerView.Adapter<KeywordGroupRecyclerAdapter.KeywordGroupViewHolder>(), KeywordGroupItemTouchHelperAdapter{
     companion object{
         private const val TAG = "KeywordGroupAdapter"

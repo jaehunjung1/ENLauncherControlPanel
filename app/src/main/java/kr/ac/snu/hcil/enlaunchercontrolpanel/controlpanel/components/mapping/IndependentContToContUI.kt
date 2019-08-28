@@ -10,7 +10,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.jaygoo.widget.OnRangeChangedListener
 import com.jaygoo.widget.RangeSeekBar
 import com.jaygoo.widget.VerticalRangeSeekBar
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 
@@ -27,25 +27,25 @@ class IndependentContToContUI(context: Context) : ConstraintLayout(context) {
     internal var isLeftInverted: Boolean = false
     internal var isRightInverted: Boolean = false
 
-    private var viewModel: AppHaloConfigViewModel? = null
-    private var notiProperty: NotiProperty? = null
-    private var notiVisVar: NotiVisVariable? = null
+    private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
+    private var notiProperty: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty? = null
+    private var notiVisVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable? = null
 
     private var notiPropRange: Pair<Double, Double> = Pair(0.0, 1.0)
     private var notiVisVarRange: Pair<Double, Double> = Pair(0.0, 1.0)
 
-    fun setViewModel(configViewModel: AppHaloConfigViewModel?){
+    fun setViewModel(configViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel?){
         viewModel = configViewModel
     }
 
-    fun setMapping(visVar: NotiVisVariable, notiProp: NotiProperty){
+    fun setMapping(visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable, notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty){
         if(notiProperty != notiProp || notiVisVar != visVar){
             notiProperty = notiProp
             notiVisVar = visVar
 
             viewModel?.appHaloConfigLiveData?.value?.let{ config ->
                 when(notiProperty){
-                    NotiProperty.IMPORTANCE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                         notiPropRange = config.independentDataParameters[0].selectedImportanceRange
                         if(notiPropRange.first <= notiPropRange.second){
                             isLeftInverted = false
@@ -61,10 +61,10 @@ class IndependentContToContUI(context: Context) : ConstraintLayout(context) {
                     }
                 }
                 when(notiVisVar){
-                    NotiVisVariable.POSITION -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION -> {
                         notiVisVarRange = config.independentVisualParameters[0].selectedPosRange
                     }
-                    NotiVisVariable.SIZE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE -> {
                         notiVisVarRange = config.independentVisualParameters[0].selectedSizeRange
                     }
                     else ->{
@@ -150,7 +150,7 @@ class IndependentContToContUI(context: Context) : ConstraintLayout(context) {
 
                 viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
                     when(notiProperty){
-                        NotiProperty.IMPORTANCE -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                             val rangeLeft = leftSeekBar.leftSeekBar.progress / 100.0
                             val rangeRight = leftSeekBar.rightSeekBar.progress / 100.0
 
@@ -181,7 +181,7 @@ class IndependentContToContUI(context: Context) : ConstraintLayout(context) {
 
                 viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
                     when(notiVisVar){
-                        NotiVisVariable.POSITION -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION -> {
                             val rangeLeft = rightSeekBar.leftSeekBar.progress / 100.0
                             val rangeRight = rightSeekBar.rightSeekBar.progress / 100.0
 
@@ -192,7 +192,7 @@ class IndependentContToContUI(context: Context) : ConstraintLayout(context) {
                                 currentConfig.independentVisualParameters[0].selectedPosRange = Pair(rangeLeft, rangeRight)
                             }
                         }
-                        NotiVisVariable.SIZE -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE -> {
                             val rangeLeft = rightSeekBar.leftSeekBar.progress / 100.0
                             val rangeRight = rightSeekBar.rightSeekBar.progress / 100.0
 
@@ -253,25 +253,25 @@ class AggregatedContToContUI(context: Context) : ConstraintLayout(context) {
     internal var isLeftInverted: Boolean = false
     internal var isRightInverted: Boolean = false
 
-    private var viewModel: AppHaloConfigViewModel? = null
-    private var notiProperty: NotiProperty? = null
-    private var notiVisVar: NotiVisVariable? = null
+    private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
+    private var notiProperty: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty? = null
+    private var notiVisVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable? = null
 
     private var notiPropRange: Pair<Double, Double> = Pair(0.0, 1.0)
     private var notiVisVarRange: Pair<Double, Double> = Pair(0.0, 1.0)
 
-    fun setViewModel(configViewModel: AppHaloConfigViewModel?){
+    fun setViewModel(configViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel?){
         viewModel = configViewModel
     }
 
-    fun setMapping(visVar: NotiVisVariable, notiProp: NotiProperty){
+    fun setMapping(visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable, notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty){
         if(notiProperty != notiProp || notiVisVar != visVar){
             notiProperty = notiProp
             notiVisVar = visVar
 
             viewModel?.appHaloConfigLiveData?.value?.let{ config ->
                 when(notiProperty){
-                    NotiProperty.IMPORTANCE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                         notiPropRange = config.aggregatedDataParameters[0].selectedImportanceRange
                         if(notiPropRange.first <= notiPropRange.second){
                             isLeftInverted = false
@@ -287,10 +287,10 @@ class AggregatedContToContUI(context: Context) : ConstraintLayout(context) {
                     }
                 }
                 when(notiVisVar){
-                    NotiVisVariable.POSITION -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION -> {
                         notiVisVarRange = config.aggregatedVisualParameters[0].selectedPosRange
                     }
-                    NotiVisVariable.SIZE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE -> {
                         notiVisVarRange = config.aggregatedVisualParameters[0].selectedSizeRange
                     }
                     else ->{
@@ -376,7 +376,7 @@ class AggregatedContToContUI(context: Context) : ConstraintLayout(context) {
 
                 viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
                     when(notiProperty){
-                        NotiProperty.IMPORTANCE -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                             val rangeLeft = leftSeekBar.leftSeekBar.progress / 100.0
                             val rangeRight = leftSeekBar.rightSeekBar.progress / 100.0
 
@@ -407,7 +407,7 @@ class AggregatedContToContUI(context: Context) : ConstraintLayout(context) {
 
                 viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
                     when(notiVisVar){
-                        NotiVisVariable.POSITION -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION -> {
                             val rangeLeft = rightSeekBar.leftSeekBar.progress / 100.0
                             val rangeRight = rightSeekBar.rightSeekBar.progress / 100.0
 
@@ -418,7 +418,7 @@ class AggregatedContToContUI(context: Context) : ConstraintLayout(context) {
                                 currentConfig.aggregatedVisualParameters[0].selectedPosRange = Pair(rangeLeft, rangeRight)
                             }
                         }
-                        NotiVisVariable.SIZE -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE -> {
                             val rangeLeft = rightSeekBar.leftSeekBar.progress / 100.0
                             val rangeRight = rightSeekBar.rightSeekBar.progress / 100.0
 

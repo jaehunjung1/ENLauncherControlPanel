@@ -20,7 +20,7 @@ class KeywordGroupParentView: LinearLayout {
     }
 
     var notificationEnhancementParamChangedListener: KeywordGroupParentInteractionListener? = null
-    private var keywordGroup: KeywordGroupImportance? = null
+    private var keywordGroup: kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance? = null
     private var invalidateFlag: Boolean = true
 
     constructor(context: Context): super(context){
@@ -34,7 +34,7 @@ class KeywordGroupParentView: LinearLayout {
         init(attrs, defStyle)
     }
 
-    fun setProperties(keywordGroupImportance: KeywordGroupImportance){
+    fun setProperties(keywordGroupImportance: kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance){
         keywordGroup = keywordGroupImportance
         //set UIs
 
@@ -42,14 +42,14 @@ class KeywordGroupParentView: LinearLayout {
         findViewById<Spinner>(R.id.enhancement_param_spinner).let{ spinner ->
             invalidateFlag = false
             when(keywordGroupImportance.type){
-                VisDataManager.CUSTOM_PATTERN -> {
+                kr.ac.snu.hcil.datahalo.manager.VisDataManager.CUSTOM_PATTERN -> {
                     spinner.setSelection(
-                            VisDataManager.availableImportanceSaturationPatterns().size
+                            kr.ac.snu.hcil.datahalo.manager.VisDataManager.availableImportanceSaturationPatterns().size
                     )
                 }
                 else -> {
                     spinner.setSelection(
-                            VisDataManager.availableImportanceSaturationPatterns().indexOf(keywordGroupImportance.type)
+                            kr.ac.snu.hcil.datahalo.manager.VisDataManager.availableImportanceSaturationPatterns().indexOf(keywordGroupImportance.type)
                     )
                 }
             }
@@ -67,7 +67,7 @@ class KeywordGroupParentView: LinearLayout {
 
         View.inflate(context, R.layout.item_parent_keywordgroup_expandable_controlpanel, this)
         findViewById<Spinner>(R.id.enhancement_param_spinner).let{ spinner ->
-            val spinnerValues = VisDataManager.exampleImportanceSaturationPatterns.toList().toMutableList().also{
+            val spinnerValues = kr.ac.snu.hcil.datahalo.manager.VisDataManager.exampleImportanceSaturationPatterns.toList().toMutableList().also{
                 it.add(Pair("CUSTOM", "User Custom Patterns"))
             }.toList()
 
@@ -84,7 +84,7 @@ class KeywordGroupParentView: LinearLayout {
                         if(selectedPattern != "CUSTOM")
                             notificationEnhancementParamChangedListener?.onMappingUpdate(selectedPattern)
                         else
-                            notificationEnhancementParamChangedListener?.onMappingUpdate(VisDataManager.CUSTOM_PATTERN)
+                            notificationEnhancementParamChangedListener?.onMappingUpdate(kr.ac.snu.hcil.datahalo.manager.VisDataManager.CUSTOM_PATTERN)
                     }
                 }
                 override fun onNothingSelected(parent: AdapterView<*>?) {}

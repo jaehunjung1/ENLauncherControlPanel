@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
 
@@ -17,13 +17,13 @@ class IndependentMappingParentLayout : LinearLayout {
     }
 
     interface GroupViewInteractionListener{
-        fun onMappingUpdate(visVar: NotiVisVariable, notiProp: NotiProperty?)
+        fun onMappingUpdate(visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable, notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty?)
     }
 
-    private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
-    private var notiDataProp: NotiProperty? = null
+    private var notiVisVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable = kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.MOTION
+    private var notiDataProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty? = null
     private var objIndex: Int = -1
-    private var viewModel: AppHaloConfigViewModel? = null
+    private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
 
     private var initialSetFinished: Boolean = false
 
@@ -42,7 +42,7 @@ class IndependentMappingParentLayout : LinearLayout {
         init(attrs, defStyle)
     }
 
-    fun setProperties(visVar:NotiVisVariable, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
+    fun setProperties(visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable, notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty?, index:Int, appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null){
         notiVisVar = visVar
         notiDataProp = notiProp
         objIndex = index
@@ -51,9 +51,9 @@ class IndependentMappingParentLayout : LinearLayout {
         findViewById<Spinner>(R.id.selected_noti_prop_spinner).setSelection(
                 when(notiProp){
                     null -> 0
-                    NotiProperty.IMPORTANCE -> notiProp.ordinal + 1
-                    NotiProperty.LIFE_STAGE -> notiProp.ordinal + 1
-                    NotiProperty.CONTENT -> notiProp.ordinal + 1
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> notiProp.ordinal + 1
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> notiProp.ordinal + 1
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> notiProp.ordinal + 1
                 }
         )
     }
@@ -70,7 +70,7 @@ class IndependentMappingParentLayout : LinearLayout {
             spinner.isFocusable = false
             spinner.isFocusableInTouchMode = false
 
-            val spinnerValues = NotiProperty.values().map{it.name}.toMutableList().let{
+            val spinnerValues = kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.values().map{it.name}.toMutableList().let{
                 it.add(0, "none")
                 it.toList()
             }
@@ -82,7 +82,7 @@ class IndependentMappingParentLayout : LinearLayout {
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                     val spinnerVal = adapterView.getItemAtPosition(i) as String
-                    val propVal = if (spinnerVal == "none") null else NotiProperty.valueOf(spinnerVal)
+                    val propVal = if (spinnerVal == "none") null else kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.valueOf(spinnerVal)
                     notiDataProp = propVal
                     if(initialSetFinished){
                         invalidateObjAndViewModel()
@@ -100,7 +100,7 @@ class IndependentMappingParentLayout : LinearLayout {
 
     private fun invalidateObjAndViewModel(){
         viewModel?.appHaloConfigLiveData?.value?.let{ appConfig ->
-            val newMapping: Map<NotiVisVariable, NotiProperty?> = appConfig.independentVisualMappings[objIndex].mapValues{
+            val newMapping: Map<kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable, kr.ac.snu.hcil.datahalo.visconfig.NotiProperty?> = appConfig.independentVisualMappings[objIndex].mapValues{
                 if(it.key == notiVisVar) notiDataProp else it.value
             }
             appConfig.independentVisualMappings[objIndex] = newMapping

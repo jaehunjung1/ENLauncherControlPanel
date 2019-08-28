@@ -15,7 +15,7 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
 import kr.ac.snu.hcil.datahalo.manager.VisDataManager
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 
 class ComponentExampleSelectionView : LinearLayout {
 
@@ -23,7 +23,7 @@ class ComponentExampleSelectionView : LinearLayout {
         private const val TAG = "ComponentExamplesView"
     }
     private val _exampleDataList: MutableList<HaloVisComponent> = mutableListOf()
-    private var viewModel: AppHaloConfigViewModel? = null
+    private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewAdapter: HaloVisComponentAdapter
     private var tracker: SelectionTracker<Long>? = null
@@ -51,26 +51,26 @@ class ComponentExampleSelectionView : LinearLayout {
             recyclerViewAdapter.notifyDataSetChanged()
         }
 
-    fun setViewModel(appConfigViewModel: AppHaloConfigViewModel){
+    fun setViewModel(appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel){
         viewModel = appConfigViewModel
         tracker?.apply{
             appConfigViewModel.appHaloConfigLiveData.value?.let{ config ->
                 initialized = false
                 when (componentType){
                     HaloVisComponent.HaloVisComponentType.AGGREGATED_VISEFFECT -> {
-                        val selectedId = VisEffectManager.availableAggregatedVisEffects.indexOf(config.aggregatedVisEffectName).toLong()
+                        val selectedId = kr.ac.snu.hcil.datahalo.manager.VisEffectManager.availableAggregatedVisEffects.indexOf(config.aggregatedVisEffectName).toLong()
                         select(selectedId)
                     }
                     HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT -> {
-                        val selectedId = VisEffectManager.availableIndependentVisEffects.indexOf(config.independentVisEffectName).toLong()
+                        val selectedId = kr.ac.snu.hcil.datahalo.manager.VisEffectManager.availableIndependentVisEffects.indexOf(config.independentVisEffectName).toLong()
                         select(selectedId)
                     }
                     HaloVisComponent.HaloVisComponentType.VISEFFECT_LAYOUT -> {
-                        val selectedId = AppHaloLayoutMethods.availiableLayouts.indexOf(config.haloLayoutMethodName).toLong()
+                        val selectedId = kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods.availiableLayouts.indexOf(config.haloLayoutMethodName).toLong()
                         select(selectedId)
                     }
                     HaloVisComponent.HaloVisComponentType.IMPORTANCE_SATURATION -> {
-                        val selectedId = VisDataManager.exampleImportanceSaturationPatterns.toList().indexOfFirst { it.first == config.notificationEnhancementExamplePatternName}.toLong()
+                        val selectedId = kr.ac.snu.hcil.datahalo.manager.VisDataManager.exampleImportanceSaturationPatterns.toList().indexOfFirst { it.first == config.notificationEnhancementExamplePatternName}.toLong()
                         select(selectedId)
                     }
                     else -> {
@@ -138,7 +138,7 @@ class ComponentExampleSelectionView : LinearLayout {
                                     }
                                     HaloVisComponent.HaloVisComponentType.IMPORTANCE_SATURATION -> {
                                         appHaloConfig.notificationEnhancementExamplePatternName = selected.label!!
-                                        VisDataManager.getExampleSaturationPattern(selected.label!!)?.let{
+                                        kr.ac.snu.hcil.datahalo.manager.VisDataManager.getExampleSaturationPattern(selected.label!!)?.let{
                                             appHaloConfig.notificationEnhancementParams = it
                                         }
                                     }

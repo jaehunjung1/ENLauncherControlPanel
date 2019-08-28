@@ -12,10 +12,10 @@ class NotificationRandomGenerator{
             val secondtrend = Random().nextInt() % 3
 
             return EnhancedNotification(
-                id,
-                "default",
-                initTime,
-                NotiContent("Hello", "World")
+                    id,
+                    "default",
+                    initTime,
+                    NotiContent("Hello", "World")
             ).apply{
                 when(firsttrend){
                     0 -> {

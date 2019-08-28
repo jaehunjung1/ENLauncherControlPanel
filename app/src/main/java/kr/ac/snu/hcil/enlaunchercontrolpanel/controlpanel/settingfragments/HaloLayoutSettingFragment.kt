@@ -11,7 +11,7 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.ComponentExampleSelectionView
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.HaloVisComponent
 import kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 
 class HaloLayoutSettingFragment : Fragment() {
     companion object {
@@ -19,9 +19,9 @@ class HaloLayoutSettingFragment : Fragment() {
         fun newInstance() = HaloLayoutSettingFragment()
     }
 
-    private lateinit var appConfigViewModel: AppHaloConfigViewModel
+    private lateinit var appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
     private lateinit var visComponents: List<HaloVisComponent>
-    private var componentExamples = AppHaloLayoutMethods.availiableLayouts.map{
+    private var componentExamples = kr.ac.snu.hcil.datahalo.manager.AppHaloLayoutMethods.availiableLayouts.map{
         HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.VISEFFECT_LAYOUT)
     }
 
@@ -31,7 +31,7 @@ class HaloLayoutSettingFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         appConfigViewModel = activity?.run {
-            ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
+            ViewModelProviders.of(this).get(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
     }
 

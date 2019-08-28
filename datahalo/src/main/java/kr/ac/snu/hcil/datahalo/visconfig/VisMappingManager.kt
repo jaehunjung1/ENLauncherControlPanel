@@ -23,15 +23,15 @@ class VisMappingManager{
         : VisObjectMapping<NotiPropertyAggregationRule>
 
     interface VisMapping<T>
-            where T : VisObjectMapping<*>{
+            where T : VisObjectMapping<*> {
         val mappings: MutableList<T>
     }
 
-    class IndependentVisMapping: VisMapping<IndependentVisObjectMapping>{
+    class IndependentVisMapping: VisMapping<IndependentVisObjectMapping> {
         override val mappings = mutableListOf<IndependentVisObjectMapping>()
     }
 
-    class AggregatedVisMapping: VisMapping<AggregatedVisObjectMapping>{
+    class AggregatedVisMapping: VisMapping<AggregatedVisObjectMapping> {
         override val mappings: MutableList<AggregatedVisObjectMapping> = mutableListOf()
     }
 }

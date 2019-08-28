@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.*
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
 import kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable
@@ -19,15 +19,15 @@ class AggregatedMappingParentLayout: LinearLayout {
     }
 
     interface GroupViewInteractionListener{
-        fun onMappingUpdate(visVar: NotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?)
+        fun onMappingUpdate(visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable, aggrOp: kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType, notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty?)
     }
 
-    private var groupByNotiProp: NotiProperty? = null
-    private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
-    private var notiDataProp: NotiProperty? = null
-    private var aggregationOp: NotiAggregationType = NotiAggregationType.COUNT
+    private var groupByNotiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty? = null
+    private var notiVisVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable = kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.MOTION
+    private var notiDataProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty? = null
+    private var aggregationOp: kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType = kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.COUNT
     private var objIndex: Int = -1
-    private var viewModel: AppHaloConfigViewModel? = null
+    private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
 
     private var mappingChangedListener: GroupViewInteractionListener? = null
 
@@ -38,7 +38,7 @@ class AggregatedMappingParentLayout: LinearLayout {
         mappingChangedListener = listener
     }
 
-    fun setProperties(groupNotiProp: NotiProperty?, visVar: NotiVisVariable, aggrOp: NotiAggregationType, notiProp: NotiProperty?, index:Int, appConfigViewModel: AppHaloConfigViewModel? = null){
+    fun setProperties(groupNotiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty?, visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable, aggrOp: kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType, notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty?, index:Int, appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null){
         groupByNotiProp = groupNotiProp
         notiVisVar = visVar
         notiDataProp = notiProp
@@ -53,9 +53,9 @@ class AggregatedMappingParentLayout: LinearLayout {
         findViewById<Spinner>(R.id.selected_noti_prop_spinner).setSelection(
                 when(notiProp){
                     null -> 0
-                    NotiProperty.IMPORTANCE -> notiProp.ordinal + 1
-                    NotiProperty.LIFE_STAGE -> notiProp.ordinal + 1
-                    NotiProperty.CONTENT -> notiProp.ordinal + 1
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> notiProp.ordinal + 1
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> notiProp.ordinal + 1
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> notiProp.ordinal + 1
                 }
         )
     }
@@ -75,11 +75,11 @@ class AggregatedMappingParentLayout: LinearLayout {
 
     private fun invalidateObjAndViewModel(){
         viewModel?.appHaloConfigLiveData?.value?.let{ appConfig ->
-            val newMapping: AggregatedVisMappingRule = appConfig.aggregatedVisualMappings[objIndex].let { currentRule ->
-                AggregatedVisMappingRule(
+            val newMapping: kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisMappingRule = appConfig.aggregatedVisualMappings[objIndex].let { currentRule ->
+                kr.ac.snu.hcil.datahalo.visualEffects.AggregatedVisMappingRule(
                         currentRule.groupProperty,
-                        currentRule.visMapping.mapValues{
-                            if(it.key == notiVisVar) Pair(aggregationOp, notiDataProp) else it.value
+                        currentRule.visMapping.mapValues {
+                            if (it.key == notiVisVar) Pair(aggregationOp, notiDataProp) else it.value
                         }
                 )
             }
@@ -103,7 +103,7 @@ class AggregatedMappingParentLayout: LinearLayout {
             spinner.isFocusable = false
             spinner.isFocusableInTouchMode = false
 
-            val spinnerValues = NotiProperty.values().map { it.name }.toMutableList().let {
+            val spinnerValues = kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.values().map { it.name }.toMutableList().let {
                 it.add(0, "none")
                 it.toList()
             }
@@ -115,35 +115,35 @@ class AggregatedMappingParentLayout: LinearLayout {
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                     val spinnerVal = adapterView.getItemAtPosition(i) as String
-                    val propVal = if (spinnerVal == "none") null else NotiProperty.valueOf(spinnerVal)
+                    val propVal = if (spinnerVal == "none") null else kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.valueOf(spinnerVal)
                     when(propVal){
-                        NotiProperty.IMPORTANCE -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                             (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
                                 setElementsEnabled(
-                                        NotiAggregationType.MEAN_NUMERIC.name,
-                                        NotiAggregationType.MAX_NUMERIC.name,
-                                        NotiAggregationType.MIN_NUMERIC.name
+                                        kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.MEAN_NUMERIC.name,
+                                        kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.MAX_NUMERIC.name,
+                                        kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.MIN_NUMERIC.name
                                 )
                             }
                         }
-                        NotiProperty.CONTENT -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> {
                             (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
                                 setElementsEnabled(
-                                        NotiAggregationType.MOST_FREQUENT_NOMINAL.name
+                                        kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.MOST_FREQUENT_NOMINAL.name
                                 )
                             }
                         }
-                        NotiProperty.LIFE_STAGE -> {
+                        kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> {
                             (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
                                 setElementsEnabled(
-                                        NotiAggregationType.MOST_FREQUENT_NOMINAL.name
+                                        kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.MOST_FREQUENT_NOMINAL.name
                                 )
                             }
                         }
                         else -> {
                             (selectedAggrOperationSpinner.adapter as AccessibilityControllableStringAdapter).apply{
                                 setElementsEnabled(
-                                        NotiAggregationType.COUNT.name
+                                        kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.COUNT.name
                                 )
                             }
                         }
@@ -164,7 +164,7 @@ class AggregatedMappingParentLayout: LinearLayout {
             spinner.isFocusable = false
             spinner.isFocusableInTouchMode = false
 
-            val spinnerValues = NotiAggregationType.values().map{ it.name }.toMutableList()
+            val spinnerValues = kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.values().map{ it.name }.toMutableList()
 
             val aggrOpSpinnerAdapter = getArrayAdapter(spinnerValues)
             aggrOpSpinnerAdapter.setDropDownViewResource(R.layout.item_spinner)
@@ -173,7 +173,7 @@ class AggregatedMappingParentLayout: LinearLayout {
             spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
                 override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                     val spinnerVal = parent.getItemAtPosition(position) as String
-                    val propVal = NotiAggregationType.valueOf(spinnerVal)
+                    val propVal = kr.ac.snu.hcil.datahalo.visconfig.NotiAggregationType.valueOf(spinnerVal)
                     aggregationOp = propVal
                     if(aggrOpSpinnerInitialSet){
                         invalidateObjAndViewModel()

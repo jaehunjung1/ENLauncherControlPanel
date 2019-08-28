@@ -22,7 +22,7 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import io.apptik.widget.MultiSlider
 import kotlinx.android.synthetic.main.datafilter_card_view.*
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.ComponentExampleSelectionView
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.HaloVisComponent
@@ -47,14 +47,14 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
     var keywordBlackList = ArrayList<String>()
     var keywordWhiteList = ArrayList<String>()
 
-    private lateinit var appConfigViewModel: AppHaloConfigViewModel
+    private lateinit var appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         appConfigViewModel = activity?.run{
-            ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
+            ViewModelProviders.of(this).get(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
     }
 
@@ -76,21 +76,21 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
             datafilteringCardView.findViewById<MultiSlider>(R.id.enhancementSeekbar).also{ enhancementSeekbar ->
                 enhancementSeekbar.getThumb(0).thumb = resources.getDrawable(R.drawable.seek_bar_black, null)
                 enhancementSeekbar.getThumb(1).thumb = resources.getDrawable(R.drawable.seek_bar_white, null)
-                enhancementSeekbar.getThumb(0).value = ((appHaloConfig.filterImportanceConfig[WGBFilterVar.BLACK_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
-                enhancementSeekbar.getThumb(1).value = ((appHaloConfig.filterImportanceConfig[WGBFilterVar.WHITE_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
+                enhancementSeekbar.getThumb(0).value = ((appHaloConfig.filterImportanceConfig[kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
+                enhancementSeekbar.getThumb(1).value = ((appHaloConfig.filterImportanceConfig[kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND] as Double) * (filterEnhancmentMax - filterEnhancmentMin)).roundToInt()
                 enhancementSeekbar.setOnThumbValueChangeListener{ _, _, thumbIndex, value ->
                     appConfigViewModel.appHaloConfigLiveData.value = appHaloConfig.apply{
                         filterImportanceConfig = if (thumbIndex == 0) {
                             mapOf(
-                                    WGBFilterVar.ACTIVE to true,
-                                    WGBFilterVar.WHITE_COND to enhancementSeekbar.getThumb(1).value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin),
-                                    WGBFilterVar.BLACK_COND to (value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin))
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.ACTIVE to true,
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND to enhancementSeekbar.getThumb(1).value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin),
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND to (value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin))
                             )
                         } else {
                             mapOf(
-                                    WGBFilterVar.ACTIVE to true,
-                                    WGBFilterVar.WHITE_COND to (value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin)),
-                                    WGBFilterVar.BLACK_COND to enhancementSeekbar.getThumb(0).value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin)
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.ACTIVE to true,
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND to (value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin)),
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND to enhancementSeekbar.getThumb(0).value.toDouble() / (filterEnhancmentMax - filterEnhancmentMin)
                             )
                         }
                     }
@@ -101,21 +101,21 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
                 val filter = appHaloConfig.filterObservationWindowConfig
                 observationWindowSeekbar.getThumb(0).thumb = resources.getDrawable(R.drawable.seek_bar_white, null)
                 observationWindowSeekbar.getThumb(1).thumb = resources.getDrawable(R.drawable.seek_bar_black, null)
-                observationWindowSeekbar.getThumb(0).value = observationTimeScales.indexOf((filter[WGBFilterVar.WHITE_COND] as Long).toDouble() / observationTimeUnit)
-                observationWindowSeekbar.getThumb(1).value = observationTimeScales.indexOf((filter[WGBFilterVar.BLACK_COND] as Long).toDouble() / observationTimeUnit)
+                observationWindowSeekbar.getThumb(0).value = observationTimeScales.indexOf((filter[kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND] as Long).toDouble() / observationTimeUnit)
+                observationWindowSeekbar.getThumb(1).value = observationTimeScales.indexOf((filter[kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND] as Long).toDouble() / observationTimeUnit)
                 observationWindowSeekbar.setOnThumbValueChangeListener{_, _, thumbIndex, value ->
                     appConfigViewModel.appHaloConfigLiveData.value = appHaloConfig.apply{
                         filterObservationWindowConfig = if(thumbIndex == 0){
                             mapOf(
-                                    WGBFilterVar.ACTIVE to true,
-                                    WGBFilterVar.WHITE_COND to (observationTimeScales[value] * observationTimeUnit).roundToLong(),
-                                    WGBFilterVar.BLACK_COND to (observationTimeScales[observationWindowSeekbar.getThumb(1).value] * observationTimeUnit).roundToLong()
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.ACTIVE to true,
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND to (observationTimeScales[value] * observationTimeUnit).roundToLong(),
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND to (observationTimeScales[observationWindowSeekbar.getThumb(1).value] * observationTimeUnit).roundToLong()
                             )
                         } else{
                             mapOf(
-                                    WGBFilterVar.ACTIVE to true,
-                                    WGBFilterVar.WHITE_COND to (observationTimeScales[observationWindowSeekbar.getThumb(0).value] * observationTimeUnit).roundToLong(),
-                                    WGBFilterVar.BLACK_COND to (observationTimeScales[value] * observationTimeUnit).roundToLong()
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.ACTIVE to true,
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND to (observationTimeScales[observationWindowSeekbar.getThumb(0).value] * observationTimeUnit).roundToLong(),
+                                    kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND to (observationTimeScales[value] * observationTimeUnit).roundToLong()
                             )
                         }
                     }
@@ -128,7 +128,7 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
             val whiteKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.white_keyword_text_input)
             val whiteKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.white_keyword_editText)
 
-            (appHaloConfig.filterKeywordConfig[WGBFilterVar.WHITE_COND] as Set<String>).forEach{whiteKeyword ->
+            (appHaloConfig.filterKeywordConfig[kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND] as Set<String>).forEach{ whiteKeyword ->
                 addKeyword(whiteFlowLayout, whiteKeyword, true)
             }
 
@@ -141,9 +141,9 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
 
                     appConfigViewModel.appHaloConfigLiveData.value?.let{
                         it.filterKeywordConfig = mapOf(
-                                WGBFilterVar.ACTIVE to true,
-                                WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
-                                WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
+                                kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.ACTIVE to true,
+                                kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
+                                kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
                         )
                         appConfigViewModel.appHaloConfigLiveData.value = it
                     }
@@ -155,7 +155,7 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
             val blackKeywordTextInput = datafilteringCardView.findViewById<TextInputLayout>(R.id.black_keyword_text_input)
             val blackKeywordEditText = datafilteringCardView.findViewById<TextInputEditText>(R.id.black_keyword_editText)
 
-            (appHaloConfig.filterKeywordConfig[WGBFilterVar.BLACK_COND] as Set<String>).forEach{blackKeyword ->
+            (appHaloConfig.filterKeywordConfig[kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND] as Set<String>).forEach{ blackKeyword ->
                 addKeyword(blackFlowLayout, blackKeyword, false)
             }
 
@@ -168,9 +168,9 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
 
                     appConfigViewModel.appHaloConfigLiveData.value?.let{
                         it.filterKeywordConfig = mapOf(
-                                WGBFilterVar.ACTIVE to true,
-                                WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
-                                WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
+                                kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.ACTIVE to true,
+                                kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
+                                kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
                         )
                         appConfigViewModel.appHaloConfigLiveData.value = it
                     }
@@ -214,9 +214,9 @@ class HaloDataSettingFragment : androidx.fragment.app.Fragment() {
             (chipView.parent as ViewGroup).removeView(chipView)
             appConfigViewModel.appHaloConfigLiveData.value?.let{
                 it.filterKeywordConfig = mapOf(
-                        WGBFilterVar.ACTIVE to true,
-                        WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
-                        WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
+                        kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.ACTIVE to true,
+                        kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.WHITE_COND to keywordWhiteList.toSet(),
+                        kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND to keywordBlackList.toSet()
                 )
                 appConfigViewModel.appHaloConfigLiveData.value = it
             }

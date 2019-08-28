@@ -26,7 +26,7 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselec
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.presetselection.HaloVisComponent
 
 import kr.ac.snu.hcil.datahalo.manager.VisEffectManager
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.utils.TextDrawable
 import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 import kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
@@ -39,8 +39,8 @@ class HaloIndependentEffectSettingFragment : Fragment() {
         fun newInstance() = HaloIndependentEffectSettingFragment()
     }
 
-    private lateinit var appConfigViewModel: AppHaloConfigViewModel
-    private var componentExamples = VisEffectManager.availableIndependentVisEffects.map{
+    private lateinit var appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
+    private var componentExamples = kr.ac.snu.hcil.datahalo.manager.VisEffectManager.availableIndependentVisEffects.map{
         HaloVisComponent(it, R.drawable.kakaotalk_logo, HaloVisComponent.HaloVisComponentType.INDEPENDENT_VISEFFECT)
     }
 
@@ -51,35 +51,35 @@ class HaloIndependentEffectSettingFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appConfigViewModel = activity?.run {
-            ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
+            ViewModelProviders.of(this).get(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
     }
 
     private var currentShapeChangedIndex: Int? = null
     private var currentShapeChangedUri: Uri? = null
-    private var currentShapeChangedType: VisShapeType? = null
+    private var currentShapeChangedType: kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType? = null
 
     private fun updateShapeChanged(){
 
         currentShapeChangedType?.let{ type ->
             when(type){
-                VisShapeType.OVAL -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.OVAL -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.RECT -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.RECT -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.PATH -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.PATH -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.TEXT -> {
-                    VisObjectShape(type, null)
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.TEXT -> {
+                    kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(type, null)
                 }
-                VisShapeType.IMAGE -> {
+                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.IMAGE -> {
                     if(currentShapeChangedIndex != null && currentShapeChangedUri != null){
-                        VisObjectShape(
-                                VisShapeType.IMAGE,
+                        kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(
+                                kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.IMAGE,
                                 BitmapDrawable(resources, MediaStore.Images.Media.getBitmap(activity!!.contentResolver, currentShapeChangedUri!!))
                         )
                     } else null
@@ -145,10 +145,10 @@ class HaloIndependentEffectSettingFragment : Fragment() {
                         IndependentMappingExpandableListAdapter().apply{
                             setViewModel(appConfigViewModel)
                             shapeMappingParameterChangedLister = object: IndependentMappingExpandableListAdapter.MappingParameterChangedListener{
-                                override fun onShapeParameterChanged(index: Int, visShapeType: VisShapeType) {
+                                override fun onShapeParameterChanged(index: Int, visShapeType: kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType) {
                                     currentShapeChangedIndex = index
                                     currentShapeChangedType = visShapeType
-                                    if(visShapeType != VisShapeType.IMAGE)
+                                    if(visShapeType != kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.IMAGE)
                                         updateShapeChanged()
                                 }
                             }

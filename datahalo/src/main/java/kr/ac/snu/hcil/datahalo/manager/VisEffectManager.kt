@@ -28,7 +28,7 @@ class VisEffectManager {
         val availableAggregatedVisEffects: List<String>
             get() = registeredAggregatedVisEffects.keys.toList()
 
-        fun createNewIndependentVisEffect(visEffectID: String, visConfig: AppHaloConfig): AbstractIndependentVisEffect{
+        fun createNewIndependentVisEffect(visEffectID: String, visConfig: AppHaloConfig): AbstractIndependentVisEffect {
             if(visEffectID in availableIndependentVisEffects){
                 return Class.forName("$PATH.${registeredIndependentVisEffects[visEffectID]}").getConstructor(AppHaloConfig::class.java).newInstance(visConfig)
                         as AbstractIndependentVisEffect
@@ -38,7 +38,7 @@ class VisEffectManager {
             }
         }
 
-        fun createNewAggregatedVisEffect(visEffectID: String, visConfig: AppHaloConfig): AbstractAggregatedVisEffect{
+        fun createNewAggregatedVisEffect(visEffectID: String, visConfig: AppHaloConfig): AbstractAggregatedVisEffect {
             if(visEffectID in availableAggregatedVisEffects){
                 return Class.forName("$PATH.${registeredAggregatedVisEffects[visEffectID]}").getConstructor(AppHaloConfig::class.java).newInstance(visConfig)
                         as AbstractAggregatedVisEffect

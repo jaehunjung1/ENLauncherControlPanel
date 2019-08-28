@@ -57,7 +57,7 @@ class AggregatedVisObject(
         visualParameters: AggregatedVisObjectVisParams,
         dataParameters: AggregatedVisObjectDataParams,
         animationParameters: List<AggregatedVisObjectAnimParams>)
-    :AbstractAggregatedVisObject(
+    : AbstractAggregatedVisObject(
         customizabilitySpec = mapOf(
                 NotiVisVariable.POSITION to VisVarCustomizability.CUSTOMIZABLE,
                 NotiVisVariable.COLOR to VisVarCustomizability.CUSTOMIZABLE,
@@ -79,13 +79,13 @@ abstract class AbstractAggregatedVisObject(
         visualParameters: AggregatedVisObjectVisParams,
         dataParameters: AggregatedVisObjectDataParams,
         animationParameters: List<AggregatedVisObjectAnimParams>)
-    :InterfaceAggregatedVisObject
+    : InterfaceAggregatedVisObject
 {
     companion object {
         val exceptionInvalidCustomizability = Exception("CustomizabilitySpec May Lack Information.")
         val exceptionInvalidMappingInput = Exception("Input Mapping is Invalid")
         val exceptionNotInitialized = Exception("Object is Not Initialized. Set Mapping First.")
-        val exceptionVisVariable = {visVar:NotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
+        val exceptionVisVariable = {visVar: NotiVisVariable -> Exception("Usage of $visVar is Invalid.")}
     }
 
     private var id: Int = -1
@@ -194,7 +194,7 @@ abstract class AbstractAggregatedVisObject(
 
         //check if mapping is absurd
         val isValid = currMapping.keys.fold(true){
-            acc:Boolean, el:NotiVisVariable ->
+            acc:Boolean, el: NotiVisVariable ->
             val truth = el in customizabilitySpec.filter{it.value == VisVarCustomizability.CUSTOMIZABLE}.keys
             acc && truth
         }

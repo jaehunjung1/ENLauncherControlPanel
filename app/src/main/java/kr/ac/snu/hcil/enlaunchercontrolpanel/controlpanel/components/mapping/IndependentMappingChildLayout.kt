@@ -22,7 +22,7 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.utilities.Utilities
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.datahalo.visconfig.NotiProperty
@@ -37,12 +37,12 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     interface ChildViewInteractionListener{
-        fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType)
+        fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType)
     }
 
-    private var notiVisVar: NotiVisVariable = NotiVisVariable.MOTION
-    private var notiDataProp: NotiProperty? = null
-    private var viewModel: AppHaloConfigViewModel? = null
+    private var notiVisVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable = kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.MOTION
+    private var notiDataProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty? = null
+    private var viewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
     private var objIndex: Int = -1
 
     private var mappingContentsChangedListener: ChildViewInteractionListener? = null
@@ -64,10 +64,10 @@ class IndependentMappingChildLayout : LinearLayout {
     }
 
     fun setProperties(
-            visVar: NotiVisVariable,
-            notiProp: NotiProperty?,
+            visVar: kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable,
+            notiProp: kr.ac.snu.hcil.datahalo.visconfig.NotiProperty?,
             visObjIndex: Int,
-            appConfigViewModel: AppHaloConfigViewModel? = null
+            appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel? = null
     ){
         notiVisVar = visVar
         notiDataProp = notiProp
@@ -77,8 +77,8 @@ class IndependentMappingChildLayout : LinearLayout {
         this.removeAllViews()
 
         appConfigViewModel?.appHaloConfigLiveData?.value?.let{ appHaloConfig ->
-            if((notiVisVar == NotiVisVariable.SIZE || notiVisVar == NotiVisVariable.POSITION) &&
-                    (notiDataProp == NotiProperty.IMPORTANCE)
+            if((notiVisVar == kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE || notiVisVar == kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION) &&
+                    (notiDataProp == kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE)
             ) {
                 setRangeMapping(appHaloConfig)
             } else {
@@ -95,14 +95,14 @@ class IndependentMappingChildLayout : LinearLayout {
         viewModel?.appHaloConfigLiveData?.value?.let{ currentConfig ->
 
             when(notiDataProp){
-                NotiProperty.LIFE_STAGE -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> {
                     //currentConfig.independentDataParameters[objIndex].givenLifeList = (notiDataPropContents as MutableList<EnhancedNotificationLife>).toList()
                 }
-                NotiProperty.IMPORTANCE -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                     //currentConfig.independentDataParameters[objIndex].selectedImportanceRangeList = (notiDataPropContents as MutableList<Pair<Double, Double>>).toList()
                     currentConfig.independentDataParameters[objIndex].binNums = findViewById<NumberPicker>(R.id.bin_number_picker).value
                 }
-                NotiProperty.CONTENT -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> {
                     //currentConfig.independentDataParameters[objIndex].keywordGroupMap = (notiDataPropContents as MutableList<Pair<String, MutableList<String>>>).toMap()
                     //이게 필요한가? 아닐듯
                 }
@@ -110,14 +110,14 @@ class IndependentMappingChildLayout : LinearLayout {
             }
 
             val listSize = when(notiDataProp){
-                NotiProperty.LIFE_STAGE -> EnhancedNotificationLife.values().size
-                NotiProperty.IMPORTANCE -> currentConfig.independentDataParameters[objIndex].binNums
-                NotiProperty.CONTENT -> currentConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatternsWithRemainder().size
+                kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife.values().size
+                kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> currentConfig.independentDataParameters[objIndex].binNums
+                kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> currentConfig.keywordGroupPatterns.getOrderedKeywordGroupImportancePatternsWithRemainder().size
                 else -> 5
             }
 
             when(notiVisVar){
-                NotiVisVariable.MOTION -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.MOTION -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].selectedMotionList
                     currentConfig.independentVisualParameters[objIndex].selectedMotionList = List(listSize){ index ->
                         if(currentList.size >= visVarContents.size){
@@ -144,7 +144,7 @@ class IndependentMappingChildLayout : LinearLayout {
                         }
                     }
                 }
-                NotiVisVariable.COLOR -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.COLOR -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].selectedColorList
                     currentConfig.independentVisualParameters[objIndex].selectedColorList = List(listSize){ index ->
                         if(currentList.size >= visVarContents.size){
@@ -171,34 +171,34 @@ class IndependentMappingChildLayout : LinearLayout {
                         }
                     }
                 }
-                NotiVisVariable.SHAPE -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SHAPE -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].selectedShapeList
                     currentConfig.independentVisualParameters[objIndex].selectedShapeList = List(listSize){ index ->
                         if(currentList.size >= visVarContents.size){
                             if(index >= currentList.size){
-                                VisObjectShape(VisShapeType.RECT, null)
+                                kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.RECT, null)
                             }
                             else if(index >= visVarContents.size){
                                 currentList[index]
                             }
                             else{
-                                (visVarContents as MutableList<VisObjectShape>)[index]
+                                (visVarContents as MutableList<kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape>)[index]
                             }
                         }
                         else{
                             if(index >= currentList.size){
-                                VisObjectShape(VisShapeType.RECT, null)
+                                kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.RECT, null)
                             }
                             else if(index >= visVarContents.size){
                                 currentList[index]
                             }
                             else{
-                                (visVarContents as MutableList<VisObjectShape>)[index]
+                                (visVarContents as MutableList<kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape>)[index]
                             }
                         }
                     }
                 }
-                NotiVisVariable.SIZE -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].getSelectedSizeRangeList(
                             listSize
                     )
@@ -212,7 +212,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             }
                     )
                 }
-                NotiVisVariable.POSITION -> {
+                kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION -> {
                     val currentList = currentConfig.independentVisualParameters[objIndex].getSelectedPosRangeList(
                             listSize
                     )
@@ -232,7 +232,7 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setNominalTableMapping(appConfig: AppHaloConfig){
+    private fun setNominalTableMapping(appConfig: kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig){
         val tableLayout = findViewById<TableLayout>(R.id.nominal_mapping_table).apply{
             removeAllViews()
         }
@@ -248,13 +248,13 @@ class IndependentMappingChildLayout : LinearLayout {
         notiDataPropContents.addAll(
                 when (notiDataProp) {
                     null -> emptyList()
-                    NotiProperty.IMPORTANCE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                         independentDataParams.selectedImportanceRangeList
                     }
-                    NotiProperty.LIFE_STAGE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> {
                         independentDataParams.givenLifeList
                     }
-                    NotiProperty.CONTENT -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> {
                         orderedKeywordGroups
                     }
                 }
@@ -264,7 +264,7 @@ class IndependentMappingChildLayout : LinearLayout {
         visVarContents.clear()
         visVarContents.addAll(
                 when (notiVisVar) {
-                    NotiVisVariable.MOTION -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.MOTION -> {
                         if(notiDataPropContents.size == 0){
                             listOf(independentVisParams.selectedMotion)
                         }
@@ -272,7 +272,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             independentVisParams.selectedMotionList.subList(0, notiDataPropContents.size)
                         }
                     }
-                    NotiVisVariable.SHAPE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SHAPE -> {
                         if(notiDataPropContents.size == 0){
                             listOf(independentVisParams.selectedShape)
                         }
@@ -281,7 +281,7 @@ class IndependentMappingChildLayout : LinearLayout {
                         }
 
                     }
-                    NotiVisVariable.COLOR -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.COLOR -> {
                         if(notiDataPropContents.size == 0){
                             listOf(independentVisParams.selectedColor)
                         }
@@ -289,7 +289,7 @@ class IndependentMappingChildLayout : LinearLayout {
                             independentVisParams.selectedColorList.subList(0, notiDataPropContents.size)
                         }
                     }
-                    NotiVisVariable.SIZE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SIZE -> {
                         if(notiDataPropContents.size == 0)
                         {
                             listOf(independentVisParams.selectedSizeRange)
@@ -299,7 +299,7 @@ class IndependentMappingChildLayout : LinearLayout {
 
                         }
                     }
-                    NotiVisVariable.POSITION -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.POSITION -> {
                         if(notiDataPropContents.size == 0)
                         {
                             listOf(independentVisParams.selectedPosRange)
@@ -316,17 +316,17 @@ class IndependentMappingChildLayout : LinearLayout {
         }
 
         when (notiDataProp) {
-            NotiProperty.CONTENT -> {
+            kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> {
                 val contents = (notiDataPropContents as List<Pair<String, List<String>>>).map{it.first}
                 setNominalNotiPropViews(contents, tableLayout, LayoutInflater.from(context))
             }
-            NotiProperty.LIFE_STAGE -> {
+            kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> {
                 //val givenLifeStageIndices = (notiDataPropContents as MutableList<EnhancedNotificationLife>).map{independentDataParams.givenLifeList.indexOf(it)}
                 //setNewSpinnerView(givenLifeStageIndices, independentDataParams.givenLifeList, tableLayout)
                 setNominalNotiPropViews(independentDataParams.givenLifeList, tableLayout, LayoutInflater.from(context))
             }
-            NotiProperty.IMPORTANCE -> {
-                val givenImportanceList = MapFunctionUtilities.bin(independentDataParams.givenImportanceRange, independentDataParams.binNums)
+            kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
+                val givenImportanceList = kr.ac.snu.hcil.datahalo.utils.MapFunctionUtilities.bin(independentDataParams.givenImportanceRange, independentDataParams.binNums)
                 //val givenImportanceIndices = (notiDataPropContents as MutableList<Pair<Double, Double>>).map{givenImportanceList.indexOf(it)}
                 //setNewSpinnerView(givenImportanceIndices, givenImportanceList, tableLayout)
                 setNominalNotiPropViews(givenImportanceList, tableLayout, LayoutInflater.from(context))
@@ -378,13 +378,13 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setNominalMapping(appConfig: AppHaloConfig){
+    private fun setNominalMapping(appConfig: kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig){
         View.inflate(context, R.layout.item_child_new_nominal_mapping, this)
 
         findViewById<LinearLayout>(R.id.bin_layout).let{binLayout ->
             binLayout.findViewById<NumberPicker>(R.id.bin_number_picker).apply{
                 when(notiDataProp){
-                    NotiProperty.IMPORTANCE -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {
                         minValue = 2
                         maxValue = 5
                         value = appConfig.independentDataParameters[objIndex].binNums
@@ -407,15 +407,15 @@ class IndependentMappingChildLayout : LinearLayout {
     private fun setNominalNotiPropViews(givenPropContents: List<Any>, notiPropLayout: TableLayout, inflater: LayoutInflater){
         val givenPropStringContents: List<String> =
                 when(notiDataProp){
-                    NotiProperty.IMPORTANCE -> {givenPropContents.map{
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.IMPORTANCE -> {givenPropContents.map{
                         val propContent = it as Pair<Double, Double>
                         "${"%.2f".format(propContent.first)}-${"%.2f".format(propContent.second)}"}
                     }
-                    NotiProperty.LIFE_STAGE -> {givenPropContents.map{
-                        val propContent = it as EnhancedNotificationLife
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.LIFE_STAGE -> {givenPropContents.map{
+                        val propContent = it as kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
                         propContent.name }
                     }
-                    NotiProperty.CONTENT -> {
+                    kr.ac.snu.hcil.datahalo.visconfig.NotiProperty.CONTENT -> {
                         givenPropContents as List<String>
                     }
                     else -> {
@@ -447,10 +447,10 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setVisVarFrame(appConfig: AppHaloConfig, index: Int, frame: FrameLayout, content: Any ){
+    private fun setVisVarFrame(appConfig: kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig, index: Int, frame: FrameLayout, content: Any ){
         frame.tag = index
         when(notiVisVar){
-            NotiVisVariable.COLOR -> {
+            kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.COLOR -> {
                 val origColor = content as Int
                 val imgView = ImageView(context).apply{
 
@@ -476,13 +476,13 @@ class IndependentMappingChildLayout : LinearLayout {
                         FrameLayout.LayoutParams(50, 50)
                 )
             }
-            NotiVisVariable.SHAPE -> {
+            kr.ac.snu.hcil.datahalo.visconfig.NotiVisVariable.SHAPE -> {
                 NominalVisVarContentSpinner.generate(context, appConfig.independentDataParameters[0].binNums, notiVisVar).let{ spinner ->
                     spinner.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
                         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                            (parent?.getItemAtPosition(position) as Triple<String, String, VisShapeType>?)?.let{ item ->
+                            (parent?.getItemAtPosition(position) as Triple<String, String, kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType>?)?.let{ item ->
                                 when(item.third){
-                                    VisShapeType.IMAGE -> {
+                                    kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType.IMAGE -> {
                                         CropImage.activity()
                                                 .setGuidelines(CropImageView.Guidelines.ON)
                                                 .setActivityTitle("Set Image Drawable")
@@ -494,7 +494,7 @@ class IndependentMappingChildLayout : LinearLayout {
                                         mappingContentsChangedListener?.onShapeMappingContentsUpdated(index, item.third)
                                     }
                                     else -> {
-                                        visVarContents[index] = VisObjectShape(item.third, null)
+                                        visVarContents[index] = kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape(item.third, null)
                                         updateAppConfig()
                                     }
                                 }
@@ -504,7 +504,7 @@ class IndependentMappingChildLayout : LinearLayout {
                     }
 
                     (spinner.adapter as NominalVisVarContentSpinner.NominalVisVarContentAdapter).let {adapter ->
-                        val visObjectShape = visVarContents[index] as VisObjectShape
+                        val visObjectShape = visVarContents[index] as kr.ac.snu.hcil.datahalo.visualEffects.VisObjectShape
                         spinner.setSelection(adapter.findContent(visObjectShape.type)?: 0)
                     }
 
@@ -539,7 +539,7 @@ class IndependentMappingChildLayout : LinearLayout {
         }
     }
 
-    private fun setRangeMapping(appConfig: AppHaloConfig){
+    private fun setRangeMapping(appConfig: kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig){
 
         View.inflate(context, R.layout.item_child_new_range_mapping, this)
 

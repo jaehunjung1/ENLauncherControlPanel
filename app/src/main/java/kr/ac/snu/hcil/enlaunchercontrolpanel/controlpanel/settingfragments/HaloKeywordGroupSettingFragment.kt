@@ -20,7 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 import kr.ac.snu.hcil.enlaunchercontrolpanel.R
 import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgroup.KeywordGroupDetailsLookup
@@ -30,7 +30,7 @@ import kr.ac.snu.hcil.enlaunchercontrolpanel.controlpanel.components.keywordgrou
 
 class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment(), OnStartDragListener{
 
-    private lateinit var appConfigViewModel: AppHaloConfigViewModel
+    private lateinit var appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewAdapter: KeywordGroupRecyclerAdapter
@@ -43,7 +43,7 @@ class HaloKeywordGroupSettingFragment: androidx.fragment.app.Fragment(), OnStart
         super.onCreate(savedInstanceState)
 
         appConfigViewModel = activity?.run{
-            ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
+            ViewModelProviders.of(this).get(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
         /*

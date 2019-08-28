@@ -1,4 +1,4 @@
-package kr.ac.snu.hcil.datahalo.ui.viewmodel
+package kr.ac.snu.hcil.datahalo.viewmodel
 
 import androidx.lifecycle.*
 import kr.ac.snu.hcil.datahalo.manager.AppConfigManager

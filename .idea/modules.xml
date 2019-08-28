@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ENLauncherControlPanel.iml" filepath="$PROJECT_DIR$/ENLauncherControlPanel.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/datahalo/datahalo.iml" filepath="$PROJECT_DIR$/datahalo/datahalo.iml" />
     </modules>
   </component>
 </project>

@@ -21,18 +21,18 @@ class KeywordGroupChildView: LinearLayout {
         private const val TAG = "KeywordGroup_Child"
     }
 
-    private var keywordGroupImportance: KeywordGroupImportance? = null
+    private var keywordGroupImportance: kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance? = null
 
     private var _initalImportance: Double = 0.5
 
-    private var _patternBeforeInteraction: EnhancementPattern = EnhancementPattern.EQ
+    private var _patternBeforeInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern = kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ
     private var _saturationTimeBeforeInteraction: Long = 0L
     private var _saturationUnitBeforeInteraction: ImportanceControlView.SaturationTimeUnit = ImportanceControlView.SaturationTimeUnit.MINUTES
 
     private var _tempNumBeforeInteraction: Double = 0.0
     private var _tempNumAfterInteraction: Double = 0.0
 
-    private var _patternAfterInteraction: EnhancementPattern = EnhancementPattern.EQ
+    private var _patternAfterInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern = kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ
     private var _saturationTimeAfterInteraction: Long = 0L
     private var _saturationUnitAfterInteraction: ImportanceControlView.SaturationTimeUnit = ImportanceControlView.SaturationTimeUnit.MINUTES
 
@@ -40,7 +40,7 @@ class KeywordGroupChildView: LinearLayout {
     private var invalidateFlag = true
 
     interface KeywordGroupChildInteractionListener{
-        fun onEnhancementParamUpdated(pattern: NotificationEnhancementParams)
+        fun onEnhancementParamUpdated(pattern: kr.ac.snu.hcil.datahalo.visconfig.NotificationEnhancementParams)
     }
 
     var keywordGroupChildInteractionListener: KeywordGroupChildInteractionListener? = null
@@ -63,14 +63,14 @@ class KeywordGroupChildView: LinearLayout {
             invalidateSaturationInformation()
         }
 
-    var patternBeforeInteraction: EnhancementPattern
+    var patternBeforeInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
         get() = _patternBeforeInteraction
         set(value){
             _patternBeforeInteraction = value
             invalidateSaturationInformation()
         }
 
-    var patternAfterInteraction: EnhancementPattern
+    var patternAfterInteraction: kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
         get() = _patternAfterInteraction
         set(value){
             _patternAfterInteraction = value
@@ -134,12 +134,12 @@ class KeywordGroupChildView: LinearLayout {
     }
 
     fun setProperties(
-            observationWindowFilter: Map<WGBFilterVar, Any>,
-            keywordGroupImportance: KeywordGroupImportance
+            observationWindowFilter: Map<kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar, Any>,
+            keywordGroupImportance: kr.ac.snu.hcil.datahalo.visconfig.KeywordGroupImportance
     ){
 
         //Initial Data Setting
-        timeOut = observationWindowFilter[WGBFilterVar.BLACK_COND] as Long
+        timeOut = observationWindowFilter[kr.ac.snu.hcil.datahalo.visconfig.WGBFilterVar.BLACK_COND] as Long
         this.keywordGroupImportance = keywordGroupImportance
         keywordGroupImportance.enhancementParam.let{ param ->
             _initalImportance = param.initialImportance
@@ -238,12 +238,12 @@ class KeywordGroupChildView: LinearLayout {
             val firstSaturationUnit = firstSaturationControl.findViewById<Spinner>(R.id.saturationUnit)
 
             firstSaturationImportancePattern.apply{
-                adapter = ArrayAdapter(context, R.layout.item_spinner, EnhancementPattern.values())
+                adapter = ArrayAdapter(context, R.layout.item_spinner, kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.values())
                 onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        patternBeforeInteraction = getItemAtPosition(position) as EnhancementPattern
+                        patternBeforeInteraction = getItemAtPosition(position) as kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
                         when(patternBeforeInteraction){
-                            EnhancementPattern.EQ -> {
+                            kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ -> {
                                 firstSaturationTime.visibility = View.INVISIBLE
                                 firstSaturationUnit.visibility = View.INVISIBLE
                             }
@@ -291,12 +291,12 @@ class KeywordGroupChildView: LinearLayout {
             val secondSaturationUnit = secondSaturationControl.findViewById<Spinner>(R.id.saturationUnit)
 
             secondSaturationImportancePattern.apply{
-                adapter = ArrayAdapter(context, R.layout.item_spinner, EnhancementPattern.values())
+                adapter = ArrayAdapter(context, R.layout.item_spinner, kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.values())
                 onItemSelectedListener= object: AdapterView.OnItemSelectedListener{
                     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                        patternAfterInteraction = getItemAtPosition(position) as EnhancementPattern
+                        patternAfterInteraction = getItemAtPosition(position) as kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern
                         when(patternAfterInteraction){
-                            EnhancementPattern.EQ -> {
+                            kr.ac.snu.hcil.datahalo.notificationdata.EnhancementPattern.EQ -> {
                                 secondSaturationTime.visibility = View.INVISIBLE
                                 secondSaturationUnit.visibility = View.INVISIBLE
                             }

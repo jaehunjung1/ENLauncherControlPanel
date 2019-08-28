@@ -1,6 +1,5 @@
 package kr.ac.snu.hcil.datahalo.manager
 
-import android.util.Log
 import androidx.constraintlayout.widget.ConstraintLayout
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
@@ -16,11 +15,11 @@ class AppHaloLayoutMethods {
                 = listOf(BookshelfLayout, ClockwiseSortedLayout)
 
         val availiableLayouts:List<String>
-            get() = registeredLayoutMethods.map{layout -> layout.layoutID}
+            get() = registeredLayoutMethods.map{ layout -> layout.layoutID}
 
 
-        fun getLayout(visConfig: AppHaloConfig): AbstractANHVisLayout{
-            val layout = registeredLayoutMethods.find{layout -> layout.layoutID == visConfig.haloLayoutMethodName}
+        fun getLayout(visConfig: AppHaloConfig): AbstractANHVisLayout {
+            val layout = registeredLayoutMethods.find{ layout -> layout.layoutID == visConfig.haloLayoutMethodName}
             if (layout == null)
                 throw exceptionLayoutNotMatched(visConfig.haloLayoutMethodName)
             else
@@ -40,7 +39,7 @@ interface InterfaceANHVisLayout{
             : Pair<Map<Int, ConstraintLayout.LayoutParams>, Pair<List<ConstraintLayout.LayoutParams>, List<ConstraintLayout.LayoutParams>>>
 }
 
-abstract class AbstractANHVisLayout(override val layoutID: String): InterfaceANHVisLayout{
+abstract class AbstractANHVisLayout(override val layoutID: String): InterfaceANHVisLayout {
     companion object{
         fun EXCEPTION_VIS_EFFECT_NOT_EXIST(notiID: Int) = Exception("VisEffect for $notiID Does Not Exist")
         const val sizeOfIVE = 10
@@ -65,7 +64,7 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
             val notiID = enhancedNotification.id
             val (wScale, hScale) = independentVisEffects[notiID]?.let{visEffect -> visEffect.independentVisObjects[0].getPosition()}
                     ?: throw EXCEPTION_VIS_EFFECT_NOT_EXIST(notiID)
-            val layoutParam = ConstraintLayout.LayoutParams(sizeOfIVE,sizeOfIVE).also{
+            val layoutParam = ConstraintLayout.LayoutParams(sizeOfIVE, sizeOfIVE).also{
                 it.circleConstraint = pivotViewID
                 it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2.5).roundToInt()
                 it.circleAngle = (index * eachAngle).toFloat()
@@ -79,7 +78,7 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
             val groupVisObjs = aggrVisEffect.getGroupBoundVisObjects()
             val groupVisLPs = List(groupVisObjs.size){ index ->
                 val (wScale, hScale) = groupVisObjs[index].getPosition()
-                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                ConstraintLayout.LayoutParams(sizeOfAVE, sizeOfAVE).also{
                     it.circleConstraint = pivotViewID
                     it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
                     it.circleAngle = (index * eachAngle).toFloat()
@@ -89,7 +88,7 @@ object ClockwiseSortedLayout: AbstractANHVisLayout("ClockwiseSortedLayout"){
             val normalVisObjs = aggrVisEffect.getNormalVisObjects()
             val normalVisLPs = List(normalVisObjs.size){ index ->
                 val (wScale, hScale) = normalVisObjs[index].getPosition()
-                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                ConstraintLayout.LayoutParams(sizeOfAVE, sizeOfAVE).also{
                     it.circleConstraint = pivotViewID
                     it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
                     it.circleAngle = (index * eachAngle).toFloat()
@@ -133,7 +132,7 @@ object BookshelfLayout: AbstractANHVisLayout("BookshelfLayout"){
             val groupVisObjs = aggrVisEffect.getGroupBoundVisObjects()
             val groupVisLPs = List(groupVisObjs.size){ index ->
                 val (wScale, hScale) = groupVisObjs[index].getPosition()
-                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                ConstraintLayout.LayoutParams(sizeOfAVE, sizeOfAVE).also{
                     it.circleConstraint = pivotViewID
                     it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
                     it.circleAngle = (index * 45f).toFloat()
@@ -143,7 +142,7 @@ object BookshelfLayout: AbstractANHVisLayout("BookshelfLayout"){
             val normalVisObjs = aggrVisEffect.getNormalVisObjects()
             val normalVisLPs = List(normalVisObjs.size){ index ->
                 val (wScale, hScale) = normalVisObjs[index].getPosition()
-                ConstraintLayout.LayoutParams(sizeOfAVE,sizeOfAVE).also{
+                ConstraintLayout.LayoutParams(sizeOfAVE, sizeOfAVE).also{
                     it.circleConstraint = pivotViewID
                     it.circleRadius = (0.5 * minOf(target.layoutParams.width, target.layoutParams.height) * minOf(wScale, hScale) / 2).roundToInt()
                     it.circleAngle = (index * 45f).toFloat()

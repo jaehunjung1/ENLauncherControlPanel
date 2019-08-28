@@ -32,42 +32,42 @@ import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification
 import kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife
 import kr.ac.snu.hcil.datahalo.notificationdata.NotiContent
-import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
+import kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig
 
 class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     companion object{
         private const val TAG = "HALO_SETTING_ACTIVITY"
         private val exampleNotifications = listOf(
-                EnhancedNotification(25123, "", System.currentTimeMillis(), NotiContent("한구현", "집에 갑시다.1")).also{
+                kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification(25123, "", System.currentTimeMillis(), kr.ac.snu.hcil.datahalo.notificationdata.NotiContent("한구현", "집에 갑시다.1")).also{
                     it.currEnhancement = 0.3
-                    it.lifeCycle = EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
+                    it.lifeCycle = kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
                 },
-                EnhancedNotification(34532, "", System.currentTimeMillis(), NotiContent("정재훈", "집에 갑시다.2")).also{
+                kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification(34532, "", System.currentTimeMillis(), kr.ac.snu.hcil.datahalo.notificationdata.NotiContent("정재훈", "집에 갑시다.2")).also{
                     it.currEnhancement = 0.8
-                    it.lifeCycle = EnhancedNotificationLife.INTERACTED_NOT_DECAYING
+                    it.lifeCycle = kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife.INTERACTED_NOT_DECAYING
                 },
-                EnhancedNotification(54634, "", System.currentTimeMillis(), NotiContent("안단태", "집에 갑시다.3")).also{
+                kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification(54634, "", System.currentTimeMillis(), kr.ac.snu.hcil.datahalo.notificationdata.NotiContent("안단태", "집에 갑시다.3")).also{
                     it.currEnhancement = 0.2
-                    it.lifeCycle = EnhancedNotificationLife.DECAYING
+                    it.lifeCycle = kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife.DECAYING
                 },
-                EnhancedNotification(65124, "", System.currentTimeMillis(), NotiContent("한구현", "집에 갑시다.4")).also{
+                kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification(65124, "", System.currentTimeMillis(), kr.ac.snu.hcil.datahalo.notificationdata.NotiContent("한구현", "집에 갑시다.4")).also{
                     it.currEnhancement = 0.5
-                    it.lifeCycle = EnhancedNotificationLife.INTERACTED_NOT_DECAYING
+                    it.lifeCycle = kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife.INTERACTED_NOT_DECAYING
                 },
-                EnhancedNotification(66893, "", System.currentTimeMillis(), NotiContent("정재훈", "집에 갑시다.5")).also{
+                kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification(66893, "", System.currentTimeMillis(), kr.ac.snu.hcil.datahalo.notificationdata.NotiContent("정재훈", "집에 갑시다.5")).also{
                     it.currEnhancement = 0.8
-                    it.lifeCycle = EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
+                    it.lifeCycle = kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
                 },
-                EnhancedNotification(70892, "", System.currentTimeMillis(), NotiContent("안단태", "집에 갑시다.6")).also{
+                kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotification(70892, "", System.currentTimeMillis(), kr.ac.snu.hcil.datahalo.notificationdata.NotiContent("안단태", "집에 갑시다.6")).also{
                     it.currEnhancement = 0.1
-                    it.lifeCycle = EnhancedNotificationLife.DECAYING
+                    it.lifeCycle = kr.ac.snu.hcil.datahalo.notificationdata.EnhancedNotificationLife.DECAYING
                 }
         )
     }
 
-    private lateinit var appConfigViewModel: AppHaloConfigViewModel
-    private lateinit var previewHalo: AppNotificationHalo
+    private lateinit var appConfigViewModel: kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel
+    private lateinit var previewHalo: kr.ac.snu.hcil.datahalo.haloview.AppNotificationHalo
 
     private val controlPanelFragments: Map<String, Fragment> = mapOf(
             "Predefined Components" to HaloExampleCollectionFragment.newInstance(),
@@ -146,7 +146,7 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
                                 .withIcon(R.mipmap.ic_launcher).build()
                 ).check()
 
-        previewHalo = AppNotificationHalo(this, null).apply{
+        previewHalo = kr.ac.snu.hcil.datahalo.haloview.AppNotificationHalo(this, null).apply{
             id = View.generateViewId()
         }
 
@@ -167,12 +167,12 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
             setViewPager(this, R.id.examples)
         }
 
-        appConfigViewModel = ViewModelProviders.of(this).get(AppHaloConfigViewModel::class.java)
-        val appConfigObserver = Observer<AppHaloConfig>{ newConfig ->
+        appConfigViewModel = ViewModelProviders.of(this).get(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel::class.java)
+        val appConfigObserver = Observer<kr.ac.snu.hcil.datahalo.visconfig.AppHaloConfig>{ newConfig ->
             Log.d(TAG, "Model Updated")
             newConfig?.let{
                 previewHalo.setVisConfig(it)
-                previewHalo.setAppHaloData(EnhancedAppNotifications(AppHaloConfigViewModel.SAMPLE_PACKAGE_NAME).also{ notifications ->
+                previewHalo.setAppHaloData(kr.ac.snu.hcil.datahalo.notificationdata.EnhancedAppNotifications(kr.ac.snu.hcil.datahalo.viewmodel.AppHaloConfigViewModel.SAMPLE_PACKAGE_NAME).also{ notifications ->
                     notifications.notificationData = exampleNotifications.toMutableList()
                 })
                 preview_layout.invalidate()
