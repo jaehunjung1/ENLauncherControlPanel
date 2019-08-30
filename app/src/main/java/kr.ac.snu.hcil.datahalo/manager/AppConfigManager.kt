@@ -67,12 +67,15 @@ class AppConfigManager {
                                         val alphaAnim: ObjectAnimator = ObjectAnimator.ofInt(null, "alpha", 255, 20)
                                         alphaAnim.repeatCount = ObjectAnimator.INFINITE
                                         alphaAnim.repeatMode = ObjectAnimator.REVERSE
-                                        alphaAnim.duration = 1500
+                                        alphaAnim.duration = 2000
                                         play(alphaAnim)
                                     },
                                     AnimatorSet().apply{
-                                        // TODO ("Not Implemented")
-//                                        val sizeAnim: ObjectAnimator = ObjectAnimator.of
+                                        val sizeAnim: ObjectAnimator = ObjectAnimator.ofFloat(null, "scaleY", 0.5f)
+                                        sizeAnim.repeatCount = ObjectAnimator.INFINITE
+                                        sizeAnim.repeatMode = ObjectAnimator.REVERSE
+                                        sizeAnim.duration = 2000
+                                        play(sizeAnim)
                                     },
                                     AnimatorSet(),
                                     AnimatorSet()

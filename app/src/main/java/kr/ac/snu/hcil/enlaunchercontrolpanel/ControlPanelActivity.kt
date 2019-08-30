@@ -40,11 +40,11 @@ class ControlPanelActivity : AppCompatActivity(), NavigationView.OnNavigationIte
         private const val TAG = "HALO_SETTING_ACTIVITY"
         private val exampleNotifications = listOf(
                 EnhancedNotification(25123, "", System.currentTimeMillis(), NotiContent("한구현", "집에 갑시다.1")).also{
-                    it.currEnhancement = 0.3
+                    it.currEnhancement = 0.9
                     it.lifeCycle = EnhancedNotificationLife.TRIGGERED_NOT_INTERACTED
                 },
                 EnhancedNotification(34532, "", System.currentTimeMillis(), NotiContent("정재훈", "집에 갑시다.2")).also{
-                    it.currEnhancement = 0.8
+                    it.currEnhancement = 0.5
                     it.lifeCycle = EnhancedNotificationLife.INTERACTED_NOT_DECAYING
                 },
                 EnhancedNotification(54634, "", System.currentTimeMillis(), NotiContent("안단태", "집에 갑시다.3")).also{
