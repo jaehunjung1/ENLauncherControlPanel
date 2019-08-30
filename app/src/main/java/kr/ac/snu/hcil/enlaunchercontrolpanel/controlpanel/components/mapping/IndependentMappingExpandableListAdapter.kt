@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import kr.ac.snu.hcil.datahalo.ui.viewmodel.AppHaloConfigViewModel
 import kr.ac.snu.hcil.datahalo.visconfig.*
+import kr.ac.snu.hcil.datahalo.visualEffects.VisShapeType
 
 class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
     companion object{
@@ -13,7 +14,7 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
     }
 
     interface MappingParameterChangedListener{
-        fun onShapeParameterChanged(index: Int)
+        fun onShapeParameterChanged(index: Int, visShapeType: VisShapeType)
     }
 
     var shapeMappingParameterChangedLister: MappingParameterChangedListener? = null
@@ -96,17 +97,17 @@ class IndependentMappingExpandableListAdapter: BaseExpandableListAdapter() {
         return (convertView as IndependentMappingChildLayout?)?.apply{
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
-                override fun onShapeMappingContentsUpdated(componentIndex: Int) {
+                override fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType) {
                     //child의 몇 번째 component를 바꿔야 하느냐하고 관련되어 있는거고
-                    shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex)
+                    shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex, shapeType)
                 }
             })
         }?:IndependentMappingChildLayout(context).apply {
             setProperties(visVar, notiProp, 0, viewModel)
             setMappingContentsChangedListener(object : IndependentMappingChildLayout.ChildViewInteractionListener {
-                override fun onShapeMappingContentsUpdated(componentIndex: Int) {
+                override fun onShapeMappingContentsUpdated(componentIndex: Int, shapeType: VisShapeType) {
                     //child의 몇 번째 component를 바꿔야 하느냐하고 관련되어 있는거고
-                    shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex)
+                    shapeMappingParameterChangedLister?.onShapeParameterChanged(componentIndex, shapeType)
                 }
             })
         }

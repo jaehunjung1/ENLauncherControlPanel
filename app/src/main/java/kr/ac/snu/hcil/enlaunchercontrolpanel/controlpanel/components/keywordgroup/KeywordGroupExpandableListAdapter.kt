@@ -44,8 +44,10 @@ class KeywordGroupExpandableListAdapter(
     }
 
     override fun getGroupId(groupPosition: Int): Long {
-        return if(groupPosition == groupCount - 1) keywordGroupImportancePatterns.getRemainderKeywordGroupPattern().id
-        else keywordGroupImportancePatterns.getGroupOfRank(groupPosition)!!.id
+        return if(groupPosition == groupCount - 1)
+            keywordGroupImportancePatterns.getRemainderKeywordGroupPattern().id
+        else
+            keywordGroupImportancePatterns.getGroupOfRank(groupPosition)!!.id
     }
 
     override fun getGroup(groupPosition: Int): KeywordGroupImportance {

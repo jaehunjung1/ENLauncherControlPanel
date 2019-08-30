@@ -128,6 +128,7 @@ abstract class AbstractIndependentVisEffect(
                     it.id = visObj.getID()
                     it.setImageDrawable(drawables[index])
                     it.rotation = pivotLayoutParams.circleAngle
+
                 }
                 constraintLayout.addView(imageView, localLayoutParams[index])
 

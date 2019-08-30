@@ -168,6 +168,7 @@ abstract class AbstractIndependentVisObject(
         customizabilitySpec.filter{it.value == VisVarCustomizability.PREDEFINED}.keys.map{
             conversionForPredefinedVisVar(it)
         }
+        updateMappingFunction()
     }
 
     final override fun getMappingState(visVar: NotiVisVariable): MappingState? {
@@ -191,7 +192,9 @@ abstract class AbstractIndependentVisObject(
     final override fun getVisMapping(): Map<NotiVisVariable, NotiProperty?> = currMapping
     final override fun setVisMapping(mapping: Map<NotiVisVariable, NotiProperty?>){
         currMapping = mapping
-
+        updateMappingFunction()
+    }
+    private fun updateMappingFunction(){
         //check if mapping is absurd
         val isValid = currMapping.keys.fold(true){
             acc:Boolean, el:NotiVisVariable ->
@@ -231,9 +234,9 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createBinnedNumericRangeMapFunc(dataParams.selectedImportanceRangeList, motions)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(motions.size < dataParams.selectedLifeList.size)
+                        if(motions.size < dataParams.givenLifeList.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, motions)
+                        return MapFunctionUtilities.createMapFunc(dataParams.givenLifeList, motions)
                     }
                     NotiProperty.CONTENT -> {
                         if(motions.size < keywordGroups.size)
@@ -252,9 +255,9 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createBinnedNumericRangeMapFunc(dataParams.selectedImportanceRangeList, shape)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(shape.size != dataParams.selectedLifeList.size)
+                        if(shape.size != dataParams.givenLifeList.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, shape)
+                        return MapFunctionUtilities.createMapFunc(dataParams.givenLifeList, shape)
 
                     }
                     NotiProperty.CONTENT -> {
@@ -274,10 +277,10 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, posRange)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, posRange)
+                        return MapFunctionUtilities.createMapFuncToBinnedNumericRange(dataParams.givenLifeList, visualParams.getSelectedPosRangeList(dataParams.givenLifeList.size))
                     }
                     NotiProperty.CONTENT -> {
-                        return MapFunctionUtilities.createMapFunc(keywordGroups, posRange)
+                        return MapFunctionUtilities.createMapFuncToBinnedNumericRange(keywordGroups, visualParams.getSelectedPosRangeList(keywordGroups.size))
                     }
                     else -> {
                         return {x -> (posRange.first + posRange.second) / 2}
@@ -291,9 +294,9 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createBinnedNumericRangeMapFunc(dataParams.selectedImportanceRangeList, colors)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        if(colors.size != dataParams.selectedLifeList.size)
+                        if(colors.size != dataParams.givenLifeList.size)
                             throw exceptionVisVariable(boundVisVar)
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, colors)
+                        return MapFunctionUtilities.createMapFunc(dataParams.givenLifeList, colors)
                     }
                     NotiProperty.CONTENT -> {
                         if(colors.size < keywordGroups.size)
@@ -313,10 +316,10 @@ abstract class AbstractIndependentVisObject(
                         return MapFunctionUtilities.createMapFunc(dataParams.selectedImportanceRange, sizeRange)
                     }
                     NotiProperty.LIFE_STAGE -> {
-                        return MapFunctionUtilities.createMapFunc(dataParams.selectedLifeList, sizeRange)
+                        return MapFunctionUtilities.createMapFuncToBinnedNumericRange(dataParams.givenLifeList, visualParams.getSelectedSizeRangeList(dataParams.givenLifeList.size))
                     }
                     NotiProperty.CONTENT -> {
-                        return MapFunctionUtilities.createMapFunc(keywordGroups, sizeRange)
+                        return MapFunctionUtilities.createMapFuncToBinnedNumericRange(keywordGroups, visualParams.getSelectedSizeRangeList(keywordGroups.size))
                     }
                     else -> {
                         return {x -> (sizeRange.first + sizeRange.second) / 2}
@@ -409,7 +412,7 @@ abstract class AbstractIndependentVisObject(
         val mySize = (150 * size).roundToInt()
 
         val shapeDrawable: Drawable = when(shape.type){
-            NewVisShape.RECT -> {
+            VisShapeType.RECT -> {
                 /*
                 (shape.drawable as ShapeDrawable).also{
                     it.paint.color = color
@@ -425,7 +428,7 @@ abstract class AbstractIndependentVisObject(
                     it.intrinsicHeight = mySize
                 }
             }
-            NewVisShape.OVAL -> {
+            VisShapeType.OVAL -> {
                 /*
                 (shape.drawable as ShapeDrawable).also{
                     it.paint.color = color
@@ -441,17 +444,17 @@ abstract class AbstractIndependentVisObject(
                 }
                 //TODO(VisConfigParam의 ShapeDrawable 고쳐야 함 공유 문제)
             }
-            NewVisShape.PATH -> {
+            VisShapeType.PATH -> {
                 (shape.drawable as ShapeDrawable).also{
                     it.paint.color = color
                     it.intrinsicWidth = mySize
                     it.intrinsicHeight = mySize
                 }
             }
-            NewVisShape.IMAGE -> {
+            VisShapeType.IMAGE -> {
                 ScaleDrawable(shape.drawable, Gravity.CENTER, size.toFloat(), size.toFloat()).drawable
             }
-            NewVisShape.RAW -> {
+            VisShapeType.TEXT -> {
                 (shape.drawable as TextDrawable).also{
                     it.setColor(color)
                 }
